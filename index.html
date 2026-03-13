@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Fluz MXVIII"/>
+<title>Fluz MXVIII</title>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:#0a0a0f;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+:root{--bg1:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--bg4:#22222e;--accent:#3b82f6;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--border:rgba(255,255,255,0.08);--text1:#e2e8f0;--text2:#94a3b8;--text3:#64748b}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
+.app-name{font-weight:700;font-size:15px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ticker-bar{display:flex;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
+.ticker-bar::-webkit-scrollbar{display:none}
+.ticker-item{flex-shrink:0;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer}
+.ticker-item .sym{font-weight:600;color:var(--text1)}
+.ticker-item .chg{margin-left:4px}
+.ticker-item .prc{margin-left:4px;color:var(--text2);font-size:10px}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:53px;z-index:99}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{padding:10px 14px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:12px;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.content{padding:12px;max-width:1400px;margin:0 auto}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.card-title{font-weight:600;font-size:13px;color:var(--text1);margin-bottom:10px}
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.badge-green{background:rgba(34,197,94,0.15);color:#22c55e}
+.badge-red{background:rgba(239,68,68,0.15);color:#ef4444}
+.badge-amber{background:rgba(245,158,11,0.15);color:#f59e0b}
+.badge-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+.badge-gray{background:rgba(100,116,139,0.15);color:#94a3b8}
+.btn{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text1);cursor:pointer;font-size:12px;font-weight:500}
+.btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-group{display:flex;gap:4px;flex-wrap:wrap}
+input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text1);font-size:12px;outline:none}
+input:focus{border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px 10px;text-align:left;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap}
+th.c{text-align:center}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+td.c{text-align:center}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.status-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);margin-bottom:10px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.chart-controls{display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+#chart-container{width:100%;height:400px;border-radius:8px;overflow:hidden;position:relative}
+.pattern-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pattern-tag{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.pattern-tag span{font-size:12px}
+.info-panel{background:var(--bg3);border:1px solid var(--accent);border-radius:8px;padding:12px;margin-top:10px;font-size:12px}
+.info-panel .ind-name{font-weight:600;color:var(--accent);font-size:13px;margin-bottom:6px}
+.level-row{display:flex;gap:8px;padding:6px 8px;background:var(--bg4);border-radius:6px;margin-bottom:4px;align-items:flex-start}
+.level-val{font-weight:600;font-size:11px;min-width:100px;flex-shrink:0;margin-top:1px}
+.analyze-btn{width:100%;padding:12px;background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(139,92,246,0.2));border:1px solid rgba(59,130,246,0.4);border-radius:10px;color:#e2e8f0;cursor:pointer;font-size:13px;font-weight:600;margin-top:10px;letter-spacing:0.3px}
+.copy-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:11px;color:var(--text2);line-height:1.6;margin-top:8px;white-space:pre-wrap;word-break:break-word}
+.macro-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.macro-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center}
+.macro-title{font-weight:600;font-size:14px;margin-bottom:6px}
+.macro-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.why-box{background:rgba(59,130,246,0.07);border-left:3px solid var(--accent);padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:10px}
+.why-title{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:4px}
+.why-body{font-size:12px;color:var(--text2);line-height:1.6}
+.dict-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.dict-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer}
+.dict-card.open{border-color:var(--accent)}
+.dict-name{font-weight:600;font-size:13px;margin-bottom:4px}
+.dict-short{font-size:12px;color:var(--text2);line-height:1.5}
+.dict-detail{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.6}
+.dict-detail h4{color:var(--text1);margin:8px 0 3px;font-size:12px}
+.lt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lt-target{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:8px;margin-bottom:6px}
+.lt-support{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;margin-bottom:6px}
+.mini-chart{display:block}
+.loading{text-align:center;padding:40px;color:var(--text3);font-size:13px}
+.news-item{background:var(--bg3);border-radius:8px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
+.news-source{font-size:10px;color:var(--accent);font-weight:600;margin-bottom:3px}
+.news-title{font-size:12px;font-weight:500;color:var(--text1);line-height:1.4;margin-bottom:3px}
+.news-date{font-size:10px;color:var(--text3)}
+@media(max-width:600px){.lt-grid{grid-template-columns:1fr}.header{padding:8px 12px}.content{padding:10px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">FX</div>
+  <div class="app-name">Fluz MXVIII</div>
+  <div class="ticker-bar" id="tickerBar"></div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="nav-btn active" onclick="showTab('scanner')">Scanner</button>
+  <button class="nav-btn" onclick="showTab('graphique')">Graphique</button>
+  <button class="nav-btn" onclick="showTab('patterns')">Patterns</button>
+  <button class="nav-btn" onclick="showTab('macro')">Macro</button>
+  <button class="nav-btn" onclick="showTab('longterme')">Long Terme</button>
+  <button class="nav-btn" onclick="showTab('dictionnaire')">Dictionnaire</button>
+  <button class="nav-btn" onclick="showTab('apprendre')">Apprendre</button>
+</div>
+
+<div class="content">
+
+<!-- SCANNER -->
+<div id="tab-scanner">
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <span id="lastUpdate">Chargement des données réelles...</span>
+    <span style="margin-left:auto;font-size:10px;color:var(--text3)">Actualisation auto 30s</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span style="font-weight:600;font-size:14px">Scanner Multi-Actifs</span>
+    <button class="btn" onclick="toggleAddCrypto()" style="font-size:11px">+ Ajouter crypto</button>
+  </div>
+  <div id="addCryptoBox" style="display:none;margin-bottom:10px;display:none">
+    <div style="display:flex;gap:6px">
+      <input id="newCryptoInput" placeholder="Symbole ex: DOGE" style="flex:1"/>
+      <button class="btn active" onclick="addCrypto()">Ajouter</button>
+      <button class="btn" onclick="document.getElementById('addCryptoBox').style.display='none'">x</button>
+    </div>
+  </div>
+  <div class="card" style="padding:0;overflow:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Actif</th>
+          <th class="c">Prix</th>
+          <th class="c">24h</th>
+          <th class="c">1h</th>
+          <th class="c">4h</th>
+          <th class="c">1D</th>
+          <th class="c">RSI</th>
+          <th class="c">Pattern</th>
+          <th class="c">Chart</th>
+          <th class="c">Signal</th>
+        </tr>
+      </thead>
+      <tbody id="scannerBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- GRAPHIQUE -->
+<div id="tab-graphique" style="display:none">
+  <div class="card-title" style="margin-bottom:8px">Graphique Interactif</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+    <div id="assetBtns" class="btn-group"></div>
+  </div>
+  <div class="btn-group" style="margin-bottom:8px" id="tfBtns"></div>
+  <div class="card" style="padding:12px">
+    <div class="chart-controls">
+      <span style="font-weight:600;font-size:14px" id="chartTitle">BTC/USDT</span>
+      <span id="chartPrice" style="font-size:16px;font-weight:700;font-family:monospace"></span>
+      <span id="chartBadge" class="badge badge-gray"></span>
+      <div style="margin-left:auto;display:flex;gap:4px">
+        <button class="btn" id="btnSMA20" onclick="toggleIndicator('sma20')" style="font-size:10px;color:#3b82f6">SMA20</button>
+        <button class="btn" id="btnSMA50" onclick="toggleIndicator('sma50')" style="font-size:10px;color:#f59e0b">SMA50</button>
+        <button class="btn active" id="btnVol" onclick="toggleIndicator('vol')" style="font-size:10px">Vol</button>
+      </div>
+    </div>
+    <div id="chart-container"></div>
+    <div class="pattern-legend" id="patternLegend"></div>
+    <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--text2);flex-wrap:wrap">
+      <span id="indRSI" style="cursor:pointer;border-bottom:1px dotted var(--text3)" onclick="showIndInfo('RSI')">RSI: —</span>
+      <span id="indSMA20" style="cursor:pointer;border-bottom:1px dotted #3b82f6;color:#3b82f6" onclick="showIndInfo('SMA20')">SMA20: —</span>
+      <span id="indSMA50" style="cursor:pointer;border-bottom:1px dotted #f59e0b;color:#f59e0b" onclick="showIndInfo('SMA50')">SMA50: —</span>
+      <span style="cursor:pointer;border-bottom:1px dotted var(--text3)" onclick="showIndInfo('VOLUME')">Volume</span>
+      <span style="margin-left:auto;color:rgba(251,191,36,0.6);font-size:10px">— Zones S/R</span>
+    </div>
+  </div>
+  <div id="indInfoPanel" style="display:none"></div>
+  <div class="card" style="padding:12px">
+    <div class="card-title">Analyse Multi-Timeframe — <span id="mtfAsset">BTC</span></div>
+    <div id="mtfBody"></div>
+    <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);margin-top:4px;font-size:13px">
+      <span style="font-weight:600">Biais global</span>
+      <span id="globalBiasLabel" style="font-weight:700"></span>
+    </div>
+    <button class="analyze-btn" onclick="generateAnalysis()">Analyser avec Claude ↗</button>
+    <div id="analyzeBox" style="display:none">
+      <div style="font-size:11px;color:var(--text2);margin:8px 0 4px">Copie ce texte et colle-le dans le chat Claude :</div>
+      <div class="copy-box" id="analyzeText"></div>
+      <button class="btn active" style="margin-top:6px;width:100%" onclick="copyAnalysis()">Copier le texte</button>
+    </div>
+  </div>
+</div>
+
+<!-- PATTERNS -->
+<div id="tab-patterns" style="display:none">
+  <div class="card-title">Bibliothèque de Patterns</div>
+  <div class="btn-group" style="margin-bottom:12px">
+    <button class="btn active" onclick="filterPatterns('tous',this)">Tous</button>
+    <button class="btn" onclick="filterPatterns('chandelier',this)">Chandeliers</button>
+    <button class="btn" onclick="filterPatterns('graphique',this)">Graphiques</button>
+    <button class="btn" onclick="filterPatterns('haussier',this)">Haussiers</button>
+    <button class="btn" onclick="filterPatterns('baissier',this)">Baissiers</button>
+  </div>
+  <div id="patternsGrid" class="dict-grid"></div>
+</div>
+
+<!-- MACRO -->
+<div id="tab-macro" style="display:none">
+  <div style="margin-bottom:4px;font-weight:600;font-size:14px">Analyse Macroéconomique</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Forces macro qui déterminent la direction des marchés. Sources : Fed, BCE, FMI, CPI, NFP, on-chain.</div>
+  <div id="newsLive" style="margin-bottom:16px"></div>
+  <div id="macroCards"></div>
+</div>
+
+<!-- LONG TERME -->
+<div id="tab-longterme" style="display:none">
+  <div class="card-title">Vision Long Terme</div>
+  <div class="btn-group" style="margin-bottom:12px" id="ltBtns"></div>
+  <div id="ltContent"></div>
+</div>
+
+<!-- DICTIONNAIRE -->
+<div id="tab-dictionnaire" style="display:none">
+  <div style="margin-bottom:4px;font-weight:600;font-size:14px">Dictionnaire du Trading</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Tous les termes, indicateurs et concepts expliqués en français.</div>
+  <input placeholder="Rechercher un terme..." style="width:100%;margin-bottom:12px" oninput="filterDict(this.value)" id="dictSearch"/>
+  <div id="dictGrid" class="dict-grid"></div>
+</div>
+
+<!-- APPRENDRE -->
+<div id="tab-apprendre" style="display:none">
+  <div class="card-title">Centre d'Apprentissage</div>
+  <div id="learnGrid" class="dict-grid"></div>
+</div>
+
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let cryptos = ['BTC','ETH','TAO','SYRUP','ASTER'];
+const METALS = ['XAU','XAG'];
+const FOREX = ['EUR/USD','USD/CHF','EUR/CHF'];
+const TFS = ['5m','15m','1h','4h','1D','1W'];
+let currentAsset = 'BTC';
+let currentTF = '1h';
+let prices = {};
+let candles = {};
+let scanData = {};
+let chart = null;
+let candleSeries = null;
+let sma20Series = null;
+let sma50Series = null;
+let volSeries = null;
+let showSMA20 = true, showSMA50 = true, showVol = true;
+let selectedIndInfo = null;
+let patternFilter = 'tous';
+let ltAsset = 'BTC';
+let refreshInterval = null;
+
+// ─── BINANCE API ──────────────────────────────────────────────────────────────
+const BINANCE = 'https://api.binance.com/api/v3';
+const TF_MAP = {'5m':'5m','15m':'15m','1h':'1h','4h':'4h','1D':'1d','1W':'1w'};
+const SYM_MAP = s => {
+  if(['EUR/USD','USD/CHF','EUR/CHF'].includes(s)) return null;
+  if(s==='XAU') return 'XAUUSDT';
+  if(s==='XAG') return 'XAGUSDT';
+  return s+'USDT';
+};
+const FOREX_PAIRS = {'EUR/USD':'EURUSDT','USD/CHF':'USDCHF','EUR/CHF':'EURCHF'};
+
+async function fetchPrice(asset) {
+  const sym = SYM_MAP(asset);
+  if(!sym) return fetchForex(asset);
+  try {
+    const r = await fetch(`${BINANCE}/ticker/24hr?symbol=${sym}`);
+    const d = await r.json();
+    return {price: parseFloat(d.lastPrice), change: parseFloat(d.priceChangePercent)};
+  } catch(e) { return null; }
+}
+
+async function fetchForex(pair) {
+  try {
+    const parts = pair.split('/');
+    const r = await fetch(`https://api.frankfurter.app/latest?from=${parts[0]}&to=${parts[1]}`);
+    const d = await r.json();
+    const price = d.rates[parts[1]];
+    return {price, change: 0};
+  } catch(e) { return null; }
+}
+
+async function fetchCandles(asset, tf) {
+  const sym = SYM_MAP(asset);
+  if(!sym) return generateFakeCandles(prices[asset]?.price||1, 100, tf);
+  try {
+    const r = await fetch(`${BINANCE}/klines?symbol=${sym}&interval=${TF_MAP[tf]}&limit=100`);
+    const d = await r.json();
+    return d.map(k => ({
+      time: Math.floor(k[0]/1000),
+      open: parseFloat(k[1]),
+      high: parseFloat(k[2]),
+      low: parseFloat(k[3]),
+      close: parseFloat(k[4]),
+      volume: parseFloat(k[5])
+    }));
+  } catch(e) { return generateFakeCandles(prices[asset]?.price||100, 100, tf); }
+}
+
+function generateFakeCandles(base, count, tf) {
+  let p = base; const out = [];
+  const now = Date.now();
+  const ms = {'5m':300000,'15m':900000,'1h':3600000,'4h':14400000,'1D':86400000,'1W':604800000};
+  const iv = ms[tf]||3600000;
+  for(let i=count;i>=0;i--) {
+    const v=base*0.018,t=Math.sin(i*0.08)*v*0.4;
+    const o=p,c=Math.max(o*0.5,o+(Math.random()-0.47)*v+t*0.15);
+    const h=Math.max(o,c)+Math.random()*v*0.3,l=Math.min(o,c)-Math.random()*v*0.3;
+    out.push({time:Math.floor((now-i*iv)/1000),open:o,high:h,low:l,close:c,volume:Math.random()*1000+200});
+    p=c;
+  }
+  return out;
+}
+
+// ─── INDICATORS ──────────────────────────────────────────────────────────────
+function calcSMA(c,p){if(c.length<p)return null;return c.slice(-p).reduce((s,x)=>s+x.close,0)/p;}
+function calcRSI(c,p=14){
+  if(c.length<p+1)return 50;
+  const ch=c.slice(-p-1).map((x,i,a)=>i===0?0:x.close-a[i-1].close).slice(1);
+  const g=ch.filter(x=>x>0).reduce((s,x)=>s+x,0)/p;
+  const l=ch.filter(x=>x<0).reduce((s,x)=>s+Math.abs(x),0)/p;
+  if(l===0)return 100;
+  return 100-100/(1+g/l);
+}
+function getTrend(c){
+  if(c.length<20)return 'Neutre';
+  const s20=calcSMA(c,20),s50=calcSMA(c,Math.min(50,c.length)),rsi=calcRSI(c),last=c[c.length-1].close;
+  let s=0;
+  if(last>s20)s++;if(s20&&s50&&s20>s50)s++;if(rsi>55)s++;if(rsi<45)s--;if(last<s20)s--;
+  return s>=2?'Haussier':s<=-1?'Baissier':'Neutre';
+}
+function globalBias(asset){
+  if(!scanData[asset])return '—';
+  const b=TFS.map(t=>scanData[asset][t]?.bias);
+  const bull=b.filter(x=>x==='Haussier').length,bear=b.filter(x=>x==='Baissier').length;
+  if(bull>=4)return 'Achat fort';if(bull>=3)return 'Achat';
+  if(bear>=4)return 'Vente forte';if(bear>=3)return 'Vente';
+  return 'Neutre';
+}
+
+// ─── PATTERN DETECTION ───────────────────────────────────────────────────────
+function detectPatterns(c) {
+  const out=[];const n=c.length;if(n<5)return out;
+  const last=c[n-1],prev=c[n-2];
+  const body=Math.abs(last.close-last.open),range=last.high-last.low||0.0001;
+  const lw=Math.min(last.open,last.close)-last.low,uw=last.high-Math.max(last.open,last.close);
+  if(body/range<0.1) out.push({name:'Doji',bias:'neutre',color:'#94a3b8',prob:50,idx:n-1});
+  if(lw>body*2&&uw<body*0.5&&last.close>last.open) out.push({name:'Marteau',bias:'haussier',color:'#22c55e',prob:60,idx:n-1});
+  if(last.close>last.open&&prev.close<prev.open&&last.open<prev.close&&last.close>prev.open) out.push({name:'Englobante Haussière',bias:'haussier',color:'#22c55e',prob:63,idx:n-1});
+  if(last.close<last.open&&prev.close>prev.open&&last.open>prev.close&&last.close<prev.open) out.push({name:'Englobante Baissière',bias:'baissier',color:'#ef4444',prob:61,idx:n-1});
+  if(uw>body*2&&lw<body*0.5&&last.close<last.open) out.push({name:'Étoile Filante',bias:'baissier',color:'#ef4444',prob:62,idx:n-1});
+  const h20=c.slice(-20).map(x=>x.high),maxH=Math.max(...h20),tol=maxH*0.02;
+  const peaks=h20.reduce((a,h,i)=>{if(h>maxH-tol)a.push(i);return a;},[]);
+  if(peaks.length>=2&&peaks[peaks.length-1]-peaks[0]>=4) out.push({name:'Double Sommet',bias:'baissier',color:'#ef4444',prob:64,idx:n-10});
+  const l20=c.slice(-20).map(x=>x.low),minL=Math.min(...l20),tolL=minL*0.02;
+  const troughs=l20.reduce((a,l,i)=>{if(l<minL+tolL)a.push(i);return a;},[]);
+  if(troughs.length>=2&&troughs[troughs.length-1]-troughs[0]>=4) out.push({name:'Double Creux',bias:'haussier',color:'#22c55e',prob:63,idx:n-10});
+  const highVar=Math.max(...h20)-Math.min(...h20);
+  if(highVar/maxH<0.015&&l20[l20.length-1]>l20[0]) out.push({name:'Triangle Ascendant',bias:'haussier',color:'#22c55e',prob:68,idx:n-15});
+  if(highVar/maxH<0.015&&l20[l20.length-1]<l20[0]) out.push({name:'Triangle Descendant',bias:'baissier',color:'#ef4444',prob:66,idx:n-15});
+  return out;
+}
+
+// ─── FORMAT ──────────────────────────────────────────────────────────────────
+function fmtP(p){if(!p&&p!==0)return '—';if(p>1000)return p.toLocaleString('fr-FR',{maximumFractionDigits:0});if(p>1)return p.toFixed(2);return p.toFixed(5);}
+function biasColor(b){return {Haussier:'#22c55e',Baissier:'#ef4444',Neutre:'#94a3b8','Achat fort':'#22c55e',Achat:'#4ade80',Vente:'#f87171','Vente forte':'#ef4444'}[b]||'#94a3b8';}
+function biasBadge(b){const c={Haussier:'green',Baissier:'red',Neutre:'gray','Achat fort':'green',Achat:'green',Vente:'red','Vente forte':'red'}[b]||'gray';return `<span class="badge badge-${c}">${b||'—'}</span>`;}
+
+// ─── MAIN LOAD ────────────────────────────────────────────────────────────────
+const allAssets = () => [...cryptos, ...METALS, ...FOREX];
+
+async function loadAllPrices() {
+  const all = allAssets();
+  await Promise.all(all.map(async a => {
+    const r = await fetchPrice(a);
+    if(r) prices[a] = r;
+  }));
+  renderTicker();
+  document.getElementById('lastUpdate').textContent = 'Données réelles — ' + new Date().toLocaleTimeString('fr-FR');
+}
+
+async function loadCandlesForAsset(asset, tf) {
+  if(!candles[asset]) candles[asset] = {};
+  candles[asset][tf] = await fetchCandles(asset, tf);
+}
+
+async function loadScanData() {
+  const all = allAssets();
+  await Promise.all(all.map(async a => {
+    if(!candles[a]) candles[a] = {};
+    if(!scanData[a]) scanData[a] = {};
+    const c = await fetchCandles(a, '1h');
+    candles[a]['1h'] = c;
+    scanData[a]['1h'] = {bias: getTrend(c), patterns: detectPatterns(c), rsi: calcRSI(c), sma20: calcSMA(c,20), sma50: calcSMA(c,50)};
+    // other TFs lighter
+    for(const tf of ['4h','1D','1W']) {
+      const cc = await fetchCandles(a, tf);
+      candles[a][tf] = cc;
+      scanData[a][tf] = {bias: getTrend(cc), patterns: detectPatterns(cc), rsi: calcRSI(cc), sma20: calcSMA(cc,20), sma50: calcSMA(cc,50)};
+    }
+    scanData[a]['5m'] = {bias:'Neutre',patterns:[],rsi:50,sma20:null,sma50:null};
+    scanData[a]['15m'] = {bias:'Neutre',patterns:[],rsi:50,sma20:null,sma50:null};
+  }));
+  renderScanner();
+}
+
+async function init() {
+  await loadAllPrices();
+  renderAssetBtns();
+  renderTFBtns();
+  renderLTBtns();
+  renderPatterns();
+  renderMacro();
+  renderDictionary();
+  renderLearn();
+  loadScanData().then(() => {
+    renderScanner();
+    loadChartData();
+  });
+  refreshInterval = setInterval(async () => {
+    await loadAllPrices();
+    await loadScanData();
+    if(document.getElementById('tab-graphique').style.display !== 'none') loadChartData();
+  }, 30000);
+}
+
+// ─── TICKER ───────────────────────────────────────────────────────────────────
+function renderTicker() {
+  const bar = document.getElementById('tickerBar');
+  bar.innerHTML = allAssets().slice(0,8).map(a => {
+    const p = prices[a];
+    if(!p) return '';
+    const up = p.change >= 0;
+    return `<div class="ticker-item" onclick="goToChart('${a}')">
+      <span class="sym">${a}</span>
+      <span class="chg" style="color:${up?'#22c55e':'#ef4444'}">${up?'+':''}${p.change.toFixed(2)}%</span>
+      <span class="prc">${fmtP(p.price)}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─── SCANNER ─────────────────────────────────────────────────────────────────
+function renderScanner() {
+  const body = document.getElementById('scannerBody');
+  body.innerHTML = allAssets().map((a,ri) => {
+    const p = prices[a];
+    const s1h = scanData[a]?.['1h']||{};
+    const rsi = s1h.rsi ? s1h.rsi.toFixed(0) : '—';
+    const rsiColor = rsi > 70 ? '#ef4444' : rsi < 30 ? '#22c55e' : '#e2e8f0';
+    const pat = s1h.patterns?.[0];
+    const sig = globalBias(a);
+    const up = p?.change >= 0;
+    const mini = renderMiniSVG(a);
+    const biases = ['1h','4h','1D'].map(t => `<td class="c">${biasBadge(scanData[a]?.[t]?.bias)}</td>`).join('');
+    return `<tr style="cursor:pointer" onclick="goToChart('${a}')">
+      <td style="font-weight:600">${a}</td>
+      <td class="c" style="font-family:monospace;font-size:11px">${p?fmtP(p.price):'—'}</td>
+      <td class="c" style="color:${up?'#22c55e':'#ef4444'};font-size:11px">${p?(up?'+':'')+p.change.toFixed(2)+'%':'—'}</td>
+      ${biases}
+      <td class="c" style="color:${rsiColor};font-weight:${rsi>70||rsi<30?600:400}">${rsi}</td>
+      <td class="c" style="font-size:10px;color:${pat?pat.color:'#64748b'}">${pat?pat.name:'—'}</td>
+      <td class="c">${mini}</td>
+      <td class="c">${biasBadge(sig)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderMiniSVG(asset) {
+  const c = candles[asset]?.['1h'];
+  if(!c||c.length<2) return '<svg width="80" height="30"></svg>';
+  const p = c.slice(-20).map(x=>x.close);
+  const mn=Math.min(...p),mx=Math.max(...p),r=mx-mn||1;
+  const w=80,h=30;
+  const pts=p.map((v,i)=>`${(i/(p.length-1))*w},${h-((v-mn)/r)*h}`).join(' ');
+  const up=p[p.length-1]>=p[0];
+  return `<svg width="${w}" height="${h}" class="mini-chart"><polyline points="${pts}" fill="none" stroke="${up?'#22c55e':'#ef4444'}" stroke-width="1.5"/></svg>`;
+}
+
+// ─── CHART ────────────────────────────────────────────────────────────────────
+function renderAssetBtns() {
+  const div = document.getElementById('assetBtns');
+  div.innerHTML = allAssets().map(a =>
+    `<button class="btn${a===currentAsset?' active':''}" onclick="selectAsset('${a}')">${a}</button>`
+  ).join('');
+}
+function renderTFBtns() {
+  const div = document.getElementById('tfBtns');
+  div.innerHTML = TFS.map(t =>
+    `<button class="btn${t===currentTF?' active':''}" onclick="selectTF('${t}')">${t}</button>`
+  ).join('');
+}
+
+function selectAsset(a) {
+  currentAsset = a;
+  renderAssetBtns();
+  loadChartData();
+  renderMTF();
+}
+function selectTF(t) {
+  currentTF = t;
+  renderTFBtns();
+  loadChartData();
+}
+function goToChart(a) {
+  currentAsset = a;
+  showTab('graphique');
+  renderAssetBtns();
+  loadChartData();
+  renderMTF();
+}
+
+async function loadChartData() {
+  if(!candles[currentAsset]?.[currentTF]) {
+    await loadCandlesForAsset(currentAsset, currentTF);
+  }
+  renderChart();
+}
+
+function renderChart() {
+  const c = candles[currentAsset]?.[currentTF];
+  if(!c||!c.length) return;
+  const container = document.getElementById('chart-container');
+  if(chart) { chart.remove(); chart=null; }
+  chart = LightweightCharts.createChart(container, {
+    width: container.clientWidth,
+    height: 400,
+    layout: { background:{color:'#111118'}, textColor:'#94a3b8' },
+    grid: { vertLines:{color:'rgba(255,255,255,0.05)'}, horzLines:{color:'rgba(255,255,255,0.05)'} },
+    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    rightPriceScale: { borderColor:'rgba(255,255,255,0.1)' },
+    timeScale: { borderColor:'rgba(255,255,255,0.1)', timeVisible:true },
+  });
+  candleSeries = chart.addCandlestickSeries({
+    upColor:'#22c55e', downColor:'#ef4444',
+    borderUpColor:'#22c55e', borderDownColor:'#ef4444',
+    wickUpColor:'#22c55e', wickDownColor:'#ef4444',
+  });
+  candleSeries.setData(c);
+
+  // Volume
+  if(showVol) {
+    volSeries = chart.addHistogramSeries({
+      color:'#26a69a', priceFormat:{type:'volume'},
+      priceScaleId:'', scaleMargins:{top:0.85,bottom:0},
+    });
+    volSeries.setData(c.map(x=>({time:x.time,value:x.volume,color:x.close>=x.open?'rgba(34,197,94,0.4)':'rgba(239,68,68,0.4)'})));
+  }
+
+  // SMA20
+  if(showSMA20) {
+    sma20Series = chart.addLineSeries({color:'#3b82f6',lineWidth:1.5,priceLineVisible:false});
+    const smaData=[];
+    for(let i=19;i<c.length;i++) {
+      const sma=c.slice(i-19,i+1).reduce((s,x)=>s+x.close,0)/20;
+      smaData.push({time:c[i].time,value:sma});
+    }
+    sma20Series.setData(smaData);
+  }
+
+  // SMA50
+  if(showSMA50 && c.length>=50) {
+    sma50Series = chart.addLineSeries({color:'#f59e0b',lineWidth:1.5,lineStyle:1,priceLineVisible:false});
+    const smaData=[];
+    for(let i=49;i<c.length;i++) {
+      const sma=c.slice(i-49,i+1).reduce((s,x)=>s+x.close,0)/50;
+      smaData.push({time:c[i].time,value:sma});
+    }
+    sma50Series.setData(smaData);
+  }
+
+  // Pattern markers on chart
+  const patterns = detectPatterns(c);
+  if(patterns.length) {
+    const markers = patterns.map(p => {
+      const idx = Math.min(p.idx, c.length-1);
+      return {
+        time: c[idx].time,
+        position: p.bias==='haussier'?'belowBar':'aboveBar',
+        color: p.color,
+        shape: p.bias==='haussier'?'arrowUp':p.bias==='baissier'?'arrowDown':'circle',
+        text: p.name + ' ' + p.prob + '%',
+      };
+    });
+    candleSeries.setMarkers(markers);
+  }
+
+  // S/R lines
+  const allP = c.flatMap(x=>[x.high,x.low]).sort((a,b)=>a-b);
+  const srLevels=[];
+  let ii=0;
+  while(ii<allP.length) {
+    const base=allP[ii],cl=allP.filter(p=>Math.abs(p-base)/base<0.008);
+    if(cl.length>=5){const avg=cl.reduce((s,p)=>s+p,0)/cl.length;if(!srLevels.find(x=>Math.abs(x-avg)/avg<0.01))srLevels.push(avg);}
+    ii+=cl.length||1;
+  }
+  srLevels.slice(0,6).forEach(lvl => {
+    candleSeries.createPriceLine({price:lvl,color:'rgba(251,191,36,0.4)',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'S/R'});
+  });
+
+  // Update info
+  const last = c[c.length-1];
+  document.getElementById('chartTitle').textContent = currentAsset + ' / ' + currentTF;
+  document.getElementById('chartPrice').textContent = fmtP(last.close);
+  const bias = getTrend(c);
+  const badge = document.getElementById('chartBadge');
+  badge.textContent = bias;
+  badge.className = 'badge badge-' + (bias==='Haussier'?'green':bias==='Baissier'?'red':'gray');
+  const rsi = calcRSI(c);
+  document.getElementById('indRSI').innerHTML = `RSI: <strong style="color:${rsi>70?'#ef4444':rsi<30?'#22c55e':'#e2e8f0'}">${rsi.toFixed(0)}</strong>`;
+  const s20 = calcSMA(c,20), s50 = calcSMA(c,50);
+  document.getElementById('indSMA20').textContent = 'SMA20: ' + (s20?fmtP(s20):'—');
+  document.getElementById('indSMA50').textContent = 'SMA50: ' + (s50?fmtP(s50):'—');
+
+  // Pattern legend
+  const legend = document.getElementById('patternLegend');
+  legend.innerHTML = patterns.length ? patterns.map(p =>
+    `<div class="pattern-tag"><span style="color:${p.color}">${p.bias==='haussier'?'▲':p.bias==='baissier'?'▼':'◆'}</span><span style="color:${p.color}">${p.name}</span><span style="color:#64748b">${p.prob}%</span></div>`
+  ).join('') : '<span style="font-size:11px;color:var(--text3)">Aucun pattern détecté sur ce timeframe</span>';
+
+  renderMTF();
+  chart.timeScale().fitContent();
+}
+
+function toggleIndicator(ind) {
+  if(ind==='sma20') { showSMA20=!showSMA20; document.getElementById('btnSMA20').className='btn'+(showSMA20?' active':''); }
+  if(ind==='sma50') { showSMA50=!showSMA50; document.getElementById('btnSMA50').className='btn'+(showSMA50?' active':''); }
+  if(ind==='vol') { showVol=!showVol; document.getElementById('btnVol').className='btn'+(showVol?' active':''); }
+  renderChart();
+}
+
+// ─── MTF ──────────────────────────────────────────────────────────────────────
+function renderMTF() {
+  document.getElementById('mtfAsset').textContent = currentAsset;
+  const body = document.getElementById('mtfBody');
+  body.innerHTML = TFS.map(t => {
+    const s = scanData[currentAsset]?.[t];
+    const pat = s?.patterns?.[0];
+    return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px">
+      <span style="color:var(--text2);min-width:32px">${t}</span>
+      <span style="flex:1;margin-left:8px;color:var(--text3);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${pat?pat.name:'—'}</span>
+      ${biasBadge(s?.bias)}
+    </div>`;
+  }).join('');
+  const sig = globalBias(currentAsset);
+  const lbl = document.getElementById('globalBiasLabel');
+  lbl.textContent = sig;
+  lbl.style.color = biasColor(sig);
+}
+
+// ─── ANALYZE ─────────────────────────────────────────────────────────────────
+function generateAnalysis() {
+  const c = candles[currentAsset]?.[currentTF]||[];
+  const rsi = calcRSI(c).toFixed(0);
+  const s20 = calcSMA(c,20), s50 = calcSMA(c,50);
+  const pats = detectPatterns(c);
+  const last = c[c.length-1];
+  const bias = getTrend(c);
+  const sig = globalBias(currentAsset);
+  const p = prices[currentAsset];
+  const text = `=== FLUZ MXVIII — Demande d'analyse ===
+
+Actif: ${currentAsset}
+Timeframe: ${currentTF}
+Prix actuel: ${p?fmtP(p.price):'—'} USD
+Variation 24h: ${p?(p.change>=0?'+':'')+p.change.toFixed(2)+'%':'—'}
+
+Dernière bougie:
+- Ouverture: ${fmtP(last?.open)}
+- Haut: ${fmtP(last?.high)}
+- Bas: ${fmtP(last?.low)}
+- Clôture: ${fmtP(last?.close)}
+
+Indicateurs:
+- RSI (14): ${rsi}
+- SMA20: ${s20?fmtP(s20):'—'}
+- SMA50: ${s50?fmtP(s50):'—'}
+- Tendance: ${bias}
+
+Patterns détectés: ${pats.length?pats.map(p=>p.name+' ('+p.prob+'%)').join(', '):'Aucun'}
+
+Analyse multi-timeframe:
+${TFS.map(t=>`- ${t}: ${scanData[currentAsset]?.[t]?.bias||'—'}`).join('\n')}
+
+Biais global: ${sig}
+
+Peux-tu faire une analyse technique complète de cet actif et me donner ton avis sur les opportunités et les risques ?`;
+
+  document.getElementById('analyzeBox').style.display = 'block';
+  document.getElementById('analyzeText').textContent = text;
+}
+
+function copyAnalysis() {
+  const text = document.getElementById('analyzeText').textContent;
+  if(navigator.clipboard) navigator.clipboard.writeText(text);
+  else { const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); }
+  const btn = event.target;
+  btn.textContent = 'Copié !';
+  setTimeout(()=>btn.textContent='Copier le texte',2000);
+}
+
+// ─── INDICATOR INFO ───────────────────────────────────────────────────────────
+const IND_INFO = {
+  RSI: {name:'RSI — Relative Strength Index', desc:'Oscillateur mesurant la force et la vitesse des variations de prix sur 14 périodes. Valeur entre 0 et 100.', formula:'RSI = 100 - 100/(1 + RS)  |  RS = moy. gains / moy. pertes', levels:[{val:'< 30',label:'Zone de survente',color:'#22c55e',meaning:'Marché potentiellement sous-évalué. Signal d\'achat possible mais attendre confirmation.'},{val:'30 – 50',label:'Zone neutre baissière',color:'#94a3b8',meaning:'Momentum faible, tendance plutôt baissière.'},{val:'50 – 70',label:'Zone neutre haussière',color:'#94a3b8',meaning:'Momentum positif, tendance haussière.'},{val:'> 70',label:'Zone de surachat',color:'#ef4444',meaning:'Marché potentiellement surévalué. Signal de prudence ou de vente.'}]},
+  SMA20: {name:'SMA20 — Moyenne Mobile Simple 20', desc:'Moyenne arithmétique des 20 derniers prix de clôture. Indique la tendance à court terme et agit souvent comme support/résistance dynamique.', formula:'SMA20 = (C1 + C2 + ... + C20) / 20', levels:[{val:'Prix > SMA20',label:'Tendance haussière court terme',color:'#22c55e',meaning:'Les acheteurs dominent sur les 20 dernières périodes. La SMA20 agit comme support.'},{val:'Prix < SMA20',label:'Tendance baissière court terme',color:'#ef4444',meaning:'Les vendeurs dominent. La SMA20 agit comme résistance dynamique.'}]},
+  SMA50: {name:'SMA50 — Moyenne Mobile Simple 50', desc:'Moyenne des 50 derniers prix de clôture. Indique la tendance moyen terme. Le croisement SMA20/SMA50 est un signal classique.', formula:'SMA50 = (C1 + C2 + ... + C50) / 50', levels:[{val:'SMA20 > SMA50',label:'Golden Cross',color:'#22c55e',meaning:'Signal haussier fort : la tendance court terme dépasse le moyen terme. Début de cycle haussier potentiel.'},{val:'SMA20 < SMA50',label:'Death Cross',color:'#ef4444',meaning:'Signal baissier fort : la tendance court terme passe sous le moyen terme. Début de cycle baissier potentiel.'}]},
+  VOLUME: {name:'Volume', desc:'Nombre d\'unités échangées sur la période. Le volume confirme ou invalide un mouvement de prix. C\'est l\'indicateur de conviction du marché.', formula:'Volume brut de la période', levels:[{val:'Hausse prix + hausse vol.',label:'Tendance saine',color:'#22c55e',meaning:'La hausse est soutenue par les participants. Signal fiable et digne de confiance.'},{val:'Hausse prix + baisse vol.',label:'Divergence baissière',color:'#ef4444',meaning:'La hausse s\'essouffle. Possible retournement à venir. Méfiance.'},{val:'Pic de volume',label:'Point clé',color:'#f59e0b',meaning:'Les pics de volume marquent souvent des points de retournement majeurs ou des cassures importantes.'}]},
+};
+
+function showIndInfo(key) {
+  const panel = document.getElementById('indInfoPanel');
+  if(selectedIndInfo===key){panel.style.display='none';selectedIndInfo=null;return;}
+  selectedIndInfo=key;
+  const d=IND_INFO[key];
+  if(!d)return;
+  panel.style.display='block';
+  panel.innerHTML=`<div class="info-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="ind-name">${d.name}</div>
+      <button onclick="document.getElementById('indInfoPanel').style.display='none';selectedIndInfo=null" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:16px">×</button>
+    </div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.6">${d.desc}</p>
+    ${d.levels.map(l=>`<div class="level-row"><div class="level-val" style="color:${l.color}">${l.val}</div><div><div style="font-weight:600;font-size:12px">${l.label}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${l.meaning}</div></div></div>`).join('')}
+    <div style="font-size:11px;color:var(--text2);font-family:monospace;background:var(--bg4);padding:8px 10px;border-radius:6px;margin-top:8px">${d.formula}</div>
+  </div>`;
+}
+
+// ─── PATTERNS LIBRARY ─────────────────────────────────────────────────────────
+const PATTERNS_DATA = [
+  {name:'Doji',type:'chandelier',bias:'neutre',prob:50,desc:'Ouverture et clôture quasi égales formant une croix ou un signe plus.',psychology:'Indécision totale — ni acheteurs ni vendeurs ne dominent sur la période.',outcome:'Possible retournement ou continuation selon le contexte.',risk:'Confirmation obligatoire sur la bougie suivante. Le contexte est primordial.',color:'#94a3b8'},
+  {name:'Marteau',type:'chandelier',bias:'haussier',prob:60,desc:'Petite bougie en haut de la range avec une longue mèche inférieure (2x le corps min.).',psychology:'Les vendeurs ont poussé les prix vers le bas mais les acheteurs ont récupéré le contrôle avant la clôture.',outcome:'Retournement haussier ~60% surtout après une tendance baissière.',risk:'Signal moins fiable sans volume élevé. Attendre confirmation.',color:'#22c55e'},
+  {name:'Étoile Filante',type:'chandelier',bias:'baissier',prob:62,desc:'Petite bougie en bas de la range avec une longue mèche supérieure après une hausse.',psychology:'Les acheteurs ont poussé les prix vers le haut mais les vendeurs ont repris le contrôle.',outcome:'Retournement baissier ~62% surtout après une tendance haussière.',risk:'Confirmation requise. Attention aux faux signaux en tendance forte.',color:'#ef4444'},
+  {name:'Englobante Haussière',type:'chandelier',bias:'haussier',prob:63,desc:'Grande bougie haussière qui englobe totalement le corps de la précédente baissière.',psychology:'Les acheteurs ont submergé les vendeurs en une seule session de trading.',outcome:'Retournement haussier à un support clé ~63%.',risk:'Moins fiable sans confirmation de volume. Vérifier le contexte.',color:'#22c55e'},
+  {name:'Englobante Baissière',type:'chandelier',bias:'baissier',prob:61,desc:'Grande bougie baissière qui englobe totalement le corps de la précédente haussière.',psychology:'Les vendeurs ont pris le dessus de façon agressive et décisive.',outcome:'Retournement baissier près d\'une résistance ~61%.',risk:'Peut être un faux signal dans une tendance haussière très forte.',color:'#ef4444'},
+  {name:'Étoile du Matin',type:'chandelier',bias:'haussier',prob:68,desc:'Pattern 3 bougies : baissière, petit corps (gap), puis forte bougie haussière.',psychology:'Passage de momentum des vendeurs aux acheteurs sur trois sessions successives.',outcome:'Fort signal de retournement haussier ~68%.',risk:'Le volume doit être fort sur la troisième bougie. Gaps requis idéalement.',color:'#22c55e'},
+  {name:'Étoile du Soir',type:'chandelier',bias:'baissier',prob:66,desc:'Pattern 3 bougies : haussière, petit corps (gap), puis forte bougie baissière.',psychology:'Passage de momentum des acheteurs aux vendeurs sur trois sessions.',outcome:'Fort signal de retournement baissier ~66%.',risk:'La 3e bougie doit clôturer profondément dans la 1re pour être valide.',color:'#ef4444'},
+  {name:'Trois Corbeaux Noirs',type:'chandelier',bias:'baissier',prob:72,desc:'Trois bougies baissières consécutives avec des clôtures de plus en plus basses.',psychology:'Pression vendeuse persistante et organisée sur plusieurs sessions.',outcome:'Continuation baissière forte ~72%. Signal très fiable.',risk:'Peut être sur-étendu — attendre un retest avant d\'entrer en position.',color:'#ef4444'},
+  {name:'Double Sommet',type:'graphique',bias:'baissier',prob:64,desc:'Le prix atteint un sommet deux fois sans parvenir à le dépasser. Forme un M caractéristique.',psychology:'Les vendeurs défendent avec succès une résistance deux fois, épuisant progressivement les acheteurs.',outcome:'Cassure baissière sous la ligne de cou. Cible = hauteur du pattern projectée vers le bas.',risk:'Fausse cassure possible sur faible volume. Attendre clôture sous le neckline.',color:'#ef4444'},
+  {name:'Double Creux',type:'graphique',bias:'haussier',prob:63,desc:'Le prix atteint un creux deux fois puis se retourne. Forme un W caractéristique.',psychology:'Les acheteurs absorbent les ventes deux fois au même niveau de support.',outcome:'Cassure haussière au-dessus de la ligne de cou ~63%. Cible = hauteur du W.',risk:'Retest du neckline fréquent avant continuation. Ne pas anticiper la cassure.',color:'#22c55e'},
+  {name:'Tête & Épaules',type:'graphique',bias:'baissier',prob:67,desc:'Trois sommets : épaule gauche, tête plus haute, épaule droite à niveau similaire à la gauche.',psychology:'Les acheteurs font de nouveaux plus hauts mais le momentum s\'affaiblit progressivement.',outcome:'Retournement baissier après cassure de la ligne de cou. Cible = hauteur tête-neckline.',risk:'Pattern échoue si le prix ne casse pas la ligne de cou avec volume.',color:'#ef4444'},
+  {name:'T&E Inversé',type:'graphique',bias:'haussier',prob:65,desc:'Trois creux : épaule gauche, tête plus basse, épaule droite. Inverse du T&E classique.',psychology:'Les vendeurs perdent leur momentum — les acheteurs reprennent progressivement le contrôle.',outcome:'Retournement haussier ~65% après cassure de la ligne de cou.',risk:'Le volume doit augmenter sur la cassure pour valider le signal.',color:'#22c55e'},
+  {name:'Triangle Ascendant',type:'graphique',bias:'haussier',prob:68,desc:'Creux de plus en plus hauts convergent vers une résistance horizontale plate.',psychology:'Les acheteurs deviennent de plus en plus agressifs tandis que les vendeurs défendent un niveau fixe.',outcome:'Cassure haussière probable ~68% à l\'approche de l\'apex.',risk:'Fausse cassure si le volume est faible lors de la cassure.',color:'#22c55e'},
+  {name:'Triangle Descendant',type:'graphique',bias:'baissier',prob:66,desc:'Sommets de plus en plus bas convergent vers un support horizontal plat.',psychology:'Les vendeurs deviennent de plus en plus agressifs — les acheteurs défendent un niveau fixe.',outcome:'Cassure baissière probable ~66% à l\'approche de l\'apex.',risk:'Le support peut tenir et créer un retournement haussier surprise.',color:'#ef4444'},
+  {name:'Triangle Symétrique',type:'graphique',bias:'neutre',prob:60,desc:'Lignes de tendance convergentes sans domination claire d\'un côté ou de l\'autre.',psychology:'Consolidation en équilibre parfait avant un mouvement décisif d\'un côté ou de l\'autre.',outcome:'Cassure dans la direction de la tendance précédente ~60%.',risk:'Direction très incertaine jusqu\'à la cassure réelle avec volume.',color:'#f59e0b'},
+  {name:'Drapeau Haussier',type:'graphique',bias:'haussier',prob:65,desc:'Fort mouvement haussier (mât) suivi d\'une consolidation en canal légèrement baissier (drapeau).',psychology:'Brève pause après un fort momentum — les acheteurs rechargent leurs positions.',outcome:'Continuation haussière ~65%. Cible = longueur du mât reportée depuis la cassure.',risk:'Le drapeau ne doit pas retracer plus de 50% du mât pour rester valide.',color:'#22c55e'},
+  {name:'Drapeau Baissier',type:'graphique',bias:'baissier',prob:64,desc:'Fort mouvement baissier (mât) suivi d\'un bref canal légèrement haussier (drapeau).',psychology:'La couverture de positions courtes crée un rebond temporaire avant la continuation.',outcome:'Continuation baissière ~64%. Cible = longueur du mât reportée vers le bas.',risk:'Les drapeaux larges ou longs réduisent fortement la fiabilité.',color:'#ef4444'},
+  {name:'Cassure (Breakout)',type:'graphique',bias:'haussier',prob:58,desc:'Le prix casse au-dessus d\'un niveau de résistance clé avec un fort momentum.',psychology:'La zone d\'offre est surmontée — de nouveaux acheteurs entrent agressivement sur le marché.',outcome:'Continuation vers la prochaine résistance ~58%. Souvent retest du niveau cassé.',risk:'Fausse cassure très fréquente. Confirmation de volume absolument critique.',color:'#3b82f6'},
+];
+
+function filterPatterns(f, btn) {
+  patternFilter=f;
+  document.querySelectorAll('#tab-patterns .btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderPatterns();
+}
+
+function renderPatterns() {
+  const grid = document.getElementById('patternsGrid');
+  const filtered = PATTERNS_DATA.filter(p => {
+    if(patternFilter==='tous') return true;
+    if(patternFilter==='haussier'||patternFilter==='baissier') return p.bias===patternFilter;
+    return p.type===patternFilter;
+  });
+  grid.innerHTML = filtered.map((p,i) => `
+    <div class="dict-card" id="pat-${i}" onclick="toggleCard('pat-${i}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="color:${p.color};font-size:14px">${p.bias==='haussier'?'▲':p.bias==='baissier'?'▼':'◆'}</span>
+          <div class="dict-name">${p.name}</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <span class="badge badge-${p.type==='chandelier'?'blue':'amber'}">${p.type}</span>
+          <span class="badge badge-${p.bias==='haussier'?'green':p.bias==='baissier'?'red':'gray'}">${p.bias}</span>
+        </div>
+      </div>
+      <div class="dict-short">${p.desc}</div>
+      <div style="font-size:11px;color:${p.color};margin-top:5px">Probabilité: <strong>${p.prob}%</strong></div>
+      <div class="dict-detail" style="display:none">
+        <h4>Psychologie de marché</h4><p>${p.psychology}</p>
+        <h4>Issue typique</h4><p>${p.outcome}</p>
+        <h4>Risques</h4><p>${p.risk}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCard(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+  const detail = card.querySelector('.dict-detail');
+  detail.style.display = detail.style.display==='none'?'block':'none';
+}
+
+// ─── MACRO ────────────────────────────────────────────────────────────────────
+const MACRO_DATA = [
+  {source:'Fed',title:'Taux maintenus à 5.25–5.50%',date:'Mars 2025',category:'Politique monétaire',impact:'baissier',importance:'critique',summary:'La Fed maintient ses taux pour la 4e réunion consécutive malgré les pressions.',explanation:'Des taux élevés augmentent le coût du capital et réduisent l\'appétit pour les actifs risqués comme les cryptos et les actions. Ils renforcent le dollar ce qui pèse sur l\'or. Un pivot vers des baisses de taux serait un catalyseur majeur haussier pour BTC et ETH.',indicators:['DXY (Dollar Index)','Obligations US 10 ans','BTC corrélé inversement']},
+  {source:'CPI USA',title:'Inflation à 3.2% — Au-dessus des attentes',date:'Fév 2025',category:'Inflation',impact:'baissier',importance:'critique',summary:'L\'inflation US reste obstinément au-dessus de l\'objectif de 2% de la Fed.',explanation:'Une inflation persistante force la Fed à maintenir des taux restrictifs plus longtemps, retardant le pivot monétaire attendu par les marchés. Historiquement BTC et l\'or surperforment en période d\'inflation élevée mais souffrent si les taux réels augmentent.',indicators:['CPI YoY','Core PCE','Gold comme hedge inflation']},
+  {source:'NFP USA',title:'275K emplois créés — Au-dessus des attentes',date:'Fév 2025',category:'Emploi',impact:'mixte',importance:'élevée',summary:'Le marché du travail américain reste robuste, dépassant les prévisions de 200K.',explanation:'Un marché du travail fort est à double tranchant : il soutient la consommation (positif pour l\'économie) mais donne à la Fed une raison de ne pas baisser les taux. Une détérioration du marché du travail forcerait paradoxalement un pivot favorable aux actifs risqués.',indicators:['NFP mensuel','Taux de chômage','Demandes allocations']},
+  {source:'ETFs Bitcoin',title:'ETFs BTC : +2.1Mrd USD d\'entrées en une semaine',date:'Mars 2025',category:'Adoption crypto',impact:'haussier',importance:'critique',summary:'Les ETFs spot BTC enregistrent des flux records, dominés par BlackRock iShares.',explanation:'Les ETFs institutionnels créent une demande structurelle continue pour BTC. Ces flux stables représentent une demande silencieuse absorbant l\'offre. L\'institutionnalisation définitive de Bitcoin est en marche — un changement de paradigme.',indicators:['Flux ETF BTC daily','Holdings GBTC','Wallets institutionnels']},
+  {source:'BCE',title:'La BCE abaisse ses taux à 3.50%',date:'Mars 2025',category:'Politique monétaire',impact:'haussier',importance:'élevée',summary:'La Banque Centrale Européenne a commencé son cycle de baisses, précédant la Fed.',explanation:'Un assouplissement en Europe stimule les actifs risqués en zone euro. Si la Fed suit, ce serait un signal fort de liquidité globale accrue — historiquement très favorable aux cryptos et à l\'or. EUR/CHF et EUR/USD réagissent directement.',indicators:['EUR/USD','Bunds allemands','DAX']},
+  {source:'Halving BTC',title:'Halving BTC — Effets post-avril 2024 en cours',date:'2024–2025',category:'Crypto spécifique',impact:'haussier',importance:'critique',summary:'La réduction de moitié de la récompense minière réduit l\'émission de nouveaux BTC.',explanation:'Historiquement les halvings déclenchent des cycles haussiers majeurs avec 6 à 18 mois de délai. La réduction de l\'offre combinée à la demande record des ETFs crée une asymétrie favorable sans précédent dans l\'histoire de Bitcoin.',indicators:['Hash Rate BTC','Miner Revenue','Stock-to-Flow']},
+  {source:'Géopolitique',title:'Tensions USA–Chine : restrictions semi-conducteurs',date:'2024–2025',category:'Géopolitique',impact:'mixte',importance:'élevée',summary:'Les restrictions américaines sur les puces IA vers la Chine perturbent les marchés.',explanation:'Ces tensions alimentent l\'incertitude économique mondiale, positif pour les valeurs refuges (or, franc suisse). Pour les cryptos l\'effet est ambivalent : BTC bénéficie parfois comme actif alternatif mais souffre du risque systémique global.',indicators:['Or (XAU)','Franc suisse (CHF)','VIX']},
+  {source:'FMI',title:'Croissance mondiale révisée à 3.1% pour 2025',date:'Jan 2025',category:'Macro globale',impact:'neutre',importance:'modérée',summary:'Croissance modérée mais stable, tirée par les États-Unis et l\'Asie émergente.',explanation:'Une croissance stable soutient les marchés risqués mais ne suffit pas à déclencher un cycle haussier majeur. L\'enjeu est la composition : une croissance tirée par la technologie et l\'IA est particulièrement favorable à l\'écosystème crypto.',indicators:['PIB global','PMI manufacturier','MSCI Monde']},
+];
+
+function renderMacro() {
+  const div = document.getElementById('macroCards');
+  div.innerHTML = MACRO_DATA.map(n => {
+    const iColor = n.impact==='haussier'?'#22c55e':n.impact==='baissier'?'#ef4444':'#f59e0b';
+    const iBg = n.impact==='haussier'?'rgba(34,197,94,0.12)':n.impact==='baissier'?'rgba(239,68,68,0.12)':'rgba(245,158,11,0.12)';
+    const impColor = n.importance==='critique'?'#ef4444':n.importance==='élevée'?'#f59e0b':'#94a3b8';
+    const impBg = n.importance==='critique'?'rgba(239,68,68,0.1)':n.importance==='élevée'?'rgba(245,158,11,0.1)':'rgba(148,163,184,0.1)';
+    return `<div class="macro-card">
+      <div class="macro-meta">
+        <span class="badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">${n.source}</span>
+        <span class="badge" style="background:${iBg};color:${iColor}">${n.impact==='haussier'?'Haussier':n.impact==='baissier'?'Baissier':'Mixte'}</span>
+        <span class="badge" style="background:${impBg};color:${impColor}">${n.importance==='critique'?'Critique':n.importance==='élevée'?'Élevée':'Modérée'}</span>
+        <span style="font-size:10px;color:var(--text3)">${n.date}</span>
+      </div>
+      <div class="macro-title">${n.title}</div>
+      <div class="macro-body">${n.summary}</div>
+      <div class="why-box">
+        <div class="why-title">Pourquoi c'est important</div>
+        <div class="why-body">${n.explanation}</div>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:11px;color:var(--text2)">À surveiller :</span>
+        ${n.indicators.map(i=>`<span class="badge badge-gray">${i}</span>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── LONG TERME ───────────────────────────────────────────────────────────────
+const LT_DATA = {
+  BTC:{cycle:'Cycle haussier post-halving',phase:'Phase d\'expansion',narrative:'Bitcoin entre dans sa phase post-halving historiquement la plus performante. L\'institutionnalisation via les ETFs crée une demande structurelle sans précédent. Le ratio stock-to-flow indique une sous-évaluation relative. La corrélation avec les taux réels US reste le risque principal.',targets:[{level:'$89 000',label:'Extension ATH précédent',tf:'6–9 mois'},{level:'$120 000',label:'Fibonacci 1.618',tf:'12–18 mois'},{level:'$150 000+',label:'Scénario bull extrême',tf:'18–24 mois'}],supports:[{level:'$52 000',label:'Support majeur de cycle'},{level:'$42 000',label:'Support critique — invalidation haussière'}]},
+  ETH:{cycle:'Transition PoS + Layer 2',phase:'Accumulation',narrative:'Ethereum bénéficie de l\'essor des Layer 2 (Arbitrum, Base, Optimism) et de la réduction de l\'offre post-Merge. L\'approbation potentielle d\'ETFs ETH spot pourrait catalyser un mouvement similaire à BTC. Le ratio ETH/BTC reste sous pression à court terme.',targets:[{level:'$4 500',label:'Zone résistance ATH',tf:'3–6 mois'},{level:'$6 000',label:'Extension de cycle',tf:'9–15 mois'}],supports:[{level:'$2 800',label:'Support actuel'},{level:'$2 200',label:'Support critique'}]},
+  TAO:{cycle:'Émergence IA décentralisée',phase:'Découverte de prix',narrative:'Bittensor (TAO) est au croisement de la blockchain et de l\'intelligence artificielle. La narrative IA est l\'un des thèmes les plus forts du cycle. Forte volatilité attendue — token peu liquide ce qui amplifie les mouvements dans les deux sens.',targets:[{level:'$800',label:'Résistance technique',tf:'3–6 mois'},{level:'$1 500',label:'Scénario adoption IA',tf:'12 mois'}],supports:[{level:'$300',label:'Support actuel'},{level:'$200',label:'Zone d\'invalidation'}]},
+  XAU:{cycle:'Cycle de hausse des métaux',phase:'Expansion',narrative:'L\'or bénéficie des tensions géopolitiques, de la demande des banques centrales et de l\'anticipation de baisses de taux Fed. Le record historique a été dépassé. La demande institutionnelle et des pays émergents (Chine, Inde) reste structurellement forte.',targets:[{level:'$2 500',label:'Extension actuelle',tf:'3–6 mois'},{level:'$3 000',label:'Objectif bull cycle',tf:'12–18 mois'}],supports:[{level:'$2 100',label:'Support majeur'},{level:'$1 980',label:'Support critique'}]},
+};
+
+function renderLTBtns() {
+  const div = document.getElementById('ltBtns');
+  div.innerHTML = Object.keys(LT_DATA).map(a =>
+    `<button class="btn${a===ltAsset?' active':''}" onclick="selectLT('${a}')">${a}</button>`
+  ).join('');
+}
+function selectLT(a) {
+  ltAsset=a;
+  renderLTBtns();
+  renderLTContent();
+}
+function renderLTContent() {
+  const lt = LT_DATA[ltAsset];
+  if(!lt) return;
+  document.getElementById('ltContent').innerHTML = `
+    <div class="card">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-weight:700;font-size:16px">${ltAsset}</span>
+        <span class="badge badge-blue">${lt.cycle}</span>
+        <span class="badge badge-green">${lt.phase}</span>
+      </div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7">${lt.narrative}</p>
+    </div>
+    <div class="lt-grid">
+      <div class="card">
+        <div class="card-title" style="color:#22c55e">Objectifs haussiers</div>
+        ${lt.targets.map(t=>`<div class="lt-target"><div><div style="font-weight:700;font-size:14px;color:#22c55e">${t.level}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${t.label}</div></div><span class="badge badge-gray">${t.tf}</span></div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:#ef4444">Supports clés</div>
+        ${lt.supports.map(s=>`<div class="lt-support"><div><div style="font-weight:700;font-size:14px;color:#ef4444">${s.level}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${s.label}</div></div></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ─── DICTIONARY ───────────────────────────────────────────────────────────────
+const DICT_DATA = [
+  {name:'RSI',cat:'Indicateur',short:'Relative Strength Index — oscillateur mesurant la force des mouvements de prix.',detail:'<h4>Définition</h4><p>Oscillateur entre 0 et 100 calculé sur 14 périodes par défaut. Mesure la vitesse et l\'amplitude des variations de prix.</p><h4>Interprétation</h4><p>RSI > 70 = surachat (signal de vente potentiel). RSI < 30 = survente (signal d\'achat potentiel). RSI = 50 = zone neutre.</p><h4>Formule</h4><p style="font-family:monospace;background:var(--bg4);padding:6px;border-radius:4px">RSI = 100 - 100/(1+RS) | RS = moy.gains/moy.pertes</p><h4>Erreur commune</h4><p>Un RSI en surachat ne signifie pas qu\'il faut vendre immédiatement. En tendance forte, le RSI peut rester en surachat longtemps.</p>'},
+  {name:'SMA',cat:'Indicateur',short:'Simple Moving Average — moyenne arithmétique des N derniers prix de clôture.',detail:'<h4>Définition</h4><p>La SMA lisse les données de prix pour identifier la tendance. SMA20 = court terme, SMA50 = moyen terme, SMA200 = long terme.</p><h4>Golden Cross vs Death Cross</h4><p>Golden Cross : SMA20 croise au-dessus de la SMA50 → signal haussier fort. Death Cross : SMA20 croise sous la SMA50 → signal baissier fort.</p><h4>Utilisation</h4><p>Les SMAs servent aussi de supports et résistances dynamiques. Le prix tend à rebondir dessus ou à s\'en servir comme tremplin.</p>'},
+  {name:'Support',cat:'Concept',short:'Niveau de prix où les acheteurs sont suffisamment forts pour stopper la baisse.',detail:'<h4>Définition</h4><p>Un support est une zone où la demande est historiquement forte. Chaque fois que le prix atteint ce niveau, les acheteurs interviennent pour le faire rebondir.</p><h4>Formation</h4><p>Se forme par les creux passés, les niveaux ronds psychologiques, les moyennes mobiles, et les zones d\'offre/demande institutionnelles.</p><h4>Règle clé</h4><p>Plus un support est testé de fois et tient, plus il est fort. Mais une fois cassé avec volume, il devient résistance (pull-back).</p>'},
+  {name:'Résistance',cat:'Concept',short:'Niveau de prix où les vendeurs dominent et bloquent la hausse.',detail:'<h4>Définition</h4><p>Une résistance est une zone où l\'offre est historiquement forte. Les vendeurs y interviennent pour stopper la hausse et faire baisser le prix.</p><h4>Transformation</h4><p>L\'ancienne résistance devient support après cassure — concept fondamental de l\'analyse technique. Les rôles s\'inversent après une cassure confirmée avec volume.</p><h4>Importance</h4><p>Les niveaux ronds (10 000, 50 000...) sont souvent de fortes résistances psychologiques car beaucoup d\'ordres s\'y concentrent.</p>'},
+  {name:'Tendance',cat:'Concept',short:'Direction générale du mouvement de prix sur une période donnée.',detail:'<h4>Les 3 types</h4><p>Uptrend (haussier) : série de plus hauts et plus bas croissants. Downtrend (baissier) : série de plus hauts et plus bas décroissants. Sideways (latéral) : range sans direction claire.</p><h4>Identification</h4><p>Via les lignes de tendance, les moyennes mobiles, et la structure des sommets/creux. "The trend is your friend" — trader dans la direction de la tendance améliore statistiquement les résultats.</p><h4>Multi-timeframe</h4><p>Une tendance haussière sur 1D peut coexister avec une correction sur 1h. Il est crucial d\'analyser plusieurs timeframes simultanément.</p>'},
+  {name:'Volume',cat:'Indicateur',short:'Nombre d\'unités échangées sur une période. Mesure la conviction du marché.',detail:'<h4>Principe fondamental</h4><p>Le volume confirme ou invalide les mouvements de prix. Un mouvement sur fort volume est plus fiable qu\'un mouvement sur faible volume.</p><h4>Règles clés</h4><p>Hausse prix + hausse volume = tendance saine. Hausse prix + baisse volume = divergence, prudence. Pic de volume = souvent un point de retournement majeur.</p><h4>Cassures</h4><p>Une cassure de résistance DOIT être accompagnée d\'un pic de volume pour être valide. Sans volume, la cassure est probablement un faux signal (fakeout).</p>'},
+  {name:'Timeframe',cat:'Concept',short:'Période de temps représentée par chaque bougie sur le graphique.',detail:'<h4>Les principaux</h4><p>5m, 15m (scalping) | 1h, 4h (swing trading) | 1D, 1W (position trading). Chaque timeframe raconte une histoire différente du même actif.</p><h4>Analyse multi-TF</h4><p>Méthode professionnelle : partir du TF le plus élevé pour la direction, puis descendre vers les TF bas pour l\'entrée précise. Ne jamais trader contre la tendance du TF supérieur.</p>'},
+  {name:'Fibonacci',cat:'Outil',short:'Niveaux mathématiques de retracement et d\'extension basés sur la suite de Fibonacci.',detail:'<h4>Niveaux clés</h4><p>Retracements : 23.6%, 38.2%, 50%, 61.8% (le plus important), 78.6%. Extensions : 127.2%, 161.8%, 261.8%.</p><h4>Utilisation</h4><p>Après un mouvement fort, le prix corrige souvent vers un niveau de Fibonacci avant de reprendre. Le 61.8% est appelé le "nombre d\'or" — souvent le retracement idéal.</p><h4>Extensions</h4><p>Permettent de projeter des objectifs de prix après une cassure. Le 161.8% est souvent utilisé comme cible de trading.</p>'},
+  {name:'Neckline',cat:'Concept',short:'Ligne de cou — niveau clé dans les patterns Tête & Épaules et Double Sommet/Creux.',detail:'<h4>Définition</h4><p>La neckline est la ligne qui relie les creux entre les épaules dans un pattern Tête & Épaules, ou le niveau entre les deux sommets/creux dans un Double Top/Bottom.</p><h4>Importance</h4><p>La cassure de la neckline confirme le pattern et déclenche le signal de trading. C\'est le moment d\'entrer en position.</p><h4>Cible</h4><p>Une fois la neckline cassée, l\'objectif de prix = hauteur du pattern reportée depuis la neckline dans la direction de la cassure.</p>'},
+  {name:'Divergence',cat:'Concept',short:'Contradiction entre le mouvement du prix et celui d\'un indicateur (RSI, MACD...).',detail:'<h4>Divergence haussière</h4><p>Le prix fait un nouveau plus bas mais l\'indicateur fait un plus bas moins profond → signal de retournement haussier potentiel. Les vendeurs s\'épuisent.</p><h4>Divergence baissière</h4><p>Le prix fait un nouveau plus haut mais l\'indicateur fait un plus haut moins élevé → signal de retournement baissier potentiel. Les acheteurs s\'épuisent.</p><h4>Fiabilité</h4><p>Les divergences sur les grands timeframes (4h, 1D) sont bien plus fiables que sur les petits TF. Toujours attendre une confirmation de prix.</p>'},
+  {name:'Stop Loss',cat:'Gestion du risque',short:'Ordre automatique de sortie en perte pour limiter le risque sur une position.',detail:'<h4>Règle fondamentale</h4><p>Le stop loss doit TOUJOURS être défini AVANT d\'entrer en position. Ne jamais entrer sans savoir où on sort en cas d\'erreur.</p><h4>Placement</h4><p>Placer le stop juste sous un support (pour un long) ou juste au-dessus d\'une résistance (pour un short). Pas trop serré pour éviter les faux déclenchements.</p><h4>Risk management</h4><p>Ne jamais risquer plus de 1-2% du capital total sur un seul trade. La survie à long terme est la priorité absolue.</p>'},
+  {name:'Take Profit',cat:'Gestion du risque',short:'Niveau prédéfini de sortie en profit pour sécuriser les gains sur une position.',detail:'<h4>Définition</h4><p>Ordre de sortie automatique à un niveau de profit déterminé à l\'avance, avant d\'entrer en position.</p><h4>Méthodes de calcul</h4><p>Via les niveaux de résistance, les extensions Fibonacci, ou en utilisant un ratio risque/récompense fixe (ex: 1:2 = prendre profit à 2x la distance du stop loss).</p><h4>Partiel vs Total</h4><p>Sortir en plusieurs fois est souvent optimal : sécuriser une partie à 1:1, laisser courir le reste avec un stop suiveur.</p>'},
+  {name:'R/R Ratio',cat:'Gestion du risque',short:'Ratio Risque/Récompense — rapport entre le gain potentiel et la perte maximale d\'un trade.',detail:'<h4>Calcul</h4><p>R/R = (Take Profit - Entrée) / (Entrée - Stop Loss). Un ratio de 1:2 signifie que pour chaque euro risqué, on vise 2 euros de gain.</p><h4>Minimum recommandé</h4><p>Ne jamais prendre un trade avec un R/R inférieur à 1:2. Avec un R/R de 1:2, on peut être perdant 50% du temps et rester profitable.</p><h4>Importance</h4><p>Le R/R est plus important que le taux de réussite. Un trader avec 40% de réussite et un R/R moyen de 1:3 sera plus profitable qu\'un trader avec 60% de réussite et un R/R de 1:1.</p>'},
+  {name:'Liquidité',cat:'Concept',short:'Facilité avec laquelle un actif peut être acheté ou vendu sans impacter son prix.',detail:'<h4>Importance</h4><p>Un actif très liquide (BTC, ETH) peut être acheté ou vendu en grande quantité sans faire bouger significativement le prix. Un actif peu liquide (SYRUP, ASTER) verra son prix s\'envoler ou s\'effondrer sur des volumes relativement faibles.</p><h4>Impact sur les patterns</h4><p>Les patterns sont plus fiables sur les actifs liquides car ils reflètent le vrai sentiment du marché et non des manipulations de prix.</p>'},
+  {name:'Volatilité',cat:'Concept',short:'Amplitude des variations de prix d\'un actif sur une période donnée.',detail:'<h4>Mesure</h4><p>Généralement mesurée par l\'ATR (Average True Range) ou la déviation standard des rendements. Plus la volatilité est élevée, plus les prix bougent rapidement et fortement.</p><h4>Impact sur le trading</h4><p>Une forte volatilité = stops plus larges nécessaires mais opportunités plus grandes. Faible volatilité = compression avant une explosion (souvent dans les triangles et drapeaux).</p>'},
+  {name:'Market Cap',cat:'Concept',short:'Capitalisation boursière — valeur totale de tous les tokens/actions en circulation.',detail:'<h4>Calcul</h4><p>Market Cap = Prix x Nombre de tokens en circulation.</p><h4>Catégories crypto</h4><p>Large cap > $10Mrd (BTC, ETH) : plus stables. Mid cap $1–10Mrd : bon potentiel. Small cap < $1Mrd : fort potentiel mais risque élevé. Micro cap : très spéculatif.</p><h4>Utilité</h4><p>Permet de comparer des actifs entre eux. Un actif à $1 peut être plus cher qu\'un actif à $50 000 si sa capitalisation est plus élevée.'},
+];
+
+let dictFilter = '';
+function filterDict(v) {
+  dictFilter = v.toLowerCase();
+  renderDictionary();
+}
+function renderDictionary() {
+  const grid = document.getElementById('dictGrid');
+  const filtered = DICT_DATA.filter(d =>
+    !dictFilter || d.name.toLowerCase().includes(dictFilter) || d.short.toLowerCase().includes(dictFilter)
+  );
+  grid.innerHTML = filtered.map((d,i) => `
+    <div class="dict-card" id="dict-${i}" onclick="toggleCard('dict-${i}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div class="dict-name">${d.name}</div>
+        <span class="badge badge-blue">${d.cat}</span>
+      </div>
+      <div class="dict-short">${d.short}</div>
+      <div class="dict-detail" style="display:none">${d.detail}</div>
+    </div>
+  `).join('');
+}
+
+// ─── LEARN ────────────────────────────────────────────────────────────────────
+const LEARN_DATA = [
+  {title:'Support & Résistance',diff:'Débutant',content:'Le support est un niveau où les acheteurs stoppent la baisse. La résistance bloque la hausse. Ces zones se forment car les traders mémorisent les cours passés et réagissent aux mêmes niveaux. Ce sont les fondations de toute l\'analyse technique.',points:['Les zones S/R sont des zones, pas des lignes exactes','L\'ancienne résistance devient support après cassure avec volume','Plus de touches = zone plus forte et plus fiable','Les chiffres ronds sont des S/R psychologiques importants']},
+  {title:'Lire une bougie',diff:'Débutant',content:'Chaque chandelier japonais montre 4 informations essentielles : l\'ouverture, le plus haut, le plus bas, et la clôture. Le corps = distance ouverture/clôture. Les mèches = amplitude totale. Un corps vert = clôture > ouverture (haussier). Rouge = clôture < ouverture (baissier).',points:['Corps long = forte conviction directionnelle','Longue mèche = rejet fort d\'un niveau de prix','Petit corps + longues mèches = indécision du marché','Le contexte (tendance, volume) prime toujours sur la bougie seule']},
+  {title:'Analyse de Tendance',diff:'Débutant',content:'Une tendance est la direction générale du prix. Uptrend : série de plus hauts ET plus bas croissants. Downtrend : série de plus hauts ET plus bas décroissants. Identifier la tendance est la première étape de toute analyse.',points:['La tendance est votre amie — ne jamais trader contre','La force se mesure par la pente et le volume','Cassure d\'une ligne de tendance = retournement potentiel','L\'analyse multi-timeframe est indispensable pour les pros']},
+  {title:'Analyse du Volume',diff:'Intermédiaire',content:'Le volume est la bougie cachée que beaucoup d\'analystes négligent. Il confirme ou invalide tous les mouvements de prix. Une hausse sans volume est suspecte. Une cassure sans volume est probablement un faux signal.',points:['Le volume confirme les mouvements de prix','Les cassures DOIVENT être accompagnées d\'un pic de volume','Divergence prix/volume = signal d\'alerte fort','L\'OBV (On Balance Volume) trace le flux cumulatif']},
+  {title:'Les Patterns en pratique',diff:'Intermédiaire',content:'Les patterns graphiques sont des formations récurrentes avec des probabilités statistiques connues. Ils reflètent le combat entre acheteurs et vendeurs. Les patterns de continuation se forment dans une tendance. Les patterns de retournement se forment à la fin d\'une tendance.',points:['Toujours analyser la tendance AVANT d\'identifier un pattern','Attendre la complétion complète du pattern avant d\'agir','Mesurer l\'objectif de prix depuis la hauteur du pattern','Le ratio risque/récompense doit toujours valider le trade']},
+  {title:'Analyse Multi-Timeframe',diff:'Avancé',content:'Les traders professionnels analysent systématiquement plusieurs timeframes. Le timeframe supérieur définit la tendance dominante. Le timeframe inférieur fournit la précision d\'entrée. L\'alignement entre les deux est le signal le plus puissant.',points:['Partir du timeframe le plus élevé (1W ou 1D) pour la direction','Ne trader que dans la direction de la tendance du TF supérieur','Utiliser le TF bas (1h ou 4h) pour le timing précis d\'entrée','Les confluences de signaux sur plusieurs TFs = trades les plus fiables']},
+  {title:'Gestion du Risque',diff:'Avancé',content:'La gestion du risque est l\'aspect le plus important du trading et le plus souvent négligé par les débutants. C\'est ce qui différencie les traders qui durent des autres. La survie à long terme est la priorité absolue — avant le profit.',points:['Ne jamais risquer plus de 1-2% du capital par trade','Définir le stop loss AVANT d\'entrer en position, sans exception','Ratio R/R minimum de 1:2 — si non respecté, ne pas prendre le trade','Un bon trader peut être wrong 50% du temps et rester profitable']},
+  {title:'Psychologie du Trading',diff:'Avancé',content:'La psychologie est le facteur limitant numéro un pour la plupart des traders. La peur de manquer un mouvement (FOMO) et la cupidité sont les deux ennemis principaux. Un plan de trading strict et un journal de trades sont les outils essentiels pour progresser.',points:['Le plan de trading doit être défini avant l\'ouverture des marchés','Le journal de trades est indispensable pour identifier les patterns d\'erreur','Ne jamais venger une perte — chaque trade est indépendant','La patience est un edge en soi — attendre les configurations parfaites']},
+];
+
+function renderLearn() {
+  const grid = document.getElementById('learnGrid');
+  grid.innerHTML = LEARN_DATA.map((l,i) => `
+    <div class="dict-card" id="learn-${i}" onclick="toggleCard('learn-${i}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div class="dict-name">${l.title}</div>
+        <span class="badge badge-${l.diff==='Débutant'?'green':l.diff==='Avancé'?'red':'blue'}">${l.diff}</span>
+      </div>
+      <div class="dict-short">${l.content.substring(0,100)}...</div>
+      <div class="dict-detail" style="display:none">
+        <p style="margin-bottom:10px;line-height:1.6">${l.content}</p>
+        <div style="border-top:1px solid var(--border);padding-top:8px">
+          ${l.points.map(p=>`<div style="display:flex;gap:6px;margin-bottom:5px;font-size:11px"><span style="color:var(--accent);font-weight:700;flex-shrink:0">&#8594;</span><span style="color:var(--text2);line-height:1.4">${p}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── ADD CRYPTO ───────────────────────────────────────────────────────────────
+function toggleAddCrypto() {
+  const box = document.getElementById('addCryptoBox');
+  box.style.display = box.style.display==='none'?'flex':'none';
+}
+function addCrypto() {
+  const sym = document.getElementById('newCryptoInput').value.toUpperCase().trim();
+  if(!sym||cryptos.includes(sym))return;
+  cryptos.push(sym);
+  document.getElementById('newCryptoInput').value='';
+  document.getElementById('addCryptoBox').style.display='none';
+  renderAssetBtns();
+  loadAllPrices().then(renderScanner);
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function showTab(id) {
+  ['scanner','graphique','patterns','macro','longterme','dictionnaire','apprendre'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===id?'block':'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach((btn,i) => {
+    const ids=['scanner','graphique','patterns','macro','longterme','dictionnaire','apprendre'];
+    btn.classList.toggle('active', ids[i]===id);
+  });
+  if(id==='graphique') { renderAssetBtns(); renderTFBtns(); loadChartData(); }
+  if(id==='longterme') { renderLTContent(); }
+}
+
+// ─── RESIZE ───────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  if(chart) {
+    const container = document.getElementById('chart-container');
+    chart.applyOptions({width: container.clientWidth});
+  }
+});
+
+// ─── START ────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
