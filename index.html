@@ -2,124 +2,82 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Fluz"/>
 <title>Fluz</title>
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg0:#000000;--bg1:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;--bg4:#222222;--bg5:#2a2a2a;
-  --accent:#ffffff;--accent2:#a0a0a0;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
-  --t1:#ffffff;--t2:#a0a0a0;--t3:#606060;
-  --r:12px;--r2:8px;--r3:6px;
+  --bg0:#000;--bg1:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bg4:#222;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;
+  --border:rgba(255,255,255,0.07);--t1:#fff;--t2:#a0a0a0;--t3:#555;
 }
-html,body{height:100%;background:var(--bg0);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
-/* LAYOUT */
-#app{display:flex;flex-direction:column;height:100vh;height:-webkit-fill-available}
-/* HEADER */
-.hdr{background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:100}
-.hdr-logo{width:34px;height:34px;flex-shrink:0}
-.hdr-name{font-weight:700;font-size:17px;letter-spacing:-0.5px;color:var(--t1)}
-.ticker-scroll{flex:1;overflow:hidden;position:relative}
-.ticker-inner{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
-.ticker-inner::-webkit-scrollbar{display:none}
-.tick{flex-shrink:0;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;transition:background 0.15s}
-.tick:active{background:var(--bg4)}
-.tick-sym{font-size:11px;font-weight:600;color:var(--t1)}
-.tick-chg{font-size:10px;margin-left:3px}
-.tick-price{font-size:10px;color:var(--t3);margin-left:3px}
-/* NAV */
-.nav{background:rgba(0,0,0,0.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;flex-shrink:0;z-index:99}
+html,body{height:100%;background:var(--bg0);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;-webkit-font-smoothing:antialiased}
+#app{display:flex;flex-direction:column;height:100vh}
+.hdr{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:0 14px;height:52px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px)}
+.app-name{font-weight:700;font-size:16px;letter-spacing:-0.3px;white-space:nowrap}
+.ticker-bar{flex:1;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none}
+.ticker-bar::-webkit-scrollbar{display:none}
+.tick{flex-shrink:0;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:10px;white-space:nowrap}
+.nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;flex-shrink:0;position:sticky;top:52px;z-index:99;backdrop-filter:blur(20px)}
 .nav::-webkit-scrollbar{display:none}
-.nb{padding:12px 14px;border:none;background:none;color:var(--t3);cursor:pointer;font-size:12px;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;transition:color 0.2s}
+.nb{padding:11px 15px;border:none;background:none;color:var(--t3);cursor:pointer;font-size:12px;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
 .nb.on{color:var(--t1);border-bottom-color:var(--t1)}
-/* CONTENT */
-.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .content::-webkit-scrollbar{display:none}
-.pad{padding:14px}
-/* CARDS */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
-.card-sm{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;margin-bottom:8px}
-.card-title{font-weight:600;font-size:13px;color:var(--t1);margin-bottom:10px}
-/* BADGE */
-.b{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap}
+.pad{padding:12px}
+.tab{display:none}
+.tab.on{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px}
+.sec{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px}
+.b{display:inline-flex;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap}
 .bg{background:rgba(34,197,94,0.12);color:#22c55e}
 .br{background:rgba(239,68,68,0.12);color:#ef4444}
 .ba{background:rgba(245,158,11,0.12);color:#f59e0b}
 .bb{background:rgba(59,130,246,0.12);color:#3b82f6}
-.bw{background:rgba(255,255,255,0.08);color:#a0a0a0}
-.bp{background:rgba(139,92,246,0.12);color:#8b5cf6}
-/* BUTTONS */
-.btn{padding:6px 12px;border-radius:var(--r3);border:1px solid var(--border2);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;white-space:nowrap}
+.bw{background:rgba(255,255,255,0.07);color:#a0a0a0}
+.btn{padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:11px;font-weight:500;white-space:nowrap;transition:all .15s}
 .btn.on{background:var(--t1);border-color:var(--t1);color:#000}
-.btn:active{transform:scale(0.97)}
-.btn-row{display:flex;gap:5px;flex-wrap:wrap}
-/* INPUT */
-input,select{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r3);padding:8px 12px;color:var(--t1);font-size:13px;outline:none;width:100%;transition:border-color 0.2s}
-input:focus,select:focus{border-color:rgba(255,255,255,0.3)}
-/* TABLE */
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl th{padding:8px 10px;text-align:left;color:var(--t3);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px}
+.btn:active{transform:scale(.97)}
+.frow{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+input,select{background:var(--bg3);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:7px 10px;color:var(--t1);font-size:12px;outline:none;width:100%}
+input:focus{border-color:rgba(255,255,255,0.25)}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{padding:7px 8px;text-align:left;color:var(--t3);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap}
 .tbl th.c,.tbl td.c{text-align:center}
-.tbl td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle}
-.tbl tr:hover td{background:rgba(255,255,255,0.02)}
+.tbl td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle}
 .tbl tr{cursor:pointer}
-/* CHART */
-#chartWrap{width:100%;height:420px;border-radius:var(--r2);overflow:hidden;position:relative;background:var(--bg1)}
-/* COUNTDOWN */
-.countdown{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
-.cd-ring{width:18px;height:18px;flex-shrink:0}
-/* SECTION HEADERS */
-.sec-hdr{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:1px;padding:8px 0 6px;margin-bottom:6px;border-bottom:1px solid var(--border)}
-/* PATTERN CARD */
-.pcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s}
+.tbl tr:active td{background:rgba(255,255,255,0.03)}
+#chartWrap{width:100%;height:380px;border-radius:8px;overflow:hidden;background:var(--bg1)}
+.dtbar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;align-items:center}
+.dt{width:30px;height:30px;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s}
+.dt.on{background:var(--t1);color:#000}
+.pcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
 .pcard.open{border-color:rgba(255,255,255,0.2)}
-/* LEARN TABS */
-.ltabs{display:flex;gap:4px;margin-bottom:14px;background:var(--bg2);border-radius:var(--r2);padding:4px;border:1px solid var(--border)}
-.ltab{flex:1;padding:8px;border-radius:var(--r3);border:none;background:none;color:var(--t3);cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s}
+.pdetail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.why-box{background:rgba(59,130,246,0.06);border-left:2px solid var(--blue);padding:8px 10px;border-radius:0 6px 6px 0;font-size:12px;color:var(--t2);line-height:1.6;margin:8px 0}
+.ltabs{display:flex;gap:3px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:12px}
+.ltab{flex:1;padding:7px;border-radius:5px;border:none;background:none;color:var(--t3);cursor:pointer;font-size:11px;font-weight:500;transition:all .15s}
 .ltab.on{background:var(--bg4);color:var(--t1)}
-/* NEWS */
-.ncard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
-.ncard.critical{border-left:3px solid var(--red)}
-.ncard.high{border-left:3px solid var(--amber)}
-.ncard.med{border-left:3px solid var(--blue)}
-/* DRAWING TOOLBAR */
-#drawBar{display:flex;gap:4px;padding:6px 0;flex-wrap:wrap;align-items:center}
-.dtool{width:32px;height:32px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s}
-.dtool.on{background:var(--t1);color:#000;border-color:var(--t1)}
-.dtool:active{transform:scale(0.93)}
-/* STRATEGY */
-.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.target-row{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:var(--r3);margin-bottom:5px}
-.tr-bull{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15)}
-.tr-bear{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15)}
-/* ANALYZE BOX */
-.ana-btn{width:100%;padding:13px;background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(139,92,246,0.15));border:1px solid rgba(59,130,246,0.3);border-radius:var(--r2);color:var(--t1);cursor:pointer;font-size:13px;font-weight:600;margin-top:10px;letter-spacing:0.2px;transition:all 0.2s}
-.ana-btn:active{transform:scale(0.98)}
-.copy-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px;font-size:11px;color:var(--t2);line-height:1.6;margin-top:8px;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto}
-/* ASSET DETAIL */
-.adgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.adcard{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px}
-.adcard .lbl{font-size:10px;color:var(--t3);margin-bottom:3px}
-.adcard .val{font-size:13px;font-weight:600}
-/* INLINE SVG CHART ILLUSTRATIONS */
-.illus{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:10px;margin:8px 0;overflow:hidden}
-/* SCROLLABLE FILTER ROW */
-.frow{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding:2px 0 6px}
-.frow::-webkit-scrollbar{display:none}
-/* DROPDOWN */
-.dropdown{position:relative;z-index:50}
-.dd-list{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);max-height:200px;overflow-y:auto;z-index:200}
-.dd-item{padding:8px 12px;font-size:13px;cursor:pointer;transition:background 0.1s}
-.dd-item:hover{background:var(--bg4)}
-/* VARIATION SELECTOR */
-.var-sel{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r3);padding:4px 8px;color:var(--t1);font-size:11px;cursor:pointer}
-/* RESPONSIVE */
-@media(max-width:500px){.strat-grid{grid-template-columns:1fr}.adgrid{grid-template-columns:1fr 1fr}}
+.cd-wrap{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
+.ana-btn{width:100%;padding:11px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;color:var(--t1);cursor:pointer;font-size:12px;font-weight:600;margin-top:8px;transition:all .15s}
+.ana-btn:active{transform:scale(.98)}
+.cbox{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:10px;color:var(--t2);line-height:1.6;margin-top:6px;white-space:pre-wrap;max-height:180px;overflow-y:auto}
+.dd-wrap{position:relative;z-index:50;margin-bottom:10px}
+.ddl{position:absolute;top:calc(100% + 3px);left:0;right:0;background:var(--bg3);border:1px solid rgba(255,255,255,0.15);border-radius:8px;max-height:180px;overflow-y:auto;z-index:200;display:none}
+.ddi{padding:8px 12px;font-size:12px;cursor:pointer}
+.ddi:hover,.ddi:active{background:var(--bg4)}
+.indbar{display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--t2);flex-wrap:wrap}
+.indbar span{cursor:pointer;border-bottom:1px dotted var(--t3)}
+.ind-panel{background:var(--bg2);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:12px;margin-bottom:10px;display:none}
+.mtf-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px}
+.tgt-r{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:6px;margin-bottom:5px}
+.tgt-bull{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.15)}
+.tgt-bear{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15)}
+.illus{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap}
+@media(max-width:500px){.hdr{padding:0 10px;gap:8px}}
 </style>
 </head>
 <body>
@@ -127,30 +85,27 @@ input:focus,select:focus{border-color:rgba(255,255,255,0.3)}
 
 <!-- HEADER -->
 <div class="hdr">
-  <svg class="hdr-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="35" r="28" fill="none" stroke="#fff" stroke-width="3.5"/>
-    <path d="M27,35 A23,23 0 0,1 73,35" fill="none" stroke="none"/>
-    <text font-family="Georgia,serif" font-size="9.5" fill="#fff" text-anchor="middle">
-      <textPath href="#arcTop" startOffset="50%">CT47 • MXVIII • CCXIII</textPath>
+  <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+    <circle cx="50" cy="34" r="26" fill="none" stroke="#fff" stroke-width="3"/>
+    <path id="arc1" d="M26,34 A24,24 0 0,1 74,34" fill="none"/>
+    <text font-size="9" fill="#fff" font-family="Georgia,serif">
+      <textPath href="#arc1" startOffset="50%" text-anchor="middle">CT47 • MXVIII • CCXIII</textPath>
     </text>
-    <defs>
-      <path id="arcTop" d="M24,35 A26,26 0 0,1 76,35"/>
-    </defs>
-    <circle cx="50" cy="32" r="10" fill="#1a1a1a" stroke="#fff" stroke-width="2"/>
-    <path d="M44,28 Q50,22 56,28 Q53,35 50,38 Q47,35 44,28Z" fill="#fff" opacity="0.9"/>
-    <line x1="50" y1="40" x2="50" y2="72" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-    <line x1="44" y1="52" x2="56" y2="52" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M50,72 L46,82 Q50,79 54,82 Z" fill="#fff"/>
-    <path d="M32,42 Q28,55 30,65 Q38,60 50,58" fill="none" stroke="#fff" stroke-width="2" opacity="0.6"/>
-    <path d="M68,42 Q72,55 70,65 Q62,60 50,58" fill="none" stroke="#fff" stroke-width="2" opacity="0.6"/>
+    <circle cx="50" cy="31" r="9" fill="#1a1a1a" stroke="#fff" stroke-width="1.5"/>
+    <path d="M45,28 Q50,22 55,28 Q52,34 50,36 Q48,34 45,28Z" fill="#fff" opacity="0.9"/>
+    <line x1="50" y1="38" x2="50" y2="68" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="44" y1="50" x2="56" y2="50" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M50,68 L47,78 Q50,76 53,78 Z" fill="#fff"/>
+    <path d="M34,42 Q30,54 32,63 Q39,58 50,56" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.5"/>
+    <path d="M66,42 Q70,54 68,63 Q61,58 50,56" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.5"/>
   </svg>
-  <span class="hdr-name">Fluz</span>
-  <div class="ticker-scroll"><div class="ticker-inner" id="tickerBar"></div></div>
-  <button onclick="dlHTML()" style="flex-shrink:0;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:11px">⬇</button>
+  <span class="app-name">Fluz</span>
+  <div class="ticker-bar" id="tickerBar"><span style="font-size:11px;color:var(--t3);padding:3px 0">Chargement…</span></div>
+  <button onclick="dlHTML()" style="flex-shrink:0;padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:11px">⬇</button>
 </div>
 
 <!-- NAV -->
-<nav class="nav" id="nav">
+<nav class="nav">
   <button class="nb on" onclick="goTab('scanner',this)">Scanner</button>
   <button class="nb" onclick="goTab('graphique',this)">Graphique</button>
   <button class="nb" onclick="goTab('strategie',this)">Stratégie</button>
@@ -159,319 +114,273 @@ input:focus,select:focus{border-color:rgba(255,255,255,0.3)}
   <button class="nb" onclick="goTab('apprendre',this)">Apprendre</button>
 </nav>
 
-<div class="content" id="content">
+<div class="content">
 <div class="pad">
 
-<!-- ═══ SCANNER ═══ -->
-<div id="tab-scanner">
+<!-- ══ SCANNER ══ -->
+<div class="tab on" id="tab-scanner">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-    <div class="countdown">
-      <svg class="cd-ring" id="cdSvg" viewBox="0 0 18 18">
-        <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
-        <circle cx="9" cy="9" r="7" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="44" stroke-dashoffset="0" id="cdCircle" stroke-linecap="round" transform="rotate(-90 9 9)"/>
+    <div class="cd-wrap">
+      <svg width="20" height="20" viewBox="0 0 20 20">
+        <circle cx="10" cy="10" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+        <circle cx="10" cy="10" r="8" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="50" id="cdC" stroke-linecap="round" transform="rotate(-90 10 10)"/>
       </svg>
-      <span id="cdLabel">30s</span>
-      <span style="color:var(--t3)">•</span>
-      <span id="lastUpd" style="color:var(--t3)">Chargement…</span>
+      <span id="cdL">30s</span>
+      <span id="updL" style="color:var(--t3)">Chargement…</span>
     </div>
     <div style="display:flex;gap:6px;align-items:center">
-      <select id="varSel" class="var-sel" onchange="renderScanner()" style="width:auto">
+      <select id="varSel" onchange="renderScanner()" style="width:auto;padding:4px 8px;font-size:10px">
         <option value="24h">24h %</option>
         <option value="7d">7j %</option>
-        <option value="30d">30j %</option>
         <option value="1h">1h %</option>
         <option value="4h">4h %</option>
-        <option value="1w">1W %</option>
+        <option value="1W">1W %</option>
       </select>
-      <button class="btn" onclick="toggleAdd()" style="font-size:11px">+ Crypto</button>
+      <button class="btn" onclick="toggleAddBox()">+ Crypto</button>
     </div>
   </div>
-  <div id="addBox" style="display:none;margin-bottom:10px" class="dropdown">
-    <input id="cryptoQ" placeholder="Rechercher une crypto (ex: SOL)" oninput="searchCrypto(this.value)" autocomplete="off"/>
-    <div class="dd-list" id="ddList" style="display:none"></div>
+  <div class="dd-wrap" id="addBox" style="display:none">
+    <input id="cryptoQ" placeholder="Rechercher (BTC, SOL, DOGE…)" oninput="searchC(this.value)" autocomplete="off"/>
+    <div class="ddl" id="ddl"></div>
   </div>
-  <!-- Categories -->
-  <div class="sec-hdr">Cryptomonnaies — Spot (USD)</div>
-  <div class="card" style="padding:0;overflow:auto;margin-bottom:12px">
+  <div class="sec">Cryptomonnaies — Spot USD</div>
+  <div class="card" style="padding:0;overflow-x:auto">
     <table class="tbl"><thead><tr>
-      <th>Actif</th><th class="c">Prix (USD)</th><th class="c" id="varHdr">24h</th>
-      <th class="c">1h TF</th><th class="c">4h TF</th><th class="c">1D TF</th>
+      <th>Actif</th><th class="c">Prix USD</th><th class="c" id="varH">24h</th>
+      <th class="c">1h</th><th class="c">4h</th><th class="c">1D</th>
       <th class="c">RSI</th><th class="c">Pattern</th><th class="c">Signal</th><th></th>
-    </tr></thead><tbody id="cryptoBody"></tbody></table>
+    </tr></thead><tbody id="cBody"></tbody></table>
   </div>
-  <div class="sec-hdr">Métaux Précieux (USD/once)</div>
-  <div class="card" style="padding:0;overflow:auto;margin-bottom:12px">
+  <div class="sec">Métaux — Token indexé or (Binance)</div>
+  <div class="card" style="padding:0;overflow-x:auto">
     <table class="tbl"><thead><tr>
-      <th>Actif</th><th class="c">Prix (USD)</th><th class="c">24h</th>
-      <th class="c">1h TF</th><th class="c">4h TF</th><th class="c">1D TF</th>
-      <th class="c">RSI</th><th class="c">Signal</th>
-    </tr></thead><tbody id="metalsBody"></tbody></table>
+      <th>Actif</th><th class="c">Prix USD</th><th class="c">24h</th>
+      <th class="c">1h</th><th class="c">4h</th><th class="c">1D</th><th class="c">RSI</th><th class="c">Signal</th>
+    </tr></thead><tbody id="mBody"></tbody></table>
   </div>
-  <div class="sec-hdr">Forex (taux de change)</div>
-  <div class="card" style="padding:0;overflow:auto">
+  <div class="sec">Forex — Taux de change</div>
+  <div class="card" style="padding:0;overflow-x:auto">
     <table class="tbl"><thead><tr>
-      <th>Paire</th><th class="c">Taux</th><th class="c">Variation</th>
-      <th class="c">1h TF</th><th class="c">4h TF</th><th class="c">1D TF</th>
-      <th class="c">RSI</th><th class="c">Signal</th>
-    </tr></thead><tbody id="forexBody"></tbody></table>
+      <th>Paire</th><th class="c">Taux</th><th class="c">Var.</th>
+      <th class="c">1h</th><th class="c">4h</th><th class="c">1D</th><th class="c">RSI</th><th class="c">Signal</th>
+    </tr></thead><tbody id="fBody"></tbody></table>
   </div>
 </div>
 
-<!-- ═══ GRAPHIQUE ═══ -->
-<div id="tab-graphique" style="display:none">
-  <!-- Asset selector -->
-  <div class="frow" id="assetBtns" style="margin-bottom:8px"></div>
-  <!-- TF selector -->
-  <div class="frow" id="tfBtns" style="margin-bottom:8px"></div>
-  <!-- Chart card -->
+<!-- ══ GRAPHIQUE ══ -->
+<div class="tab" id="tab-graphique">
+  <div class="frow" id="aBtns"></div>
+  <div class="frow" id="tfBtns"></div>
   <div class="card" style="padding:10px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-      <span style="font-weight:700;font-size:15px" id="chartSym">BTC</span>
-      <span style="font-size:14px;font-weight:600;font-family:monospace" id="chartPx"></span>
-      <span id="chartBias" class="b bw"></span>
+      <span style="font-weight:700;font-size:15px" id="cSym">BTC</span>
+      <span style="font-weight:600;font-family:monospace;font-size:14px" id="cPx"></span>
+      <span id="cBias" class="b bw"></span>
       <div style="margin-left:auto;display:flex;gap:4px">
-        <button class="btn on" id="bSMA20" onclick="togInd('sma20')" style="font-size:10px;color:#3b82f6;border-color:#3b82f666">SMA20</button>
-        <button class="btn on" id="bSMA50" onclick="togInd('sma50')" style="font-size:10px;color:#f59e0b;border-color:#f59e0b66">SMA50</button>
-        <button class="btn on" id="bVol" onclick="togInd('vol')" style="font-size:10px">Vol</button>
-        <button class="btn on" id="bPat" onclick="togInd('pat')" style="font-size:10px;color:#8b5cf6;border-color:#8b5cf666">Patterns</button>
+        <button class="btn on" id="bS20" onclick="togI('s20')" style="color:var(--blue);font-size:10px">SMA20</button>
+        <button class="btn on" id="bS50" onclick="togI('s50')" style="color:var(--amber);font-size:10px">SMA50</button>
+        <button class="btn on" id="bVol" onclick="togI('vol')" style="font-size:10px">Vol</button>
+        <button class="btn on" id="bPat" onclick="togI('pat')" style="color:var(--purple);font-size:10px">Patterns</button>
       </div>
     </div>
-    <!-- Drawing toolbar -->
-    <div id="drawBar">
-      <span style="font-size:10px;color:var(--t3);margin-right:2px">Dessiner:</span>
-      <button class="dtool" id="dNone" onclick="setTool('none')" title="Curseur">✦</button>
-      <button class="dtool" id="dLine" onclick="setTool('line')" title="Ligne de tendance">╱</button>
-      <button class="dtool" id="dHLine" onclick="setTool('hline')" title="Ligne horizontale">─</button>
-      <button class="dtool" id="dRect" onclick="setTool('rect')" title="Rectangle">▭</button>
-      <button class="dtool" id="dFib" onclick="setTool('fib')" title="Fibonacci">φ</button>
-      <button class="dtool" id="dText" onclick="setTool('text')" title="Texte">T</button>
-      <button class="dtool" onclick="clearDrawings()" title="Effacer tout" style="margin-left:4px;color:var(--red)">✕</button>
-      <button class="dtool" onclick="undoDrawing()" title="Annuler" style="margin-left:2px">↩</button>
+    <div class="dtbar">
+      <span style="font-size:10px;color:var(--t3)">Outils:</span>
+      <button class="dt on" id="dtNone" onclick="setDT('none')" title="Curseur">✦</button>
+      <button class="dt" id="dtLine" onclick="setDT('line')" title="Tendance">╱</button>
+      <button class="dt" id="dtHL" onclick="setDT('hline')" title="Horizontale">─</button>
+      <button class="dt" id="dtFib" onclick="setDT('fib')" title="Fibonacci">φ</button>
+      <button class="dt" id="dtTxt" onclick="setDT('text')" title="Texte">T</button>
+      <button class="dt" onclick="clearDraw()" style="color:var(--red);margin-left:4px" title="Effacer">✕</button>
+      <button class="dt" onclick="undoDraw()" title="Annuler">↩</button>
     </div>
     <div id="chartWrap"></div>
-    <!-- Pattern details on chart -->
-    <div id="patLegend" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"></div>
-    <!-- Indicators bar -->
-    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--t2);flex-wrap:wrap">
-      <span id="iRSI" style="cursor:pointer;border-bottom:1px dotted var(--t3)" onclick="showInd('RSI')">RSI: —</span>
-      <span id="iSMA20" style="cursor:pointer;border-bottom:1px dotted #3b82f6;color:#3b82f6" onclick="showInd('SMA20')">SMA20: —</span>
-      <span id="iSMA50" style="cursor:pointer;border-bottom:1px dotted #f59e0b;color:#f59e0b" onclick="showInd('SMA50')">SMA50: —</span>
-      <span style="cursor:pointer;border-bottom:1px dotted var(--t3)" onclick="showInd('VOL')">Volume</span>
-      <span style="margin-left:auto;font-size:10px;color:rgba(245,158,11,0.5)">— S/R</span>
+    <div id="patLeg" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"></div>
+    <div class="indbar">
+      <span id="iRSI" onclick="showInd('RSI')">RSI: —</span>
+      <span id="iS20" style="border-bottom-color:var(--blue);color:var(--blue)" onclick="showInd('SMA20')">SMA20: —</span>
+      <span id="iS50" style="border-bottom-color:var(--amber);color:var(--amber)" onclick="showInd('SMA50')">SMA50: —</span>
+      <span onclick="showInd('VOL')">Volume</span>
+      <span style="margin-left:auto;font-size:10px;color:rgba(245,158,11,0.45);cursor:default;border:none">— S/R</span>
     </div>
   </div>
-  <div id="indPanel" style="display:none;margin-bottom:10px"></div>
-  <!-- MTF + Analyze -->
+  <div class="ind-panel" id="indPanel"></div>
   <div class="card">
-    <div class="card-title">Multi-Timeframe — <span id="mtfSym">BTC</span></div>
+    <div style="font-weight:600;font-size:13px;margin-bottom:10px">Multi-Timeframe — <span id="mtfSym">BTC</span></div>
     <div id="mtfBody"></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border);margin-top:4px">
-      <span style="font-weight:600;font-size:13px">Biais global</span>
-      <span id="globalBiasLbl" style="font-weight:700;font-size:13px"></span>
+    <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);margin-top:4px;font-size:13px">
+      <span style="font-weight:600">Biais global</span>
+      <span id="gbLbl" style="font-weight:700"></span>
     </div>
-    <button class="ana-btn" onclick="genAnalysis()">Analyser avec Claude →</button>
+    <button class="ana-btn" onclick="genAna()">Analyser avec Claude →</button>
     <div id="anaBox" style="display:none">
-      <div style="font-size:11px;color:var(--t3);margin:8px 0 4px">Copie et colle dans le chat :</div>
-      <div class="copy-box" id="anaText"></div>
-      <button class="btn on" style="width:100%;margin-top:6px" onclick="copyAna()">Copier</button>
+      <div style="font-size:10px;color:var(--t3);margin:6px 0 3px">Copie et colle dans le chat Claude :</div>
+      <div class="cbox" id="anaText"></div>
+      <button class="btn on" style="width:100%;margin-top:6px" onclick="copyAna(event)">Copier</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ STRATÉGIE ═══ -->
-<div id="tab-strategie" style="display:none">
-  <div class="frow" id="stratBtns" style="margin-bottom:12px"></div>
-  <div id="stratContent"></div>
+<!-- ══ STRATÉGIE ══ -->
+<div class="tab" id="tab-strategie">
+  <div class="frow" id="stratBtns"></div>
+  <div id="stratBody"></div>
 </div>
 
-<!-- ═══ MACRO ═══ -->
-<div id="tab-macro" style="display:none">
-  <div style="margin-bottom:6px;font-weight:700;font-size:16px">Macro & Marchés</div>
-  <div style="font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.6">Les forces qui dirigent les marchés. Triées par importance et date. Sources : Fed, BCE, FMI, CoinDesk, Reuters.</div>
-  <div class="frow" id="macroCatBtns" style="margin-bottom:10px"></div>
-  <div id="newsLive" style="margin-bottom:6px"></div>
+<!-- ══ MACRO ══ -->
+<div class="tab" id="tab-macro">
+  <div style="font-weight:700;font-size:16px;margin-bottom:4px">Macro & Marchés</div>
+  <div style="font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.6">Les forces qui dirigent les marchés. Sources : Fed, BCE, FMI, CoinDesk, Reuters, Glassnode.</div>
+  <div class="frow" id="macroCatBtns"></div>
   <div id="macroCards"></div>
 </div>
 
-<!-- ═══ ACTIFS ═══ -->
-<div id="tab-actifs" style="display:none">
-  <div style="margin-bottom:6px;font-weight:700;font-size:16px">Encyclopédie des Actifs</div>
-  <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Tout ce qu'il faut savoir avant d'investir.</div>
-  <div class="frow" id="actifBtns" style="margin-bottom:10px"></div>
-  <div id="actifContent"></div>
+<!-- ══ ACTIFS ══ -->
+<div class="tab" id="tab-actifs">
+  <div style="font-weight:700;font-size:16px;margin-bottom:4px">Encyclopédie des Actifs</div>
+  <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Tout savoir avant d'investir.</div>
+  <div class="frow" id="actifBtns"></div>
+  <div id="actifBody"></div>
 </div>
 
-<!-- ═══ APPRENDRE ═══ -->
-<div id="tab-apprendre" style="display:none">
+<!-- ══ APPRENDRE ══ -->
+<div class="tab" id="tab-apprendre">
   <div class="ltabs">
-    <button class="ltab on" onclick="setLearnTab('patterns',this)">Patterns</button>
-    <button class="ltab" onclick="setLearnTab('dict',this)">Dictionnaire</button>
-    <button class="ltab" onclick="setLearnTab('cours',this)">Cours</button>
+    <button class="ltab on" onclick="setLT('patterns',this)">Patterns</button>
+    <button class="ltab" onclick="setLT('dict',this)">Dictionnaire</button>
+    <button class="ltab" onclick="setLT('cours',this)">Cours</button>
   </div>
-  <div id="learn-patterns"></div>
-  <div id="learn-dict" style="display:none"></div>
-  <div id="learn-cours" style="display:none"></div>
+  <div id="lt-patterns"></div>
+  <div id="lt-dict" style="display:none"></div>
+  <div id="lt-cours" style="display:none"></div>
 </div>
 
-</div></div><!-- end content/pad -->
-</div><!-- end app -->
+</div></div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════════════════
+// ═══ STATE ═══
 let cryptos = ['BTC','ETH','TAO','SYRUP','ASTER'];
-const METALS_LIST = ['PAXG','XAUT']; // tokenized gold/silver on Binance
-const FOREX_LIST = ['EUR/USD','USD/CHF','EUR/CHF'];
-const ALL_TFS = ['1m','3m','5m','15m','30m','1h','2h','4h','6h','8h','12h','1D','3D','1W','1M'];
-const BN_TF = {'1m':'1m','3m':'3m','5m':'5m','15m':'15m','30m':'30m','1h':'1h','2h':'2h','4h':'4h','6h':'6h','8h':'8h','12h':'12h','1D':'1d','3D':'3d','1W':'1w','1M':'1M'};
-
-let curAsset = 'BTC';
-let curTF = '1h';
-let prices = {};
-let candles = {};
-let scanData = {};
+const METALS = ['PAXG','XAUT'];
+const FOREX = ['EUR/USD','USD/CHF','EUR/CHF'];
+const TFS = ['1m','5m','15m','30m','1h','2h','4h','6h','12h','1D','3D','1W','1M'];
+const BN_TF = {'1m':'1m','5m':'5m','15m':'15m','30m':'30m','1h':'1h','2h':'2h','4h':'4h','6h':'6h','12h':'12h','1D':'1d','3D':'3d','1W':'1w','1M':'1M'};
+const KNOWN = ['BTC','ETH','BNB','SOL','XRP','ADA','DOGE','AVAX','DOT','MATIC','LINK','UNI','ATOM','LTC','TAO','RENDER','FET','INJ','ARB','OP','APT','SUI','NEAR','PEPE','WIF','TRX','TON','SHIB','SYRUP','ASTER','AAVE','CRV','MKR'];
+let curA = 'BTC', curTF = '1h';
+let prices = {}, cdata = {}, scanD = {};
 let chart = null, cSeries = null;
-let showSMA20=true, showSMA50=true, showVol=true, showPat=true;
-let drawTool = 'none';
-let drawings = [];
-let drawingInProgress = null;
-let cdLeft = 30;
-let cdInterval = null;
-let stratAsset = 'BTC';
-let macroCat = 'Tous';
-let actifAsset = 'BTC';
-let learnSub = 'patterns';
-let openCards = {};
-let varMode = '24h';
+let showS20=true, showS50=true, showVol=true, showPat=true;
+let dtool = 'none', drawings = [];
+let cdLeft = 30, cdTimer = null;
+let stratA = 'BTC', macroCat = 'Tous', actifA = 'BTC', learnSub = 'patterns';
+let openC = {};
 
-const KNOWN_CRYPTOS = ['BTC','ETH','BNB','SOL','XRP','ADA','DOGE','AVAX','DOT','MATIC','LINK','UNI','ATOM','LTC','BCH','TAO','RENDER','FET','INJ','ARB','OP','APT','SUI','NEAR','PEPE','WIF','BONK','TRX','TON','SHIB','SYRUP','ASTER','AAVE','CRV','MKR','SNX','COMP','YFI','SUSHI'];
-
-// ═══════════════════════════════════════════════════════════════════════
-// API
-// ═══════════════════════════════════════════════════════════════════════
+// ═══ API ═══
 const BN = 'https://api.binance.com/api/v3';
 
-async function fetchPrice(asset) {
-  const sym = toSym(asset);
-  if (!sym) return fetchForex(asset);
+function toSym(a) {
+  if (FOREX.includes(a)) return null;
+  return a + 'USDT';
+}
+
+async function fetchPrice(a) {
+  const sym = toSym(a);
+  if (!sym) return fetchForex(a);
   try {
     const r = await fetch(`${BN}/ticker/24hr?symbol=${sym}`);
     const d = await r.json();
-    if (d.code) return fakePrice(asset);
-    return {
-      price: parseFloat(d.lastPrice),
-      change24h: parseFloat(d.priceChangePercent),
-      high24h: parseFloat(d.highPrice),
-      low24h: parseFloat(d.lowPrice),
-      vol24h: parseFloat(d.quoteVolume),
-    };
-  } catch(e) { return fakePrice(asset); }
+    if (d.code) return mkFake(a);
+    return { price: +d.lastPrice, chg: +d.priceChangePercent, h24: +d.highPrice, l24: +d.lowPrice };
+  } catch(e) { return mkFake(a); }
 }
 
 async function fetchForex(pair) {
   try {
-    const [from,to] = pair.split('/');
-    const r = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
+    const [f,t] = pair.split('/');
+    const r = await fetch(`https://api.frankfurter.app/latest?from=${f}&to=${t}`);
     const d = await r.json();
-    return {price: d.rates[to], change24h: (Math.random()-0.5)*0.3, high24h:0, low24h:0, vol24h:0};
-  } catch(e) { return fakePrice(pair); }
+    return { price: d.rates[t], chg: (Math.random()-.5)*.3, h24:0, l24:0 };
+  } catch(e) { return mkFake(pair); }
 }
 
-function fakePrice(a) {
-  const base = {BTC:65000,ETH:3200,TAO:420,SYRUP:0.085,ASTER:0.032,PAXG:2350,XAUT:2340,'EUR/USD':1.085,'USD/CHF':0.905,'EUR/CHF':0.98};
-  const b = base[a]||Math.random()*100+1;
-  return {price:b*(1+(Math.random()-0.5)*0.02), change24h:(Math.random()-0.5)*5, high24h:b*1.02, low24h:b*0.98, vol24h:Math.random()*1e9};
+function mkFake(a) {
+  const b = {BTC:65000,ETH:3200,TAO:420,SYRUP:0.085,ASTER:0.032,PAXG:2350,XAUT:2345,'EUR/USD':1.085,'USD/CHF':0.905,'EUR/CHF':0.98}[a]||Math.random()*100+1;
+  return { price: b*(1+(Math.random()-.5)*.02), chg: (Math.random()-.5)*5, h24:b*1.02, l24:b*.98 };
 }
 
-function toSym(a) {
-  if (FOREX_LIST.includes(a)) return null;
-  return a+'USDT';
-}
-
-async function fetchCandles(asset, tf) {
-  const sym = toSym(asset);
-  if (!sym) return genFakeCandles(prices[asset]?.price||100, 200, tf);
+async function fetchCandles(a, tf) {
+  const sym = toSym(a);
+  if (!sym) return fakeC(prices[a]?.price||100, 150, tf);
   try {
-    const limit = ['1W','1M'].includes(tf) ? 100 : 200;
-    const r = await fetch(`${BN}/klines?symbol=${sym}&interval=${BN_TF[tf]||'1h'}&limit=${limit}`);
+    const r = await fetch(`${BN}/klines?symbol=${sym}&interval=${BN_TF[tf]||'1h'}&limit=200`);
     const d = await r.json();
-    if (!Array.isArray(d)) return genFakeCandles(prices[asset]?.price||100, 200, tf);
-    return d.map(k=>({time:Math.floor(k[0]/1000),open:+k[1],high:+k[2],low:+k[3],close:+k[4],volume:+k[5]}));
-  } catch(e) { return genFakeCandles(prices[asset]?.price||100, 200, tf); }
+    if (!Array.isArray(d)) return fakeC(prices[a]?.price||100, 150, tf);
+    return d.map(k => ({ time: Math.floor(k[0]/1000), open:+k[1], high:+k[2], low:+k[3], close:+k[4], volume:+k[5] }));
+  } catch(e) { return fakeC(prices[a]?.price||100, 150, tf); }
 }
 
-function genFakeCandles(base, n, tf) {
-  let p=base; const out=[];
-  const now=Date.now();
-  const ms={'1m':60000,'3m':180000,'5m':300000,'15m':900000,'30m':1800000,'1h':3600000,'2h':7200000,'4h':14400000,'6h':21600000,'8h':28800000,'12h':43200000,'1D':86400000,'3D':259200000,'1W':604800000,'1M':2592000000};
-  const iv=ms[tf]||3600000;
-  for(let i=n;i>=0;i--){
-    const v=base*0.02,t=Math.sin(i*0.07)*v*0.3;
-    const o=p,c=Math.max(o*0.3,o+(Math.random()-0.47)*v+t*0.1);
-    out.push({time:Math.floor((now-i*iv)/1000),open:o,high:Math.max(o,c)+Math.random()*v*0.4,low:Math.min(o,c)-Math.random()*v*0.4,close:c,volume:Math.random()*1000+100});
-    p=c;
+function fakeC(base, n, tf) {
+  let p = base; const out = [];
+  const now = Date.now();
+  const ms = {'1m':60000,'5m':300000,'15m':900000,'30m':1800000,'1h':3600000,'2h':7200000,'4h':14400000,'6h':21600000,'12h':43200000,'1D':86400000,'3D':259200000,'1W':604800000,'1M':2592000000};
+  const iv = ms[tf]||3600000;
+  for (let i=n; i>=0; i--) {
+    const v=base*.02, t=Math.sin(i*.07)*v*.3;
+    const o=p, c=Math.max(o*.3,o+(Math.random()-.47)*v+t*.1);
+    out.push({ time:Math.floor((now-i*iv)/1000), open:o, high:Math.max(o,c)+Math.random()*v*.3, low:Math.min(o,c)-Math.random()*v*.3, close:c, volume:Math.random()*1000+100 });
+    p = c;
   }
   return out;
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// INDICATORS & PATTERNS
-// ═══════════════════════════════════════════════════════════════════════
-function sma(c,p){if(c.length<p)return null;return c.slice(-p).reduce((s,x)=>s+x.close,0)/p;}
-function rsi(c,p=14){
+// ═══ INDICATORS ═══
+function calcSMA(c, p) { if(c.length<p)return null; return c.slice(-p).reduce((s,x)=>s+x.close,0)/p; }
+function calcRSI(c, p=14) {
   if(c.length<p+1)return 50;
-  const ch=c.slice(-p-1).map((x,i,a)=>i===0?0:x.close-a[i-1].close).slice(1);
-  const g=ch.filter(x=>x>0).reduce((s,x)=>s+x,0)/p;
-  const l=ch.filter(x=>x<0).reduce((s,x)=>s+Math.abs(x),0)/p;
+  const ch = c.slice(-p-1).map((x,i,a)=>i===0?0:x.close-a[i-1].close).slice(1);
+  const g = ch.filter(x=>x>0).reduce((s,x)=>s+x,0)/p;
+  const l = ch.filter(x=>x<0).reduce((s,x)=>s+Math.abs(x),0)/p;
   return l===0?100:100-100/(1+g/l);
 }
-function trend(c){
+function calcTrend(c) {
   if(c.length<20)return 'Neutre';
-  const s20=sma(c,20),s50=sma(c,Math.min(50,c.length)),r=rsi(c),last=c[c.length-1].close;
+  const s20=calcSMA(c,20), s50=calcSMA(c,Math.min(50,c.length)), r=calcRSI(c), last=c[c.length-1].close;
   let s=0;
-  if(last>s20)s++;if(s20&&s50&&s20>s50)s++;if(r>55)s++;if(r<45)s--;if(last<s20)s--;
+  if(last>s20)s++; if(s20&&s50&&s20>s50)s++; if(r>55)s++; if(r<45)s--; if(last<s20)s--;
   return s>=2?'Haussier':s<=-1?'Baissier':'Neutre';
 }
-function globalBias(a){
-  if(!scanData[a])return '—';
-  const b=['1h','4h','1D','1W'].map(t=>scanData[a][t]?.bias);
-  const bull=b.filter(x=>x==='Haussier').length,bear=b.filter(x=>x==='Baissier').length;
-  if(bull>=3)return 'Achat fort';if(bull>=2)return 'Achat';
-  if(bear>=3)return 'Vente forte';if(bear>=2)return 'Vente';
+function calcBias(a) {
+  if(!scanD[a])return '—';
+  const b = ['1h','4h','1D','1W'].map(t=>scanD[a][t]?.bias);
+  const bull=b.filter(x=>x==='Haussier').length, bear=b.filter(x=>x==='Baissier').length;
+  if(bull>=3)return 'Achat fort'; if(bull>=2)return 'Achat';
+  if(bear>=3)return 'Vente forte'; if(bear>=2)return 'Vente';
   return 'Neutre';
 }
-function detectPatterns(c){
-  const out=[],n=c.length;if(n<5)return out;
+function detectPat(c) {
+  const out=[],n=c.length; if(n<5)return out;
   const last=c[n-1],prev=c[n-2];
-  const body=Math.abs(last.close-last.open),range=last.high-last.low||0.0001;
-  const lw=Math.min(last.open,last.close)-last.low,uw=last.high-Math.max(last.open,last.close);
-  if(body/range<0.1)out.push({name:'Doji',bias:'neutre',color:'#a0a0a0',prob:50,idx:n-1,tf:curTF});
-  if(lw>body*2&&uw<body*0.5&&last.close>last.open)out.push({name:'Marteau',bias:'haussier',color:'#22c55e',prob:60,idx:n-1,tf:curTF});
-  if(uw>body*2&&lw<body*0.5&&last.close<last.open)out.push({name:'Étoile Filante',bias:'baissier',color:'#ef4444',prob:62,idx:n-1,tf:curTF});
-  if(last.close>last.open&&prev.close<prev.open&&last.open<prev.close&&last.close>prev.open)out.push({name:'Englobante Haussière',bias:'haussier',color:'#22c55e',prob:63,idx:n-1,tf:curTF});
-  if(last.close<last.open&&prev.close>prev.open&&last.open>prev.close&&last.close<prev.open)out.push({name:'Englobante Baissière',bias:'baissier',color:'#ef4444',prob:61,idx:n-1,tf:curTF});
-  const h20=c.slice(-20).map(x=>x.high),l20=c.slice(-20).map(x=>x.low);
-  const maxH=Math.max(...h20),tol=maxH*0.02;
-  const peaks=h20.filter(h=>h>maxH-tol);
-  if(peaks.length>=2)out.push({name:'Double Sommet',bias:'baissier',color:'#ef4444',prob:64,idx:n-10,tf:curTF});
-  if(l20[l20.length-1]>l20[0]&&(maxH-Math.min(...h20))/maxH<0.02)out.push({name:'Triangle Ascendant',bias:'haussier',color:'#22c55e',prob:68,idx:n-15,tf:curTF});
-  if(l20[l20.length-1]<l20[0]&&(maxH-Math.min(...h20))/maxH<0.02)out.push({name:'Triangle Descendant',bias:'baissier',color:'#ef4444',prob:66,idx:n-15,tf:curTF});
+  const body=Math.abs(last.close-last.open),range=last.high-last.low||.001;
+  const lw=Math.min(last.open,last.close)-last.low, uw=last.high-Math.max(last.open,last.close);
+  if(body/range<.1) out.push({name:'Doji',bias:'neutre',color:'#a0a0a0',prob:50,idx:n-1});
+  if(lw>body*2&&uw<body*.5&&last.close>last.open) out.push({name:'Marteau',bias:'haussier',color:'#22c55e',prob:60,idx:n-1});
+  if(uw>body*2&&lw<body*.5&&last.close<last.open) out.push({name:'Étoile Filante',bias:'baissier',color:'#ef4444',prob:62,idx:n-1});
+  if(last.close>last.open&&prev.close<prev.open&&last.open<prev.close&&last.close>prev.open) out.push({name:'Englobante Haussière',bias:'haussier',color:'#22c55e',prob:63,idx:n-1});
+  if(last.close<last.open&&prev.close>prev.open&&last.open>prev.close&&last.close<prev.open) out.push({name:'Englobante Baissière',bias:'baissier',color:'#ef4444',prob:61,idx:n-1});
+  const h20=c.slice(-20).map(x=>x.high), l20=c.slice(-20).map(x=>x.low);
+  const mxH=Math.max(...h20), tol=mxH*.02;
+  if(h20.filter(h=>h>mxH-tol).length>=2) out.push({name:'Double Sommet',bias:'baissier',color:'#ef4444',prob:64,idx:n-10});
+  if(l20[l20.length-1]>l20[0]&&(mxH-Math.min(...h20))/mxH<.025) out.push({name:'Triangle Ascendant',bias:'haussier',color:'#22c55e',prob:68,idx:n-15});
   return out;
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// FORMAT
-// ═══════════════════════════════════════════════════════════════════════
-function fp(p){if(!p&&p!==0)return '—';if(p>=10000)return p.toLocaleString('fr-FR',{maximumFractionDigits:0});if(p>=1)return p.toFixed(2);return p.toFixed(5);}
-function bc(b){return {Haussier:'#22c55e',Baissier:'#ef4444',Neutre:'#a0a0a0','Achat fort':'#22c55e',Achat:'#4ade80',Vente:'#f87171','Vente forte':'#ef4444'}[b]||'#a0a0a0';}
-function bb(b){const m={Haussier:'bg',Baissier:'br',Neutre:'bw','Achat fort':'bg',Achat:'bg',Vente:'br','Vente forte':'br'};return `<span class="b ${m[b]||'bw'}">${b||'—'}</span>`;}
-function arrow(bias){return bias==='haussier'?'▲':bias==='baissier'?'▼':'◆';}
+// ═══ FORMAT ═══
+function fp(p) { if(!p&&p!==0)return '—'; if(p>=10000)return p.toLocaleString('fr-FR',{maximumFractionDigits:0}); if(p>=1)return p.toFixed(2); return p.toFixed(5); }
+function bc(b) { return {Haussier:'#22c55e',Baissier:'#ef4444',Neutre:'#a0a0a0','Achat fort':'#22c55e',Achat:'#4ade80',Vente:'#f87171','Vente forte':'#ef4444'}[b]||'#a0a0a0'; }
+function bb(b) { const m={Haussier:'bg',Baissier:'br',Neutre:'bw','Achat fort':'bg',Achat:'bg',Vente:'br','Vente forte':'br'}; return `<span class="b ${m[b]||'bw'}">${b||'—'}</span>`; }
+function arw(bias) { return bias==='haussier'?'▲':bias==='baissier'?'▼':'◆'; }
 
-// ═══════════════════════════════════════════════════════════════════════
-// INIT & REFRESH
-// ═══════════════════════════════════════════════════════════════════════
-async function init(){
+// ═══ INIT ═══
+async function init() {
   await loadAll();
   renderTicker();
   renderScanner();
@@ -483,1044 +392,657 @@ async function init(){
   renderLearnPatterns();
   renderLearnDict();
   renderLearnCours();
-  loadChart();
-  startCountdown();
+  startCD();
 }
 
-async function loadAll(){
-  const all=[...cryptos,...METALS_LIST,...FOREX_LIST];
-  await Promise.all(all.map(async a=>{
-    const p=await fetchPrice(a);
-    if(p)prices[a]=p;
+async function loadAll() {
+  const all = [...cryptos, ...METALS, ...FOREX];
+  await Promise.all(all.map(async a => {
+    prices[a] = await fetchPrice(a);
   }));
-  await Promise.all(all.map(async a=>{
-    if(!candles[a])candles[a]={};
-    if(!scanData[a])scanData[a]={};
-    for(const tf of ['1h','4h','1D','1W']){
-      const c=await fetchCandles(a,tf);
-      candles[a][tf]=c;
-      scanData[a][tf]={bias:trend(c),patterns:detectPatterns(c),rsi:rsi(c),sma20:sma(c,20),sma50:sma(c,50)};
+  await Promise.all(all.map(async a => {
+    if(!cdata[a]) cdata[a] = {};
+    if(!scanD[a]) scanD[a] = {};
+    for (const tf of ['1h','4h','1D','1W']) {
+      const c = await fetchCandles(a, tf);
+      cdata[a][tf] = c;
+      scanD[a][tf] = { bias:calcTrend(c), patterns:detectPat(c), rsi:calcRSI(c), sma20:calcSMA(c,20), sma50:calcSMA(c,50) };
     }
   }));
-  document.getElementById('lastUpd').textContent='Mis à jour '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('updL').textContent = 'Maj ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 }
 
-function startCountdown(){
-  if(cdInterval)clearInterval(cdInterval);
-  cdLeft=30;
-  cdInterval=setInterval(async()=>{
+function startCD() {
+  if(cdTimer) clearInterval(cdTimer);
+  cdLeft = 30;
+  cdTimer = setInterval(async () => {
     cdLeft--;
-    const pct=cdLeft/30;
-    const circ=2*Math.PI*7;
-    document.getElementById('cdCircle').setAttribute('stroke-dashoffset',(circ*(1-pct)).toFixed(1));
-    document.getElementById('cdLabel').textContent=cdLeft+'s';
-    if(cdLeft<=0){
+    const pct = cdLeft/30;
+    document.getElementById('cdC').setAttribute('stroke-dashoffset', (50*(1-pct)).toFixed(1));
+    document.getElementById('cdL').textContent = cdLeft+'s';
+    if(cdLeft<=0) {
       cdLeft=30;
       await loadAll();
       renderTicker();
       renderScanner();
-      if(document.getElementById('tab-graphique').style.display!=='none')loadChart();
+      if(document.getElementById('tab-graphique').classList.contains('on')) loadChart();
     }
-  },1000);
+  }, 1000);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// TICKER
-// ═══════════════════════════════════════════════════════════════════════
-function renderTicker(){
-  const bar=document.getElementById('tickerBar');
-  const all=[...cryptos,...METALS_LIST];
-  bar.innerHTML=all.map(a=>{
-    const p=prices[a];if(!p)return '';
-    const up=p.change24h>=0;
+// ═══ TICKER ═══
+function renderTicker() {
+  document.getElementById('tickerBar').innerHTML = [...cryptos,...METALS].map(a => {
+    const p = prices[a]; if(!p) return '';
+    const up = p.chg >= 0;
     return `<div class="tick" onclick="goChart('${a}')">
-      <span class="tick-sym">${a}</span>
-      <span class="tick-chg" style="color:${up?'#22c55e':'#ef4444'}">${up?'+':''}${p.change24h.toFixed(2)}%</span>
-      <span class="tick-price">${fp(p.price)}</span>
+      <span class="tick-s">${a}</span>
+      <span style="margin-left:3px;color:${up?'#22c55e':'#ef4444'}">${up?'+':''}${p.chg.toFixed(2)}%</span>
+      <span style="margin-left:3px;color:var(--t3)">${fp(p.price)}</span>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// SCANNER
-// ═══════════════════════════════════════════════════════════════════════
-function renderScanner(){
-  varMode=document.getElementById('varSel').value;
-  document.getElementById('varHdr').textContent=varMode;
-  // Crypto
-  document.getElementById('cryptoBody').innerHTML=cryptos.map((a,ri)=>{
-    const p=prices[a];
-    const chg=p?p.change24h:0;
-    const up=chg>=0;
-    const s=scanData[a]||{};
-    const s1=s['1h']||{},s4=s['4h']||{},s1d=s['1D']||{};
-    const r=s1.rsi?s1.rsi.toFixed(0):'—';
-    const pat=s1.patterns?.[0];
-    const sig=globalBias(a);
+// ═══ SCANNER ═══
+function renderScanner() {
+  document.getElementById('varH').textContent = document.getElementById('varSel').value;
+  document.getElementById('cBody').innerHTML = cryptos.map(a => {
+    const p=prices[a], s1=scanD[a]?.['1h']||{}, s4=scanD[a]?.['4h']||{}, s1d=scanD[a]?.['1D']||{};
+    const rsi=s1.rsi?s1.rsi.toFixed(0):'—';
+    const up=p?.chg>=0, pat=s1.patterns?.[0];
     return `<tr onclick="goChart('${a}')">
       <td style="font-weight:600">${a}<br><span style="font-size:9px;color:var(--t3)">Spot USDT</span></td>
-      <td class="c" style="font-family:monospace;font-size:11px">${p?fp(p.price):'—'}</td>
-      <td class="c" style="color:${up?'#22c55e':'#ef4444'};font-size:11px">${p?(up?'+':'')+chg.toFixed(2)+'%':'—'}</td>
-      <td class="c">${bb(s1.bias)}</td>
-      <td class="c">${bb(s4.bias)}</td>
-      <td class="c">${bb(s1d.bias)}</td>
-      <td class="c" style="color:${r>70?'#ef4444':r<30?'#22c55e':'var(--t1)';font-weight:600}">${r}</td>
+      <td class="c" style="font-family:monospace">${p?fp(p.price):'—'}</td>
+      <td class="c" style="color:${up?'#22c55e':'#ef4444'}">${p?(up?'+':'')+p.chg.toFixed(2)+'%':'—'}</td>
+      <td class="c">${bb(s1.bias)}</td><td class="c">${bb(s4.bias)}</td><td class="c">${bb(s1d.bias)}</td>
+      <td class="c" style="color:${rsi>70?'#ef4444':rsi<30?'#22c55e':'var(--t1)'};font-weight:600">${rsi}</td>
       <td class="c" style="font-size:10px;color:${pat?pat.color:'var(--t3)'}">${pat?pat.name:'—'}</td>
-      <td class="c">${bb(sig)}</td>
-      <td onclick="event.stopPropagation()">${cryptos.length>1?`<button onclick="removeCrypto('${a}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px">×</button>`:''}</td>
+      <td class="c">${bb(calcBias(a))}</td>
+      <td onclick="event.stopPropagation()">${cryptos.length>1?`<button onclick="rmCrypto('${a}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px">×</button>`:''}</td>
     </tr>`;
   }).join('');
-  // Metals
-  document.getElementById('metalsBody').innerHTML=METALS_LIST.map(a=>{
-    const p=prices[a];
-    const chg=p?p.change24h:0;
-    const up=chg>=0;
-    const s=scanData[a]||{};
-    const s1=s['1h']||{},s4=s['4h']||{},s1d=s['1D']||{};
-    const r=s1.rsi?s1.rsi.toFixed(0):'—';
-    const name=a==='PAXG'?'Or (PAXG)':'Or (XAUT)';
+  document.getElementById('mBody').innerHTML = METALS.map(a => {
+    const p=prices[a], s1=scanD[a]?.['1h']||{}, s4=scanD[a]?.['4h']||{}, s1d=scanD[a]?.['1D']||{};
+    const rsi=s1.rsi?s1.rsi.toFixed(0):'—';
+    const up=p?.chg>=0;
+    const nm = a==='PAXG'?'Or (PAXG)':'Or (XAUT)';
     return `<tr onclick="goChart('${a}')">
-      <td style="font-weight:600">${name}<br><span style="font-size:9px;color:var(--t3)">Token indexé or — Binance</span></td>
-      <td class="c" style="font-family:monospace;font-size:11px">${p?fp(p.price):'—'}</td>
-      <td class="c" style="color:${up?'#22c55e':'#ef4444'};font-size:11px">${p?(up?'+':'')+chg.toFixed(2)+'%':'—'}</td>
-      <td class="c">${bb(s1.bias)}</td>
-      <td class="c">${bb(s4.bias)}</td>
-      <td class="c">${bb(s1d.bias)}</td>
-      <td class="c" style="color:${r>70?'#ef4444':r<30?'#22c55e':'var(--t1)'}">${r}</td>
-      <td class="c">${bb(globalBias(a))}</td>
+      <td style="font-weight:600">${nm}<br><span style="font-size:9px;color:var(--t3)">1 token = 1 once d'or</span></td>
+      <td class="c" style="font-family:monospace">${p?fp(p.price):'—'}</td>
+      <td class="c" style="color:${up?'#22c55e':'#ef4444'}">${p?(up?'+':'')+p.chg.toFixed(2)+'%':'—'}</td>
+      <td class="c">${bb(s1.bias)}</td><td class="c">${bb(s4.bias)}</td><td class="c">${bb(s1d.bias)}</td>
+      <td class="c" style="color:${rsi>70?'#ef4444':rsi<30?'#22c55e':'var(--t1)'}">${rsi}</td>
+      <td class="c">${bb(calcBias(a))}</td>
     </tr>`;
   }).join('');
-  // Forex
-  document.getElementById('forexBody').innerHTML=FOREX_LIST.map(a=>{
-    const p=prices[a];
-    const chg=p?p.change24h:0;
-    const up=chg>=0;
-    const s=scanData[a]||{};
-    const s1=s['1h']||{},s4=s['4h']||{},s1d=s['1D']||{};
-    const r=s1.rsi?s1.rsi.toFixed(0):'—';
+  document.getElementById('fBody').innerHTML = FOREX.map(a => {
+    const p=prices[a], s1=scanD[a]?.['1h']||{}, s4=scanD[a]?.['4h']||{}, s1d=scanD[a]?.['1D']||{};
+    const rsi=s1.rsi?s1.rsi.toFixed(0):'—';
+    const up=p?.chg>=0;
     return `<tr onclick="goChart('${a}')">
       <td style="font-weight:600">${a}</td>
-      <td class="c" style="font-family:monospace;font-size:11px">${p?fp(p.price):'—'}</td>
-      <td class="c" style="color:${up?'#22c55e':'#ef4444'};font-size:11px">${p?(up?'+':'')+chg.toFixed(2)+'%':'—'}</td>
-      <td class="c">${bb(s1.bias)}</td>
-      <td class="c">${bb(s4.bias)}</td>
-      <td class="c">${bb(s1d.bias)}</td>
-      <td class="c">${r}</td>
-      <td class="c">${bb(globalBias(a))}</td>
+      <td class="c" style="font-family:monospace">${p?fp(p.price):'—'}</td>
+      <td class="c" style="color:${up?'#22c55e':'#ef4444'}">${p?(up?'+':'')+p.chg.toFixed(2)+'%':'—'}</td>
+      <td class="c">${bb(s1.bias)}</td><td class="c">${bb(s4.bias)}</td><td class="c">${bb(s1d.bias)}</td>
+      <td class="c">${rsi}</td><td class="c">${bb(calcBias(a))}</td>
     </tr>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// ADD CRYPTO
-// ═══════════════════════════════════════════════════════════════════════
-function toggleAdd(){
-  const b=document.getElementById('addBox');
-  b.style.display=b.style.display==='none'?'block':'none';
-  if(b.style.display==='block')document.getElementById('cryptoQ').focus();
+// ═══ ADD CRYPTO ═══
+function toggleAddBox() {
+  const b = document.getElementById('addBox');
+  b.style.display = b.style.display==='none' ? 'block' : 'none';
+  if(b.style.display==='block') document.getElementById('cryptoQ').focus();
 }
-function searchCrypto(q){
-  const dd=document.getElementById('ddList');
+function searchC(q) {
+  const dd = document.getElementById('ddl');
   if(!q){dd.style.display='none';return;}
-  const matches=KNOWN_CRYPTOS.filter(s=>s.toLowerCase().includes(q.toLowerCase())&&!cryptos.includes(s)).slice(0,8);
-  if(!matches.length){dd.style.display='none';return;}
+  const m = KNOWN.filter(s=>s.toLowerCase().includes(q.toLowerCase())&&!cryptos.includes(s)).slice(0,8);
+  if(!m.length){dd.style.display='none';return;}
   dd.style.display='block';
-  dd.innerHTML=matches.map(s=>`<div class="dd-item" onclick="addCrypto('${s}')">${s} <span style="color:var(--t3);font-size:10px">USDT</span></div>`).join('');
+  dd.innerHTML = m.map(s=>`<div class="ddi" onclick="addCrypto('${s}')">${s} <span style="color:var(--t3);font-size:10px">USDT</span></div>`).join('');
 }
-function addCrypto(sym){
-  if(!sym)return;
-  if(!cryptos.includes(sym))cryptos.push(sym);
+function addCrypto(sym) {
+  if(!cryptos.includes(sym)) cryptos.push(sym);
   document.getElementById('cryptoQ').value='';
-  document.getElementById('ddList').style.display='none';
+  document.getElementById('ddl').style.display='none';
   document.getElementById('addBox').style.display='none';
   renderAssetBtns();
   loadAll().then(()=>{renderTicker();renderScanner();});
 }
-function removeCrypto(s){
-  cryptos=cryptos.filter(x=>x!==s);
-  renderAssetBtns();renderScanner();
+function rmCrypto(s) {
+  cryptos = cryptos.filter(x=>x!==s);
+  renderAssetBtns(); renderScanner();
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// CHART
-// ═══════════════════════════════════════════════════════════════════════
-const ALL_ASSETS=()=>[...cryptos,...METALS_LIST,...FOREX_LIST];
+// ═══ CHART ═══
+function allA() { return [...cryptos,...METALS,...FOREX]; }
 
-function renderAssetBtns(){
-  document.getElementById('assetBtns').innerHTML=ALL_ASSETS().map(a=>
-    `<button class="btn${a===curAsset?' on':''}" onclick="selAsset('${a}')">${a}</button>`
+function renderAssetBtns() {
+  document.getElementById('aBtns').innerHTML = allA().map(a=>
+    `<button class="btn${a===curA?' on':''}" onclick="selA('${a}')">${a}</button>`
   ).join('');
 }
-function renderTFBtns(){
-  document.getElementById('tfBtns').innerHTML=ALL_TFS.map(t=>
-    `<button class="btn${t===curTF?' on':''}" style="font-size:11px" onclick="selTF('${t}')">${t}</button>`
+function renderTFBtns() {
+  document.getElementById('tfBtns').innerHTML = TFS.map(t=>
+    `<button class="btn${t===curTF?' on':''}" style="font-size:10px" onclick="selTF('${t}')">${t}</button>`
   ).join('');
 }
-function selAsset(a){curAsset=a;renderAssetBtns();loadChart();}
+function selA(a){curA=a;renderAssetBtns();loadChart();}
 function selTF(t){curTF=t;renderTFBtns();loadChart();}
-function goChart(a){curAsset=a;goTab('graphique');renderAssetBtns();loadChart();}
+function goChart(a){curA=a;goTab('graphique');renderAssetBtns();loadChart();}
 
-async function loadChart(){
-  if(!candles[curAsset]?.[curTF]){
-    const c=await fetchCandles(curAsset,curTF);
-    if(!candles[curAsset])candles[curAsset]={};
-    candles[curAsset][curTF]=c;
+async function loadChart() {
+  if(!cdata[curA]?.[curTF]) {
+    const c = await fetchCandles(curA, curTF);
+    if(!cdata[curA])cdata[curA]={};
+    cdata[curA][curTF] = c;
   }
-  renderChart();
+  drawChart();
 }
 
-function renderChart(){
-  const c=candles[curAsset]?.[curTF];
-  if(!c||!c.length)return;
-  const wrap=document.getElementById('chartWrap');
+function drawChart() {
+  const c = cdata[curA]?.[curTF];
+  if(!c||!c.length) return;
+  const wrap = document.getElementById('chartWrap');
   if(chart){chart.remove();chart=null;}
-  chart=LightweightCharts.createChart(wrap,{
-    width:wrap.clientWidth,height:420,
-    layout:{background:{color:'#0a0a0a'},textColor:'#606060'},
+  chart = LightweightCharts.createChart(wrap, {
+    width: wrap.clientWidth, height: 380,
+    layout:{background:{color:'#0a0a0a'},textColor:'#555'},
     grid:{vertLines:{color:'rgba(255,255,255,0.03)'},horzLines:{color:'rgba(255,255,255,0.03)'}},
-    crosshair:{mode:LightweightCharts.CrosshairMode.Normal,vertLine:{color:'rgba(255,255,255,0.2)'},horzLine:{color:'rgba(255,255,255,0.2)'}},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
     rightPriceScale:{borderColor:'rgba(255,255,255,0.06)'},
-    timeScale:{borderColor:'rgba(255,255,255,0.06)',timeVisible:true,secondsVisible:false},
+    timeScale:{borderColor:'rgba(255,255,255,0.06)',timeVisible:true},
     handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},
     handleScale:{mouseWheel:true,pinch:true,axisPressedMouseMove:true},
   });
-
-  cSeries=chart.addCandlestickSeries({upColor:'#22c55e',downColor:'#ef4444',borderUpColor:'#22c55e',borderDownColor:'#ef4444',wickUpColor:'#22c55e',wickDownColor:'#ef4444'});
+  cSeries = chart.addCandlestickSeries({upColor:'#22c55e',downColor:'#ef4444',borderUpColor:'#22c55e',borderDownColor:'#ef4444',wickUpColor:'#22c55e',wickDownColor:'#ef4444'});
   cSeries.setData(c);
-
   if(showVol){
-    const vs=chart.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:'',scaleMargins:{top:0.82,bottom:0}});
-    vs.setData(c.map(x=>({time:x.time,value:x.volume,color:x.close>=x.open?'rgba(34,197,94,0.3)':'rgba(239,68,68,0.3)'})));
+    const vs=chart.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:'',scaleMargins:{top:0.83,bottom:0}});
+    vs.setData(c.map(x=>({time:x.time,value:x.volume,color:x.close>=x.open?'rgba(34,197,94,0.25)':'rgba(239,68,68,0.25)'})));
   }
-  if(showSMA20){
+  if(showS20){
     const ss=chart.addLineSeries({color:'#3b82f6',lineWidth:1.5,priceLineVisible:false,lastValueVisible:false});
-    const d=[];for(let i=19;i<c.length;i++){const v=c.slice(i-19,i+1).reduce((s,x)=>s+x.close,0)/20;d.push({time:c[i].time,value:v});}
+    const d=[];for(let i=19;i<c.length;i++){d.push({time:c[i].time,value:c.slice(i-19,i+1).reduce((s,x)=>s+x.close,0)/20});}
     ss.setData(d);
   }
-  if(showSMA50&&c.length>=50){
+  if(showS50&&c.length>=50){
     const ss=chart.addLineSeries({color:'#f59e0b',lineWidth:1.5,lineStyle:2,priceLineVisible:false,lastValueVisible:false});
-    const d=[];for(let i=49;i<c.length;i++){const v=c.slice(i-49,i+1).reduce((s,x)=>s+x.close,0)/50;d.push({time:c[i].time,value:v});}
+    const d=[];for(let i=49;i<c.length;i++){d.push({time:c[i].time,value:c.slice(i-49,i+1).reduce((s,x)=>s+x.close,0)/50});}
     ss.setData(d);
   }
-
   // S/R
   const ap=c.flatMap(x=>[x.high,x.low]).sort((a,b)=>a-b);
   const sr=[];let ii=0;
   while(ii<ap.length){
-    const base=ap[ii],cl=ap.filter(p=>Math.abs(p-base)/base<0.006);
-    if(cl.length>=6){const avg=cl.reduce((s,p)=>s+p,0)/cl.length;if(!sr.find(x=>Math.abs(x-avg)/avg<0.008))sr.push(avg);}
+    const base=ap[ii],cl=ap.filter(p=>Math.abs(p-base)/base<.006);
+    if(cl.length>=6){const avg=cl.reduce((s,p)=>s+p,0)/cl.length;if(!sr.find(x=>Math.abs(x-avg)/avg<.008))sr.push(avg);}
     ii+=cl.length||1;
   }
-  sr.slice(0,8).forEach(lvl=>{
-    cSeries.createPriceLine({price:lvl,color:'rgba(245,158,11,0.35)',lineWidth:1,lineStyle:2,axisLabelVisible:false});
-  });
-
+  sr.slice(0,8).forEach(lvl=>cSeries.createPriceLine({price:lvl,color:'rgba(245,158,11,0.3)',lineWidth:1,lineStyle:2,axisLabelVisible:false}));
   // Patterns
   if(showPat){
-    const pats=detectPatterns(c);
+    const pats=detectPat(c);
     if(pats.length){
       cSeries.setMarkers(pats.map(p=>{
         const idx=Math.min(Math.max(p.idx,0),c.length-1);
         return {time:c[idx].time,position:p.bias==='haussier'?'belowBar':'aboveBar',color:p.color,shape:p.bias==='haussier'?'arrowUp':p.bias==='baissier'?'arrowDown':'circle',text:`${p.name} ${p.prob}%`};
       }));
-      document.getElementById('patLegend').innerHTML=pats.map(p=>
-        `<div style="display:flex;align-items:center;gap:4px;font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 7px">
-          <span style="color:${p.color}">${arrow(p.bias)}</span>
+      document.getElementById('patLeg').innerHTML = pats.map(p=>
+        `<div style="display:flex;align-items:center;gap:4px;font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 7px">
+          <span style="color:${p.color}">${arw(p.bias)}</span>
           <span style="color:${p.color};font-weight:600">${p.name}</span>
-          <span style="color:var(--t3)">${p.prob}% • ${p.tf}</span>
-          <span style="color:var(--t3);cursor:pointer;margin-left:2px" onclick="showPatDetail('${p.name}')">?</span>
+          <span style="color:var(--t3)">${p.prob}%</span>
         </div>`
       ).join('');
     } else {
-      document.getElementById('patLegend').innerHTML='<span style="font-size:11px;color:var(--t3)">Aucun pattern sur ce timeframe</span>';
+      document.getElementById('patLeg').innerHTML='<span style="font-size:10px;color:var(--t3)">Aucun pattern sur ce timeframe</span>';
     }
   }
-
-  const last=c[c.length-1];
-  document.getElementById('chartSym').textContent=curAsset+' / '+curTF;
-  document.getElementById('chartPx').textContent=fp(last.close);
-  const tr=trend(c);
-  const cb=document.getElementById('chartBias');
-  cb.textContent=tr;cb.className='b '+(tr==='Haussier'?'bg':tr==='Baissier'?'br':'bw');
-  const r=rsi(c),s20=sma(c,20),s50=sma(c,50);
+  const last=c[c.length-1], r=calcRSI(c), s20=calcSMA(c,20), s50=calcSMA(c,50), tr=calcTrend(c);
+  document.getElementById('cSym').textContent=curA+' / '+curTF;
+  document.getElementById('cPx').textContent=fp(last.close);
+  const cb=document.getElementById('cBias');
+  cb.textContent=tr; cb.className='b '+(tr==='Haussier'?'bg':tr==='Baissier'?'br':'bw');
   document.getElementById('iRSI').innerHTML=`RSI: <strong style="color:${r>70?'#ef4444':r<30?'#22c55e':'var(--t1)'}">${r.toFixed(0)}</strong>`;
-  document.getElementById('iSMA20').textContent='SMA20: '+(s20?fp(s20):'—');
-  document.getElementById('iSMA50').textContent='SMA50: '+(s50?fp(s50):'—');
-  document.getElementById('mtfSym').textContent=curAsset;
+  document.getElementById('iS20').textContent='SMA20: '+(s20?fp(s20):'—');
+  document.getElementById('iS50').textContent='SMA50: '+(s50?fp(s50):'—');
+  document.getElementById('mtfSym').textContent=curA;
   renderMTF();
   chart.timeScale().fitContent();
-  setupDrawing();
+  setupDraw();
 }
 
-function togInd(id){
-  if(id==='sma20'){showSMA20=!showSMA20;document.getElementById('bSMA20').className='btn'+(showSMA20?' on':'');}
-  if(id==='sma50'){showSMA50=!showSMA50;document.getElementById('bSMA50').className='btn'+(showSMA50?' on':'');}
+function togI(id) {
+  if(id==='s20'){showS20=!showS20;document.getElementById('bS20').className='btn'+(showS20?' on':'');}
+  if(id==='s50'){showS50=!showS50;document.getElementById('bS50').className='btn'+(showS50?' on':'');}
   if(id==='vol'){showVol=!showVol;document.getElementById('bVol').className='btn'+(showVol?' on':'');}
   if(id==='pat'){showPat=!showPat;document.getElementById('bPat').className='btn'+(showPat?' on':'');}
-  renderChart();
+  drawChart();
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// DRAWING TOOLS
-// ═══════════════════════════════════════════════════════════════════════
-function setTool(t){
-  drawTool=t;
-  ['dNone','dLine','dHLine','dRect','dFib','dText'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.className='dtool';
+// ═══ DRAWING ═══
+function setDT(t) {
+  dtool=t;
+  ['None','Line','HL','Fib','Txt'].forEach(id=>{const el=document.getElementById('dt'+id);if(el)el.className='dt';});
+  const map={none:'dtNone',line:'dtLine',hline:'dtHL',fib:'dtFib',text:'dtTxt'};
+  if(map[t]){const el=document.getElementById(map[t]);if(el)el.className='dt on';}
+  document.getElementById('chartWrap').style.cursor=t==='none'?'default':'crosshair';
+}
+function setupDraw() {
+  const w=document.getElementById('chartWrap');
+  w.addEventListener('click',e=>{
+    if(dtool==='none'||!chart)return;
+    const rect=w.getBoundingClientRect();
+    const y=e.clientY-rect.top;
+    if(dtool==='hline'||dtool==='fib'){
+      const price=chart.priceScale('right').coordinateToPrice(y);
+      if(price&&cSeries){
+        const pl=cSeries.createPriceLine({price,color:'rgba(255,255,255,0.4)',lineWidth:1,lineStyle:dtool==='fib'?2:0,axisLabelVisible:true,title:dtool==='fib'?'Fib':'─'});
+        drawings.push({pl});
+      }
+    }
+    if(dtool==='text'){
+      const label=prompt('Texte :');
+      if(label&&chart){
+        const price=chart.priceScale('right').coordinateToPrice(y);
+        if(price&&cSeries){const pl=cSeries.createPriceLine({price,color:'rgba(255,255,255,0.5)',lineWidth:1,lineStyle:3,axisLabelVisible:true,title:label});drawings.push({pl});}
+      }
+    }
   });
-  const map={none:'dNone',line:'dLine',hline:'dHLine',rect:'dRect',fib:'dFib',text:'dText'};
-  if(map[t]){const el=document.getElementById(map[t]);if(el)el.className='dtool on';}
-  const wrap=document.getElementById('chartWrap');
-  wrap.style.cursor=t==='none'?'default':'crosshair';
 }
+function clearDraw(){drawings=[];drawChart();}
+function undoDraw(){drawings.pop();drawChart();}
 
-function setupDrawing(){
-  const wrap=document.getElementById('chartWrap');
-  if(!wrap)return;
-  wrap.onmousedown=wrap.ontouchstart=startDraw;
-  wrap.onmousemove=wrap.ontouchmove=moveDraw;
-  wrap.onmouseup=wrap.ontouchend=endDraw;
-}
-
-let drawStart=null;
-function getPos(e,wrap){
-  const rect=wrap.getBoundingClientRect();
-  const touch=e.touches?e.touches[0]:e;
-  return {x:touch.clientX-rect.left,y:touch.clientY-rect.top};
-}
-
-function startDraw(e){
-  if(drawTool==='none')return;
-  e.preventDefault();
-  const wrap=document.getElementById('chartWrap');
-  drawStart=getPos(e,wrap);
-  if(drawTool==='text'){
-    const label=prompt('Texte :');
-    if(label&&chart){
-      const price=chart.priceScale('right').coordinateToPrice(drawStart.y);
-      drawings.push({type:'text',price,label});
-      if(cSeries)cSeries.createPriceLine({price,color:'rgba(255,255,255,0.6)',lineWidth:1,lineStyle:3,axisLabelVisible:true,title:label});
-    }
-    drawStart=null;return;
-  }
-  if(drawTool==='hline'&&chart){
-    const price=chart.priceScale('right').coordinateToPrice(drawStart.y);
-    if(price&&cSeries){
-      const pl=cSeries.createPriceLine({price,color:'rgba(255,255,255,0.5)',lineWidth:1,lineStyle:0,axisLabelVisible:true,title:'─'});
-      drawings.push({type:'hline',priceLine:pl,price});
-    }
-    drawStart=null;
-  }
-}
-function moveDraw(e){if(!drawStart||drawTool==='none')return;e.preventDefault();}
-function endDraw(e){if(!drawStart)return;drawStart=null;}
-
-function clearDrawings(){
-  drawings=[];
-  renderChart();
-}
-function undoDrawing(){
-  drawings.pop();
-  renderChart();
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// INDICATOR INFO
-// ═══════════════════════════════════════════════════════════════════════
-const IND={
-  RSI:{name:'RSI — Relative Strength Index',desc:'Oscillateur entre 0 et 100 mesurant la vitesse et l\'amplitude des variations de prix sur 14 périodes. C\'est l\'un des indicateurs les plus utilisés au monde.',formula:'RSI = 100 - 100/(1+RS) | RS = moyenne gains / moyenne pertes',levels:[{v:'< 30',l:'Survente',c:'#22c55e',m:'Le marché a trop baissé trop vite. Les vendeurs s\'épuisent. Signal d\'achat potentiel — attendre confirmation.'},{v:'30–50',l:'Zone neutre baissière',c:'#a0a0a0',m:'Momentum faible. Tendance plutôt baissière mais sans signal clair.'},{v:'50–70',l:'Zone neutre haussière',c:'#a0a0a0',m:'Momentum positif. Tendance haussière soutenue.'},{v:'> 70',l:'Surachat',c:'#ef4444',m:'Le marché a trop monté trop vite. Les acheteurs s\'épuisent. Signal de prudence.'}]},
-  SMA20:{name:'SMA20 — Moyenne Mobile Simple 20',desc:'Moyenne arithmétique des 20 dernières clôtures. Indique la tendance court terme et sert de support/résistance dynamique.',formula:'SMA20 = (C1+C2+...+C20) / 20',levels:[{v:'Prix > SMA20',l:'Tendance haussière CT',c:'#22c55e',m:'Les acheteurs dominent sur les 20 dernières périodes. La SMA20 agit comme support dynamique.'},{v:'Prix < SMA20',l:'Tendance baissière CT',c:'#ef4444',m:'Les vendeurs dominent. La SMA20 agit comme résistance dynamique.'}]},
-  SMA50:{name:'SMA50 — Moyenne Mobile Simple 50',desc:'Moyenne des 50 dernières clôtures. Tendance moyen terme. Le Golden/Death Cross avec la SMA20 est un signal classique.',formula:'SMA50 = (C1+C2+...+C50) / 50',levels:[{v:'SMA20 > SMA50',l:'Golden Cross',c:'#22c55e',m:'Signal haussier fort : la tendance court terme dépasse le moyen terme. Début de cycle haussier potentiel.'},{v:'SMA20 < SMA50',l:'Death Cross',c:'#ef4444',m:'Signal baissier fort : la tendance court terme passe sous le moyen terme.'}]},
-  VOL:{name:'Volume',desc:'Nombre d\'unités échangées sur la période. Le volume est la mesure de conviction du marché — il confirme ou invalide tout mouvement.',formula:'Volume brut de la période',levels:[{v:'Hausse + Volume fort',l:'Tendance saine',c:'#22c55e',m:'La hausse est soutenue par de vrais acheteurs. Signal très fiable.'},{v:'Hausse + Volume faible',l:'Divergence baissière',c:'#ef4444',m:'La hausse s\'essouffle. Manque de conviction. Retournement possible.'},{v:'Pic de volume',l:'Point clé',c:'#f59e0b',m:'Les pics de volume marquent souvent des retournements majeurs ou des cassures importantes.'}]},
+// ═══ INDICATOR INFO ═══
+const INDS = {
+  RSI:{name:'RSI — Relative Strength Index',desc:'Oscillateur entre 0 et 100 mesurant la vitesse et l\'amplitude des variations de prix sur 14 périodes.',formula:'RSI = 100 - 100/(1+RS) | RS = moy. gains / moy. pertes',levels:[{v:'< 30',l:'Survente',c:'#22c55e',m:'Le marché a trop baissé. Signal d\'achat potentiel — attendre confirmation.'},{v:'30–50',l:'Neutre baissier',c:'#a0a0a0',m:'Momentum faible.'},{v:'50–70',l:'Neutre haussier',c:'#a0a0a0',m:'Momentum positif.'},{v:'> 70',l:'Surachat',c:'#ef4444',m:'Le marché a trop monté. Signal de prudence.'}]},
+  SMA20:{name:'SMA20 — Moyenne Mobile 20',desc:'Moyenne des 20 dernières clôtures. Tendance court terme et support/résistance dynamique.',formula:'SMA20 = (C1+C2+...+C20) / 20',levels:[{v:'Prix > SMA20',l:'Tendance haussière CT',c:'#22c55e',m:'Les acheteurs dominent. SMA20 = support dynamique.'},{v:'Prix < SMA20',l:'Tendance baissière CT',c:'#ef4444',m:'Les vendeurs dominent. SMA20 = résistance dynamique.'}]},
+  SMA50:{name:'SMA50 — Moyenne Mobile 50',desc:'Moyenne des 50 dernières clôtures. Tendance moyen terme.',formula:'SMA50 = (C1+C2+...+C50) / 50',levels:[{v:'SMA20 > SMA50',l:'Golden Cross',c:'#22c55e',m:'Signal haussier fort. Début de cycle haussier potentiel.'},{v:'SMA20 < SMA50',l:'Death Cross',c:'#ef4444',m:'Signal baissier fort. Début de cycle baissier potentiel.'}]},
+  VOL:{name:'Volume',desc:'Unités échangées sur la période. Mesure la conviction du marché.',formula:'Volume brut de la période',levels:[{v:'Hausse + Fort vol.',l:'Tendance saine',c:'#22c55e',m:'La hausse est soutenue par de vrais acheteurs.'},{v:'Hausse + Faible vol.',l:'Divergence baissière',c:'#ef4444',m:'La hausse s\'essouffle. Retournement possible.'},{v:'Pic de volume',l:'Point clé',c:'#f59e0b',m:'Les pics marquent souvent des retournements ou cassures.'}]},
 };
-
-function showInd(k){
+let curInd = null;
+function showInd(k) {
   const p=document.getElementById('indPanel');
-  if(p.dataset.key===k){p.style.display='none';p.dataset.key='';return;}
-  p.dataset.key=k;
-  const d=IND[k];if(!d)return;
+  if(curInd===k){p.style.display='none';curInd=null;return;}
+  curInd=k; const d=INDS[k]; if(!d)return;
   p.style.display='block';
-  p.innerHTML=`<div class="card" style="border-color:rgba(255,255,255,0.15)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <span style="font-weight:600;font-size:13px;color:#3b82f6">${d.name}</span>
-      <button onclick="document.getElementById('indPanel').style.display='none'" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:18px;line-height:1">×</button>
-    </div>
-    <p style="font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.6">${d.desc}</p>
-    ${d.levels.map(l=>`<div style="display:flex;gap:8px;padding:6px 8px;background:var(--bg3);border-radius:6px;margin-bottom:4px">
-      <div style="font-weight:600;font-size:11px;color:${l.c};min-width:90px;flex-shrink:0;padding-top:1px">${l.v}</div>
-      <div><div style="font-size:11px;font-weight:600;margin-bottom:1px">${l.l}</div><div style="font-size:11px;color:var(--t2);line-height:1.4">${l.m}</div></div>
-    </div>`).join('')}
-    <div style="font-size:10px;color:var(--t3);font-family:monospace;background:var(--bg3);padding:6px 8px;border-radius:6px;margin-top:8px">${d.formula}</div>
-  </div>`;
+  p.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-weight:600;font-size:13px;color:var(--blue)">${d.name}</span>
+    <button onclick="document.getElementById('indPanel').style.display='none';curInd=null" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:18px">×</button>
+  </div>
+  <p style="font-size:12px;color:var(--t2);margin-bottom:8px;line-height:1.6">${d.desc}</p>
+  ${d.levels.map(l=>`<div style="display:flex;gap:8px;padding:6px 8px;background:var(--bg3);border-radius:6px;margin-bottom:4px">
+    <div style="font-weight:600;font-size:11px;color:${l.c};min-width:90px;flex-shrink:0">${l.v}</div>
+    <div><div style="font-size:11px;font-weight:600">${l.l}</div><div style="font-size:11px;color:var(--t2);margin-top:1px;line-height:1.4">${l.m}</div></div>
+  </div>`).join('')}
+  <div style="font-size:10px;color:var(--t3);font-family:monospace;background:var(--bg3);padding:6px 8px;border-radius:6px;margin-top:6px">${d.formula}</div>`;
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// MTF
-// ═══════════════════════════════════════════════════════════════════════
-function renderMTF(){
-  const body=document.getElementById('mtfBody');
-  body.innerHTML=['5m','15m','1h','4h','1D','1W'].map(t=>{
-    const s=scanData[curAsset]?.[t];
-    const pat=s?.patterns?.[0];
-    return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px">
+// ═══ MTF ═══
+function renderMTF() {
+  document.getElementById('mtfBody').innerHTML = ['5m','15m','1h','4h','1D','1W'].map(t=>{
+    const s=scanD[curA]?.[t], pat=s?.patterns?.[0];
+    return `<div class="mtf-row">
       <span style="color:var(--t3);min-width:30px">${t}</span>
       <span style="flex:1;margin-left:8px;color:var(--t3);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${pat?pat.name:'—'}</span>
       ${bb(s?.bias)}
     </div>`;
   }).join('');
-  const sig=globalBias(curAsset);
-  document.getElementById('globalBiasLbl').textContent=sig;
-  document.getElementById('globalBiasLbl').style.color=bc(sig);
+  const sig=calcBias(curA);
+  document.getElementById('gbLbl').textContent=sig;
+  document.getElementById('gbLbl').style.color=bc(sig);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// ANALYZE
-// ═══════════════════════════════════════════════════════════════════════
-function genAnalysis(){
-  const c=candles[curAsset]?.[curTF]||[];
-  const r=rsi(c),s20=sma(c,20),s50=sma(c,50),pats=detectPatterns(c),last=c[c.length-1];
-  const p=prices[curAsset];
-  const text=`=== FLUZ — Analyse demandée ===
-Actif: ${curAsset} | Timeframe: ${curTF} | Spot USDT
-Prix: ${p?fp(p.price):'—'} USD | 24h: ${p?(p.change24h>=0?'+':'')+p.change24h.toFixed(2)+'%':'—'}
-RSI(14): ${r.toFixed(1)} | SMA20: ${s20?fp(s20):'—'} | SMA50: ${s50?fp(s50):'—'}
-Tendance: ${trend(c)} | Biais global: ${globalBias(curAsset)}
-Patterns détectés: ${pats.length?pats.map(p=>p.name+' '+p.prob+'%').join(', '):'Aucun'}
+// ═══ ANALYZE ═══
+function genAna() {
+  const c=cdata[curA]?.[curTF]||[], r=calcRSI(c), s20=calcSMA(c,20), s50=calcSMA(c,50), pats=detectPat(c), last=c[c.length-1], p=prices[curA];
+  const txt=`=== FLUZ — Demande d'analyse ===
+Actif: ${curA} | TF: ${curTF} | Spot USDT
+Prix: ${p?fp(p.price):'—'} USD | 24h: ${p?(p.chg>=0?'+':'')+p.chg.toFixed(2)+'%':'—'}
+RSI: ${r.toFixed(1)} | SMA20: ${s20?fp(s20):'—'} | SMA50: ${s50?fp(s50):'—'}
+Tendance: ${calcTrend(c)} | Biais global: ${calcBias(curA)}
+Patterns: ${pats.length?pats.map(p=>p.name+' '+p.prob+'%').join(', '):'Aucun'}
 Dernière bougie: O=${fp(last?.open)} H=${fp(last?.high)} L=${fp(last?.low)} C=${fp(last?.close)}
-Multi-TF: ${['1h','4h','1D','1W'].map(t=>`${t}:${scanData[curAsset]?.[t]?.bias||'—'}`).join(' | ')}
+Multi-TF: ${['1h','4h','1D','1W'].map(t=>t+':'+( scanD[curA]?.[t]?.bias||'—')).join(' | ')}
 
-Fais une analyse technique complète : tendance, patterns, zones clés, opportunités et risques. Donne des niveaux précis.`;
+Fais une analyse technique complète : tendance, patterns, zones clés S/R, opportunités et risques. Donne des niveaux précis.`;
   document.getElementById('anaBox').style.display='block';
-  document.getElementById('anaText').textContent=text;
+  document.getElementById('anaText').textContent=txt;
 }
-function copyAna(){
+function copyAna(e) {
   const t=document.getElementById('anaText').textContent;
   navigator.clipboard?navigator.clipboard.writeText(t):(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);})();
-  const b=event.target;b.textContent='Copié ✓';setTimeout(()=>b.textContent='Copier',2000);
+  e.target.textContent='Copié ✓'; setTimeout(()=>e.target.textContent='Copier',2000);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// STRATÉGIE
-// ═══════════════════════════════════════════════════════════════════════
-const STRAT={
+// ═══ STRATÉGIE ═══
+const STRAT = {
   BTC:{name:'Bitcoin',cycle:'Cycle post-halving',phase:'Expansion',score:82,
-    macro:'Le halving d\'avril 2024 a réduit l\'émission de 900 à 450 BTC/jour. Combiné aux flux records des ETFs institutionnels (BlackRock, Fidelity), cette asymétrie offre/demande est historiquement le moteur des grands cycles haussiers. La corrélation avec les taux réels US reste le principal risque.',
-    thesis:'BTC est en train de s\'institutionnaliser définitivement. Les ETFs spot ont créé un conduit permanent entre la finance traditionnelle et le marché crypto. Le prochain ATH devrait dépasser $100K selon le modèle stock-to-flow et les cycles historiques post-halving (2012, 2016, 2020).',
-    targets:[{l:'$72 000',d:'Résistance ATH précédente',p:75,tf:'1–2 mois'},{l:'$89 000',d:'Extension 1.272 Fibonacci',p:62,tf:'3–5 mois'},{l:'$120 000',d:'Extension 1.618 — objectif cycle',p:48,tf:'9–15 mois'},{l:'$150 000+',d:'Scénario bull extrême',p:28,tf:'15–24 mois'}],
-    supports:[{l:'$58 000',d:'Support hebdomadaire clé'},{l:'$52 000',d:'Support majeur de cycle — ne pas perdre'},{l:'$42 000',d:'Invalidation haussière totale'}],
+    macro:'Le halving d\'avril 2024 a réduit l\'émission à 450 BTC/jour. Combiné aux flux records des ETFs institutionnels (BlackRock, Fidelity), cette asymétrie offre/demande est le moteur historique des grands cycles. La corrélation avec les taux réels US reste le principal risque macroéconomique.',
+    thesis:'BTC est en train de s\'institutionnaliser définitivement. Les ETFs spot ont créé un conduit permanent entre la finance traditionnelle et le marché crypto. Le prochain ATH devrait dépasser $100K selon les cycles historiques post-halving (2012: ×92, 2016: ×30, 2020: ×18).',
+    targets:[{l:'$72 000',d:'Résistance ATH zone',p:75,tf:'1–2 mois'},{l:'$89 000',d:'Extension Fibonacci 1.272',p:62,tf:'3–5 mois'},{l:'$120 000',d:'Objectif cycle classique',p:45,tf:'9–15 mois'},{l:'$150 000+',d:'Scénario bull extrême',p:25,tf:'15–24 mois'}],
+    supports:[{l:'$58 000',d:'Support hebdomadaire clé'},{l:'$52 000',d:'Support majeur de cycle'},{l:'$42 000',d:'Invalidation haussière totale'}],
     zones:'Accumuler entre $55K–65K. Réduire l\'exposition au-dessus de $90K. Stop mental : clôture hebdomadaire sous $48K.',
-    risks:['Pivot hawkish inattendu de la Fed','Réglementation crypto USA restrictive','Ventes massives des mineurs','Cygne noir systémique (hack exchange majeur)']},
+    risks:['Pivot hawkish inattendu de la Fed','Réglementation crypto USA restrictive','Ventes massives des mineurs post-halving','Cygne noir systémique (hack exchange majeur)']},
   ETH:{name:'Ethereum',cycle:'Layer 2 + ETF spot',phase:'Accumulation',score:68,
     macro:'Ethereum bénéficie de l\'essor des Layer 2 qui multiplient les transactions sans congestionner la mainnet. La réduction de l\'offre post-Merge est structurellement haussière. L\'approbation des ETFs ETH spot aux USA est un catalyseur majeur en attente.',
-    thesis:'ETH est l\'infrastructure sur laquelle se construit la finance décentralisée mondiale. Sa valeur fondamentale est liée à l\'activité de l\'écosystème DeFi, NFT et Layer 2. Le ratio ETH/BTC sous-évalué suggère un potentiel de rattrapage significatif dans la phase avancée du bull market.',
-    targets:[{l:'$3 800',d:'Résistance locale',p:70,tf:'1–2 mois'},{l:'$4 800',d:'Zone ATH précédente',p:55,tf:'3–6 mois'},{l:'$6 000',d:'Extension de cycle',p:38,tf:'9–15 mois'}],
+    thesis:'ETH est l\'infrastructure de la finance décentralisée mondiale. Sa valeur est liée à l\'activité DeFi, NFT et Layer 2. Le ratio ETH/BTC sous-évalué suggère un fort potentiel de rattrapage dans la phase avancée du bull market.',
+    targets:[{l:'$3 800',d:'Résistance locale',p:70,tf:'1–2 mois'},{l:'$4 800',d:'Zone ATH précédente',p:55,tf:'3–6 mois'},{l:'$6 000',d:'Extension de cycle',p:35,tf:'9–15 mois'}],
     supports:[{l:'$2 800',d:'Support actuel'},{l:'$2 200',d:'Support critique'},{l:'$1 800',d:'Invalidation bull'}],
-    zones:'Accumuler sous $3 200. Surveiller le ratio ETH/BTC pour le momentum.',
-    risks:['Layer 2 qui supplante Ethereum','Concurrence Solana/Avalanche','Délai approbation ETF','ETH/BTC en baisse prolongée']},
-  TAO:{name:'Bittensor (TAO)',cycle:'IA décentralisée — bull narratif',phase:'Découverte',score:71,
-    macro:'TAO est au carrefour des deux narratifs les plus puissants du cycle : la blockchain et l\'IA. Le marché de l\'IA décentralisée est encore à ses débuts — Bittensor est le leader incontesté de cette catégorie avec une architecture unique de subnets spécialisés.',
-    thesis:'Bittensor crée un marché décentralisé de l\'intelligence artificielle où les modèles sont récompensés en TAO proportionnellement à leur utilité. Si l\'adoption des subnets s\'accélère, la demande de TAO pour payer les inférences et valider le réseau crée une pression haussière structurelle.',
-    targets:[{l:'$600',d:'Résistance intermédiaire',p:65,tf:'2–3 mois'},{l:'$900',d:'Extension technique',p:48,tf:'4–7 mois'},{l:'$1 500',d:'Objectif adoption IA',p:30,tf:'10–15 mois'}],
+    zones:'Accumuler sous $3 200. Surveiller le ratio ETH/BTC pour le momentum. Renforcer sur les corrections vers $2 800.',
+    risks:['Layer 2 qui supplante ETH mainnet','Concurrence Solana/Avalanche','Délai approbation ETF','ETH/BTC en baisse prolongée']},
+  TAO:{name:'Bittensor (TAO)',cycle:'IA décentralisée — narratif bull',phase:'Découverte',score:71,
+    macro:'TAO est au carrefour de la blockchain et de l\'IA. Le marché de l\'IA décentralisée est encore naissant — Bittensor est le leader incontesté avec une architecture unique de subnets spécialisés compétitifs.',
+    thesis:'Bittensor crée un marché décentralisé de l\'IA où les modèles sont récompensés en TAO proportionnellement à leur utilité. Si l\'adoption des subnets s\'accélère, la demande de TAO crée une pression haussière structurelle unique.',
+    targets:[{l:'$600',d:'Résistance intermédiaire',p:65,tf:'2–3 mois'},{l:'$900',d:'Extension technique',p:45,tf:'4–7 mois'},{l:'$1 500',d:'Objectif adoption IA',p:28,tf:'10–15 mois'}],
     supports:[{l:'$320',d:'Support actuel fort'},{l:'$240',d:'Support critique'},{l:'$180',d:'Zone d\'invalidation'}],
-    zones:'Token très volatil — positions sizing réduit (< 5% portfolio). Accumulation en DCA sur les creux.',
-    risks:['Concurrence de projets IA centralisés','Liquidité faible = manipulation','Réglementation IA','Dépendance au sentiment crypto général']},
-  PAXG:{name:'Or tokenisé (PAXG)',cycle:'Cycle haussier métaux précieux',phase:'Expansion',score:74,
-    macro:'L\'or bénéficie d\'un contexte macro exceptionnel : tensions géopolitiques (Ukraine, Moyen-Orient, USA-Chine), achats records des banques centrales (surtout Chine et Inde), et anticipation de baisses de taux Fed. Le record historique a été dépassé en 2024.',
-    thesis:'PAXG est un token Ethereum indexé sur le cours de l\'or physique (1 PAXG = 1 once troy d\'or). Il offre l\'exposition à l\'or avec la liquidité crypto 24h/24. Dans un cycle de baisse des taux, l\'or surperforme historiquement. La demande des banques centrales est structurellement forte.',
-    targets:[{l:'$2 500',d:'Extension courte',p:72,tf:'2–4 mois'},{l:'$2 800',d:'Objectif cycle',p:55,tf:'6–10 mois'},{l:'$3 200',d:'Scénario géopolitique extrême',p:30,tf:'12–18 mois'}],
+    zones:'Token très volatil — position sizing réduit (< 5% portfolio). Accumulation en DCA sur les creux.',
+    risks:['Concurrence IA centralisée (OpenAI)','Faible liquidité = manipulation','Token immature','Dépendance au sentiment crypto général']},
+  PAXG:{name:'PAX Gold (PAXG)',cycle:'Cycle haussier métaux',phase:'Expansion',score:74,
+    macro:'L\'or bénéficie de tensions géopolitiques persistantes, des achats records des banques centrales (Chine, Inde) et de l\'anticipation de baisses de taux Fed. Le record historique a été dépassé en 2024.',
+    thesis:'PAXG offre l\'exposition à l\'or avec la liquidité crypto 24h/24. Dans un cycle de baisse des taux, l\'or surperforme historiquement. La demande structurelle des banques centrales soutient le prix à long terme.',
+    targets:[{l:'$2 500',d:'Extension courte',p:72,tf:'2–4 mois'},{l:'$2 800',d:'Objectif cycle',p:52,tf:'6–10 mois'},{l:'$3 200',d:'Scénario géopolitique extrême',p:28,tf:'12–18 mois'}],
     supports:[{l:'$2 150',d:'Support fort'},{l:'$1 980',d:'Support majeur'},{l:'$1 800',d:'Niveau critique'}],
     zones:'Position de couverture recommandée (10–15% portfolio). Renforcer sous $2 200.',
-    risks:['Hausse brutale des taux réels','Résolution des conflits géopolitiques','Dollar très fort (DXY > 110)']},
+    risks:['Hausse brutale des taux réels US','Résolution des conflits géopolitiques','Dollar très fort (DXY > 110)']},
 };
 
-function renderStratBtns(){
-  document.getElementById('stratBtns').innerHTML=Object.keys(STRAT).map(a=>
-    `<button class="btn${a===stratAsset?' on':''}" onclick="selStrat('${a}')">${a}</button>`
+function renderStratBtns() {
+  document.getElementById('stratBtns').innerHTML = Object.keys(STRAT).map(a=>
+    `<button class="btn${a===stratA?' on':''}" onclick="selStrat('${a}')">${a}</button>`
   ).join('');
   renderStratContent();
 }
-function selStrat(a){stratAsset=a;document.getElementById('stratBtns').innerHTML=Object.keys(STRAT).map(k=>`<button class="btn${k===a?' on':''}" onclick="selStrat('${k}')">${k}</button>`).join('');renderStratContent();}
-
-function renderStratContent(){
-  const s=STRAT[stratAsset];
-  if(!s){document.getElementById('stratContent').innerHTML='<div style="color:var(--t2);padding:20px;text-align:center">Analyse stratégique non disponible pour cet actif.</div>';return;}
-  const p=prices[stratAsset];
-  document.getElementById('stratContent').innerHTML=`
-  <div class="card" style="border-color:rgba(255,255,255,0.1)">
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+function selStrat(a) {
+  stratA=a;
+  document.getElementById('stratBtns').innerHTML=Object.keys(STRAT).map(k=>`<button class="btn${k===a?' on':''}" onclick="selStrat('${k}')">${k}</button>`).join('');
+  renderStratContent();
+}
+function renderStratContent() {
+  const s=STRAT[stratA]; const p=prices[stratA];
+  if(!s){document.getElementById('stratBody').innerHTML='<div style="color:var(--t2);padding:20px;text-align:center">Sélectionner un actif</div>';return;}
+  document.getElementById('stratBody').innerHTML=`
+  <div class="card">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
       <span style="font-weight:700;font-size:16px">${s.name}</span>
       <span class="b bb">${s.cycle}</span>
       <span class="b bg">${s.phase}</span>
-      <span style="margin-left:auto;font-size:12px;color:var(--t2)">Score: <strong style="color:${s.score>=70?'#22c55e':s.score>=50?'#f59e0b':'#ef4444'}">${s.score}/100</strong></span>
+      <span style="margin-left:auto;font-size:12px">Score: <strong style="color:${s.score>=70?'#22c55e':s.score>=50?'#f59e0b':'#ef4444'}">${s.score}/100</strong></span>
     </div>
-    ${p?`<div style="font-size:12px;color:var(--t2);margin-bottom:10px">Prix actuel: <strong style="color:var(--t1);font-family:monospace">${fp(p.price)} USD</strong> <span style="color:${p.change24h>=0?'#22c55e':'#ef4444'}">${p.change24h>=0?'+':''}${p.change24h.toFixed(2)}%</span></div>`:''}
+    ${p?`<div style="font-size:12px;color:var(--t2)">Prix: <strong style="color:var(--t1);font-family:monospace">${fp(p.price)} USD</strong> <span style="color:${p.chg>=0?'#22c55e':'#ef4444'}">${p.chg>=0?'+':''}${p.chg.toFixed(2)}%</span></div>`:''}
   </div>
-  <div class="card">
-    <div class="card-title" style="color:#3b82f6">Contexte Macro</div>
-    <p style="font-size:12px;color:var(--t2);line-height:1.7">${s.macro}</p>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--blue);margin-bottom:6px">Contexte Macro</div><p style="font-size:12px;color:var(--t2);line-height:1.7">${s.macro}</p></div>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--purple);margin-bottom:6px">Thesis d'investissement</div><p style="font-size:12px;color:var(--t2);line-height:1.7">${s.thesis}</p></div>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--green);margin-bottom:8px">Objectifs haussiers</div>
+    ${s.targets.map(t=>`<div class="tgt-r tgt-bull"><div><div style="font-weight:700;color:var(--green);font-size:13px">${t.l}</div><div style="font-size:10px;color:var(--t2);margin-top:2px">${t.d}</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:600;color:var(--green)">${t.p}%</div><div style="font-size:10px;color:var(--t3)">${t.tf}</div></div></div>`).join('')}
   </div>
-  <div class="card">
-    <div class="card-title" style="color:#8b5cf6">Thesis d'investissement</div>
-    <p style="font-size:12px;color:var(--t2);line-height:1.7">${s.thesis}</p>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--red);margin-bottom:8px">Supports clés</div>
+    ${s.supports.map(t=>`<div class="tgt-r tgt-bear"><div><div style="font-weight:700;color:var(--red);font-size:13px">${t.l}</div><div style="font-size:10px;color:var(--t2);margin-top:2px">${t.d}</div></div></div>`).join('')}
   </div>
-  <div class="strat-grid">
-    <div class="card">
-      <div class="card-title" style="color:#22c55e">Objectifs haussiers</div>
-      ${s.targets.map(t=>`<div class="target-row tr-bull">
-        <div><div style="font-weight:700;color:#22c55e;font-size:14px">${t.l}</div><div style="font-size:10px;color:var(--t2);margin-top:2px">${t.d}</div></div>
-        <div style="text-align:right"><div style="font-size:12px;font-weight:600;color:#22c55e">${t.p}%</div><div style="font-size:10px;color:var(--t3)">${t.tf}</div></div>
-      </div>`).join('')}
-    </div>
-    <div class="card">
-      <div class="card-title" style="color:#ef4444">Supports clés</div>
-      ${s.supports.map(t=>`<div class="target-row tr-bear">
-        <div><div style="font-weight:700;color:#ef4444;font-size:14px">${t.l}</div><div style="font-size:10px;color:var(--t2);margin-top:2px">${t.d}</div></div>
-      </div>`).join('')}
-    </div>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--amber);margin-bottom:6px">Zones & Stratégie</div><p style="font-size:12px;color:var(--t2);line-height:1.7">${s.zones}</p></div>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--red);margin-bottom:8px">Risques principaux</div>
+    ${s.risks.map(r=>`<div style="display:flex;gap:8px;margin-bottom:5px;font-size:12px"><span style="color:var(--red);flex-shrink:0">▸</span><span style="color:var(--t2)">${r}</span></div>`).join('')}
   </div>
-  <div class="card">
-    <div class="card-title" style="color:#f59e0b">Zones & Stratégie</div>
-    <p style="font-size:12px;color:var(--t2);line-height:1.7">${s.zones}</p>
-  </div>
-  <div class="card">
-    <div class="card-title" style="color:#ef4444">Risques principaux</div>
-    ${s.risks.map(r=>`<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px"><span style="color:#ef4444;flex-shrink:0">▸</span><span style="color:var(--t2)">${r}</span></div>`).join('')}
-  </div>
-  <button class="ana-btn" onclick="genStratAnalysis()">Analyse IA approfondie →</button>
-  <div id="stratAnaBox" style="display:none">
-    <div style="font-size:11px;color:var(--t3);margin:8px 0 4px">Copie et colle dans le chat :</div>
-    <div class="copy-box" id="stratAnaText"></div>
-    <button class="btn on" style="width:100%;margin-top:6px" onclick="copyStratAna()">Copier</button>
+  <button class="ana-btn" onclick="genStratAna()">Analyse IA approfondie →</button>
+  <div id="sAnaBox" style="display:none">
+    <div style="font-size:10px;color:var(--t3);margin:6px 0 3px">Copie et colle dans le chat :</div>
+    <div class="cbox" id="sAnaText"></div>
+    <button class="btn on" style="width:100%;margin-top:6px" onclick="copyStrat(event)">Copier</button>
   </div>`;
 }
+function genStratAna() {
+  const s=STRAT[stratA], p=prices[stratA], c=cdata[stratA]?.['1D']||[];
+  const txt=`=== FLUZ — Analyse Stratégique ===
+Actif: ${stratA} | ${s?.name}
+Prix: ${p?fp(p.price):'—'} USD | ${p?(p.chg>=0?'+':'')+p.chg.toFixed(2)+'%':'—'}
+RSI 1D: ${calcRSI(c).toFixed(1)} | Tendance 1D: ${calcTrend(c)}
+Multi-TF: ${['1h','4h','1D','1W'].map(t=>t+':'+(scanD[stratA]?.[t]?.bias||'—')).join(' | ')}
+Thesis: ${s?.thesis}
+Macro: ${s?.macro}
 
-function genStratAnalysis(){
-  const s=STRAT[stratAsset];
-  const p=prices[stratAsset];
-  const c=candles[stratAsset]?.['1D']||[];
-  const r=rsi(c),s20=sma(c,20),s50=sma(c,50);
-  const text=`=== FLUZ — Analyse Stratégique Approfondie ===
-Actif: ${stratAsset} — ${s?.name||stratAsset}
-Prix: ${p?fp(p.price):'—'} USD | 24h: ${p?(p.change24h>=0?'+':'')+p.change24h.toFixed(2)+'%':'—'}
-
-TECHNIQUE (1D):
-RSI: ${r.toFixed(1)} | SMA20: ${s20?fp(s20):'—'} | SMA50: ${s50?fp(s50):'—'}
-Tendance 1D: ${c.length?trend(c):'—'}
-Multi-TF: ${['1h','4h','1D','1W'].map(t=>`${t}:${scanData[stratAsset]?.[t]?.bias||'—'}`).join(' | ')}
-
-FONDAMENTAL:
-${s?`Cycle: ${s.cycle} | Phase: ${s.phase}
-Thesis: ${s.thesis}`:'Non disponible'}
-
-MACRO:
-${s?.macro||'Non disponible'}
-
-Effectue l'analyse stratégique la plus complète possible :
-1. Analyse technique multi-timeframe détaillée
-2. Confluence macro/micro
-3. Niveaux d'entrée/sortie précis avec justification
-4. Scénarios haussier, baissier et neutre avec probabilités
-5. Stratégie concrète adaptée au profil risque (conservative, équilibrée, agressive)
-6. Points de surveillance prioritaires`;
-  document.getElementById('stratAnaBox').style.display='block';
-  document.getElementById('stratAnaText').textContent=text;
+Effectue l'analyse stratégique la plus complète : technique multi-TF, confluence macro/micro, niveaux entrée/sortie précis, scénarios haussier/baissier/neutre avec probabilités, stratégie par profil de risque.`;
+  document.getElementById('sAnaBox').style.display='block';
+  document.getElementById('sAnaText').textContent=txt;
 }
-function copyStratAna(){
-  const t=document.getElementById('stratAnaText').textContent;
+function copyStrat(e) {
+  const t=document.getElementById('sAnaText').textContent;
   navigator.clipboard?navigator.clipboard.writeText(t):(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);})();
-  event.target.textContent='Copié ✓';setTimeout(()=>event.target.textContent='Copier',2000);
+  e.target.textContent='Copié ✓'; setTimeout(()=>e.target.textContent='Copier',2000);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// MACRO
-// ═══════════════════════════════════════════════════════════════════════
-const MACRO=[
-  {date:'2025-03-10',source:'Fed (FOMC)',cat:'Banques centrales',imp:'critique',impact:'baissier',
-   title:'Taux US maintenus à 5.25–5.50% — Powell reste prudent',
-   summary:'La Réserve Fédérale maintient ses taux directeurs inchangés pour la 4ème réunion consécutive. Jerome Powell a indiqué que des baisses de taux nécessitent "davantage de confiance" que l\'inflation converge vers 2%.',
-   why:'C\'est le facteur macro numéro 1 pour tous les actifs risqués. Des taux élevés = l\'argent "sans risque" (obligations) est attractif → les investisseurs sortent des actifs risqués (crypto, actions). Un pivot de la Fed (première baisse de taux) serait le signal le plus haussier possible pour BTC et ETH.',
-   indicators:['DXY (Dollar Index) — surveiller une baisse','US10Y (taux 10 ans)','Fed Funds Futures (probabilité baisse)'],
-   sources:['federalreserve.gov','CME FedWatch Tool']},
-  {date:'2025-03-08',source:'CPI — Bureau of Labor Statistics',cat:'Inflation',imp:'critique',impact:'baissier',
-   title:'Inflation USA à 3.2% en février — Au-dessus des attentes',
-   summary:'L\'inflation américaine reste obstinément au-dessus de l\'objectif de 2% de la Fed. Le "Core CPI" (hors énergie et alimentation) est resté à 3.8%, surprenant les économistes à la hausse.',
-   why:'Une inflation élevée force la Fed à maintenir ses taux restrictifs plus longtemps que prévu. Chaque surprise haussière sur l\'inflation repousse le pivot monétaire et crée une pression vendeuse sur les actifs risqués. À l\'inverse, une surprise baissière sur le CPI est immédiatement haussière pour les marchés.',
-   indicators:['CPI YoY','Core PCE (indicateur préféré Fed)','Inflation expectations 5y5y'],
-   sources:['bls.gov','Bloomberg Economics']},
-  {date:'2025-03-06',source:'BlackRock — iShares',cat:'Adoption crypto',imp:'critique',impact:'haussier',
-   title:'ETFs Bitcoin spot USA : +$2.1 milliards en une semaine',
-   summary:'Les ETFs Bitcoin spot américains ont enregistré une semaine de flux nets records. L\'iShares Bitcoin Trust (IBIT) de BlackRock a attiré à lui seul $1.4 milliard, dépassant les flux hebdomadaires de la quasi-totalité des ETFs actions traditionnels.',
-   why:'Les ETFs spot créent une demande institutionnelle structurelle et permanente pour Bitcoin. Contrairement aux achats retail spéculatifs, ces flux représentent des allocations d\'institutions (fonds de pension, family offices) avec un horizon long terme. L\'effet sur l\'offre disponible est massif car les BTC achetés par ces ETFs sortent du marché.',
-   indicators:['Flux nets ETF BTC daily (Farside Investors)','Open Interest futures CME','Wallets > 1000 BTC (whale accumulation)'],
-   sources:['farside.co.uk/bitcoin-etf-flow','Bloomberg ETF','iShares.com']},
-  {date:'2025-03-05',source:'BCE — Banque Centrale Européenne',cat:'Banques centrales',imp:'élevée',impact:'haussier',
-   title:'La BCE baisse ses taux à 3.50% — 3ème baisse consécutive',
-   summary:'Christine Lagarde a annoncé une nouvelle baisse de 25 points de base des taux de la BCE, portant le taux de dépôt à 3.50%. La BCE précède la Fed dans son cycle d\'assouplissement, signe que la zone euro ralentit plus vite.',
-   why:'Les baisses de taux en Europe augmentent la liquidité globale et réduisent l\'attrait des obligations européennes. Cela pousse les investisseurs vers des actifs plus risqués. Si la Fed suit, l\'effet serait amplifié mondialement. EUR/USD réagit directement (hausse de l\'euro généralement).',
-   indicators:['EUR/USD','Euribor 3 mois','DAX 40 (indice actions européen)'],
-   sources:['ecb.europa.eu','Reuters']},
-  {date:'2025-02-28',source:'Halving Bitcoin',cat:'Crypto on-chain',imp:'critique',impact:'haussier',
-   title:'Post-halving : effets économiques en cours — Stock-to-Flow en zone haussière',
-   summary:'Depuis le halving d\'avril 2024, la récompense des mineurs est passée de 6.25 à 3.125 BTC par bloc. Les mineurs vendent mécaniquement moins de BTC sur le marché. Le modèle stock-to-flow de PlanB indique une sous-évaluation significative.',
-   why:'Le halving est le mécanisme de rareté programmé de Bitcoin. Historiquement, les 12-18 mois suivant un halving ont toujours produit un nouveau cycle de prix (2012→$1K, 2016→$20K, 2020→$69K). La réduction de l\'offre quotidienne combinée à la demande croissante des ETFs crée une asymétrie favorable sans précédent.',
-   indicators:['Stock-to-Flow ratio','Miner Revenue','Hash Rate (santé du réseau)','MVRV Ratio'],
-   sources:['glassnode.com','lookintobitcoin.com','CoinMetrics']},
-  {date:'2025-02-20',source:'FMI — Rapport WEO',cat:'Macro globale',imp:'modérée',impact:'neutre',
-   title:'FMI : croissance mondiale à 3.1% — USA tire, Europe ralentit',
-   summary:'Le Fonds Monétaire International maintient sa prévision de croissance mondiale à 3.1% pour 2025. Les USA restent le moteur avec 2.1% de croissance, tandis que la zone euro est révisée en baisse à 0.9%.',
-   why:'Une croissance mondiale stable soutient les marchés risqués mais ne suffit pas à déclencher un bull market. Ce qui compte c\'est la direction : une révision haussière est positive, une révision baissière est négative. L\'IA et la tech restent les secteurs porteurs de croissance, favorable à l\'écosystème crypto.',
-   indicators:['PIB USA (GDP Growth)','PMI manufacturier global','Indice MSCI Monde'],
-   sources:['imf.org','World Bank']},
+// ═══ MACRO ═══
+const MACRO_DATA = [
+  {date:'2025-03-10',source:'Fed (FOMC)',cat:'Banques centrales',imp:'critique',impact:'baissier',title:'Taux US maintenus à 5.25–5.50% — Powell reste prudent',summary:'La Réserve Fédérale maintient ses taux pour la 4ème réunion consécutive. Powell a indiqué que des baisses nécessitent "davantage de confiance" sur l\'inflation.',why:'C\'est le facteur macro n°1 pour tous les actifs risqués. Taux élevés = l\'argent "sans risque" (obligations) est attractif → investisseurs sortent des cryptos. Un pivot de la Fed serait le signal le plus haussier possible pour BTC.',indicators:['DXY Dollar Index','US10Y taux 10 ans','CME FedWatch (probabilité baisse)'],sources:['federalreserve.gov','CME FedWatch']},
+  {date:'2025-03-08',source:'CPI Bureau of Labor Statistics',cat:'Inflation',imp:'critique',impact:'baissier',title:'Inflation USA à 3.2% — Au-dessus des attentes',summary:'L\'inflation US reste au-dessus de l\'objectif 2% de la Fed. Le Core CPI à 3.8% a surpris à la hausse.',why:'Chaque surprise haussière sur l\'inflation repousse le pivot monétaire et crée une pression vendeuse sur les actifs risqués. À l\'inverse, une surprise baissière est immédiatement haussière.',indicators:['CPI YoY','Core PCE','Inflation expectations 5y5y'],sources:['bls.gov','Bloomberg Economics']},
+  {date:'2025-03-06',source:'BlackRock iShares',cat:'Adoption crypto',imp:'critique',impact:'haussier',title:'ETFs Bitcoin spot : +$2.1 milliards en une semaine',summary:'Les ETFs Bitcoin spot US ont enregistré des flux records. L\'IBIT de BlackRock a attiré $1.4 milliard seul.',why:'Les ETFs spot créent une demande institutionnelle structurelle permanente. Ces allocations de fonds de pension et family offices ont un horizon long terme — les BTC achetés sortent du marché circulant.',indicators:['Flux nets ETF BTC (Farside)','Open Interest CME','Wallets whale accumulation'],sources:['farside.co.uk','Bloomberg ETF']},
+  {date:'2025-03-05',source:'BCE',cat:'Banques centrales',imp:'élevée',impact:'haussier',title:'BCE baisse ses taux à 3.50% — 3ème baisse consécutive',summary:'Christine Lagarde annonce une nouvelle baisse de 25bp. La BCE précède la Fed dans l\'assouplissement.',why:'Les baisses de taux en Europe augmentent la liquidité globale. Si la Fed suit, l\'effet serait amplifié mondialement — historiquement très favorable aux cryptos et à l\'or.',indicators:['EUR/USD','Euribor 3 mois','DAX 40'],sources:['ecb.europa.eu','Reuters']},
+  {date:'2025-02-28',source:'On-chain Glassnode',cat:'Crypto on-chain',imp:'critique',impact:'haussier',title:'Post-halving : Stock-to-Flow en zone haussière',summary:'Depuis le halving d\'avril 2024, la récompense mineurs est passée à 3.125 BTC/bloc. Les mineurs vendent moins. Le modèle S2F indique une sous-évaluation.',why:'Historiquement les 12–18 mois post-halving produisent toujours un nouveau cycle (2012→$1K, 2016→$20K, 2020→$69K). La réduction d\'offre combinée à la demande ETF crée une asymétrie sans précédent.',indicators:['Stock-to-Flow ratio','Miner Revenue','Hash Rate','MVRV Ratio'],sources:['glassnode.com','lookintobitcoin.com']},
+  {date:'2025-01-20',source:'FMI',cat:'Macro globale',imp:'modérée',impact:'neutre',title:'FMI : croissance mondiale à 3.1% — USA tire, Europe ralentit',summary:'Prévision de croissance maintenue à 3.1%. USA à 2.1%, zone euro révisée en baisse à 0.9%.',why:'Croissance stable soutient les marchés risqués. Ce qui compte c\'est la direction : révision haussière = positive, baissière = négative. La tech et l\'IA restent les secteurs porteurs.',indicators:['PIB USA','PMI manufacturier global','MSCI Monde'],sources:['imf.org','World Bank']},
 ];
+const MCATS = ['Tous',...new Set(MACRO_DATA.map(m=>m.cat))];
 
-const MACRO_CATS=['Tous',...new Set(MACRO.map(m=>m.cat))];
-
-function renderMacro(){
-  // Category buttons
-  document.getElementById('macroCatBtns').innerHTML=MACRO_CATS.map(c=>
-    `<button class="btn${c===macroCat?' on':''}" style="flex-shrink:0;font-size:11px" onclick="selMacroCat('${c}')">${c}</button>`
+function renderMacro() {
+  document.getElementById('macroCatBtns').innerHTML = MCATS.map(c=>
+    `<button class="btn${c===macroCat?' on':''}" onclick="selMCat('${c}')">${c}</button>`
   ).join('');
-  const filtered=macroCat==='Tous'?MACRO:MACRO.filter(m=>m.cat===macroCat);
-  const sorted=[...filtered].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('macroCards').innerHTML=sorted.map((m,i)=>{
-    const impC=m.impact==='haussier'?'#22c55e':m.impact==='baissier'?'#ef4444':'#f59e0b';
-    const impBg=m.impact==='haussier'?'rgba(34,197,94,0.1)':m.impact==='baissier'?'rgba(239,68,68,0.1)':'rgba(245,158,11,0.1)';
-    const bc2=m.imp==='critique'?'br':m.imp==='élevée'?'ba':'bb';
-    const borderC=m.imp==='critique'?'var(--red)':m.imp==='élevée'?'var(--amber)':'var(--blue)';
-    return `<div class="ncard" style="border-left:3px solid ${borderC}">
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
+  const filtered = (macroCat==='Tous'?MACRO_DATA:MACRO_DATA.filter(m=>m.cat===macroCat))
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const borderC = m => m.imp==='critique'?'var(--red)':m.imp==='élevée'?'var(--amber)':'var(--blue)';
+  const impactC = m => m.impact==='haussier'?'#22c55e':m.impact==='baissier'?'#ef4444':'#f59e0b';
+  document.getElementById('macroCards').innerHTML = filtered.map(m=>`
+    <div class="card" style="border-left:3px solid ${borderC(m)}">
+      <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
         <span class="b bb" style="font-size:9px">${m.source}</span>
-        <span class="b ${bc2}" style="font-size:9px">${m.imp.toUpperCase()}</span>
-        <span class="b" style="background:${impBg};color:${impC};font-size:9px">${m.impact==='haussier'?'HAUSSIER':m.impact==='baissier'?'BAISSIER':'MIXTE'}</span>
+        <span class="b" style="background:rgba(0,0,0,0);border:1px solid ${borderC(m)};color:${borderC(m)};font-size:9px">${m.imp.toUpperCase()}</span>
+        <span class="b" style="background:rgba(0,0,0,0.2);color:${impactC(m)};font-size:9px">${m.impact.toUpperCase()}</span>
         <span style="font-size:10px;color:var(--t3);margin-left:auto">${new Date(m.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>
       </div>
-      <div style="font-weight:600;font-size:14px;margin-bottom:6px;line-height:1.4">${m.title}</div>
-      <div style="font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.6">${m.summary}</div>
-      <div style="background:rgba(59,130,246,0.06);border-left:2px solid var(--blue);padding:10px 12px;border-radius:0 6px 6px 0;margin-bottom:10px">
-        <div style="font-size:10px;font-weight:600;color:var(--blue);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Pourquoi c'est important</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.6">${m.why}</div>
-      </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
+      <div style="font-weight:600;font-size:13px;margin-bottom:6px;line-height:1.4">${m.title}</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:8px;line-height:1.6">${m.summary}</div>
+      <div class="why-box"><div style="font-size:10px;font-weight:600;color:var(--blue);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Pourquoi c'est important</div>${m.why}</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
         <span style="font-size:10px;color:var(--t3)">Indicateurs :</span>
         ${m.indicators.map(i=>`<span class="b bw" style="font-size:9px">${i}</span>`).join('')}
       </div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-        <span style="font-size:10px;color:var(--t3)">Sources :</span>
-        ${m.sources.map(s=>`<span style="font-size:10px;color:var(--blue)">${s}</span>`).join(' • ')}
+      <div style="font-size:10px;color:var(--blue)">${m.sources.join(' • ')}</div>
+    </div>`).join('');
+}
+function selMCat(c){macroCat=c;renderMacro();}
+
+// ═══ ACTIFS ═══
+const ACTIFS_DATA = {
+  BTC:{name:'Bitcoin',ticker:'BTC',cat:'Crypto — Layer 1',fondateurs:'Satoshi Nakamoto (anonyme)',annee:'2009',what:'Bitcoin est la première cryptomonnaie décentralisée. Réseau de paiement pair-à-pair sans intermédiaire, sécurisé par la preuve de travail. Offre limitée à 21 millions de BTC.',why:'Souvent appelé "l\'or numérique". Sa rareté programmée, sa décentralisation et sa sécurité en font un actif de réserve de valeur reconnu par les institutions.',enjeux:'Scalabilité limitée, consommation énergétique controversée, réglementation mondiale en cours.',concurrents:'Ethereum (smart contracts), Litecoin, Bitcoin Cash',risques:'Réglementation hostile, fork majeur, perte des clés privées, ordinateurs quantiques (futur lointain).',points:['Offre max : 21 millions BTC','Halving tous les ~4 ans','Layer Lightning pour micropaiements','12+ ans sans hack de la blockchain','ETFs BlackRock/Fidelity approuvés']},
+  ETH:{name:'Ethereum',ticker:'ETH',cat:'Crypto — Smart Contracts',fondateurs:'Vitalik Buterin + équipe',annee:'2015',what:'Blockchain programmable permettant des smart contracts et applications décentralisées (dApps). Infrastructure de la finance décentralisée mondiale.',why:'Permet de coder des règles financières sans intermédiaire. La transition vers Proof of Stake en 2022 a réduit la consommation de 99.95%.',enjeux:'Frais élevés en période de congestion, concurrence des Layer 1, dépendance aux Layer 2.',concurrents:'Solana (vitesse), Avalanche (subnets), BNB Chain (fees bas), Cardano',risques:'Bugs dans les smart contracts, concurrence Layer 1, régulation DeFi.',points:['2e crypto mondiale','Base DeFi : $50Mrd+ verrouillés','Layer 2 : Arbitrum, Optimism, Base','Staking ETH ~4% annuel','ETF spot potentiellement 2025']},
+  TAO:{name:'Bittensor',ticker:'TAO',cat:'Crypto — IA Décentralisée',fondateurs:'Jacob Steeves & Ala Shaabana',annee:'2021',what:'Protocole de marché décentralisé pour l\'IA. Des modèles s\'affrontent sur des "subnets" spécialisés et sont récompensés en TAO proportionnellement à leur performance.',why:'Intersection des deux narratifs les plus puissants du cycle : blockchain + IA. Alternative décentralisée aux géants centralisés (OpenAI, Google).',enjeux:'Complexité technique, adoption réelle, concurrence des IA centralisées, liquidité du token.',concurrents:'Render Network, Fetch.ai, Ocean Protocol, Akash Network',risques:'Marché très spéculatif, peu liquide, dépendant de la narrative IA.',points:['Architecture subnets unique','Récompenses automatiques aux meilleurs modèles','Communauté technique très active','Token de gouvernance du réseau IA global']},
+  PAXG:{name:'PAX Gold',ticker:'PAXG',cat:'Commodity Token — Or tokenisé',fondateurs:'Paxos Trust Company',annee:'2019',what:'Token ERC-20 représentant 1 once troy d\'or physique stocké dans des coffres LBMA. Chaque token est 100% garanti par de l\'or réel.',why:'Exposition à l\'or avec la flexibilité crypto : trading 24h/24, frais bas, divisibilité infinie. Meilleure façon d\'investir dans l\'or depuis un smartphone.',enjeux:'Dépend de la confiance en Paxos, risque de contrepartie centralisé, régulation des stablecoins.',concurrents:'XAUT (Tether Gold), ETFs or (GLD, IAU), actions minières',risques:'Risque Paxos (contrepartie centrale), coûts de stockage intégrés, moins liquide que BTC.',points:['1 PAXG = 1 once d\'or (31.1g)','Audité mensuellement','Régulé par le NYDFS','Rachat en or physique possible > 430 PAXG']},
+};
+
+function renderActifBtns() {
+  document.getElementById('actifBtns').innerHTML = Object.keys(ACTIFS_DATA).map(a=>
+    `<button class="btn${a===actifA?' on':''}" onclick="selActif('${a}')">${a}</button>`
+  ).join('');
+  renderActifContent();
+}
+function selActif(a) {
+  actifA=a;
+  document.getElementById('actifBtns').innerHTML=Object.keys(ACTIFS_DATA).map(k=>`<button class="btn${k===a?' on':''}" onclick="selActif('${k}')">${k}</button>`).join('');
+  renderActifContent();
+}
+function renderActifContent() {
+  const a=ACTIFS_DATA[actifA], p=prices[actifA];
+  if(!a)return;
+  document.getElementById('actifBody').innerHTML=`
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+      <div><div style="font-weight:700;font-size:18px">${a.name} <span style="font-size:13px;color:var(--t3);font-weight:400">${a.ticker}</span></div>
+      <div style="font-size:11px;color:var(--t3);margin-top:2px">${a.cat} • ${a.annee} • Fondateurs : ${a.fondateurs}</div></div>
+      ${p?`<div style="text-align:right"><div style="font-weight:700;font-family:monospace;font-size:15px">${fp(p.price)} USD</div><div style="font-size:11px;color:${p.chg>=0?'#22c55e':'#ef4444'}">${p.chg>=0?'+':''}${p.chg.toFixed(2)}% 24h</div></div>`:''}
+    </div>
+  </div>
+  <div class="card"><div style="font-weight:600;font-size:12px;margin-bottom:6px">Qu'est-ce que c'est ?</div><p style="font-size:12px;color:var(--t2);line-height:1.7">${a.what}</p></div>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--green);margin-bottom:6px">Pourquoi c'est intéressant ?</div><p style="font-size:12px;color:var(--t2);line-height:1.7">${a.why}</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <div class="card"><div style="font-size:10px;color:var(--t3);margin-bottom:4px">CONCURRENTS</div><div style="font-size:12px;color:var(--t2);line-height:1.6">${a.concurrents}</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--t3);margin-bottom:4px">ENJEUX</div><div style="font-size:12px;color:var(--t2);line-height:1.6">${a.enjeux}</div></div>
+  </div>
+  <div class="card"><div style="font-weight:600;font-size:12px;color:var(--red);margin-bottom:6px">Risques à connaître</div><p style="font-size:12px;color:var(--t2);line-height:1.7">${a.risques}</p></div>
+  <div class="card"><div style="font-weight:600;font-size:12px;margin-bottom:8px">Points clés</div>${a.points.map(pt=>`<div style="display:flex;gap:8px;margin-bottom:5px;font-size:12px"><span style="color:var(--blue);flex-shrink:0">›</span><span style="color:var(--t2);line-height:1.5">${pt}</span></div>`).join('')}</div>`;
+}
+
+// ═══ APPRENDRE ═══
+const PATS_LIB = [
+  {name:'Doji',type:'chandelier',bias:'neutre',prob:50,color:'#a0a0a0',desc:'Ouverture et clôture quasi identiques.',psychology:'Indécision totale — ni acheteurs ni vendeurs ne dominent.',outcome:'Possible retournement selon le contexte.',risk:'Signal faible seul. Attendre confirmation.',tf:'Tous les timeframes.',
+   svg:`<svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:70px"><line x1="30" y1="5" x2="30" y2="30" stroke="#a0a0a0" stroke-width="1.5"/><rect x="20" y="30" width="20" height="3" fill="none" stroke="#a0a0a0" stroke-width="1.5"/><line x1="30" y1="33" x2="30" y2="60" stroke="#a0a0a0" stroke-width="1.5"/><text x="30" y="68" text-anchor="middle" fill="#a0a0a0" font-size="7">Doji</text></svg>`},
+  {name:'Marteau',type:'chandelier',bias:'haussier',prob:60,color:'#22c55e',desc:'Petite bougie en haut avec longue mèche inférieure (min 2× le corps).',psychology:'Les vendeurs ont poussé bas mais les acheteurs ont récupéré le contrôle avant la clôture.',outcome:'Retournement haussier ~60% après baisse.',risk:'Confirmation requise. Volume important.',tf:'1h, 4h, 1D après une tendance baissière.',
+   svg:`<svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:70px"><line x1="30" y1="5" x2="30" y2="18" stroke="#22c55e" stroke-width="1.5"/><rect x="20" y="18" width="20" height="12" fill="rgba(34,197,94,0.3)" stroke="#22c55e" stroke-width="1.5"/><line x1="30" y1="30" x2="30" y2="60" stroke="#22c55e" stroke-width="1.5"/><text x="30" y="68" text-anchor="middle" fill="#22c55e" font-size="7">Marteau</text></svg>`},
+  {name:'Étoile Filante',type:'chandelier',bias:'baissier',prob:62,color:'#ef4444',desc:'Petite bougie en bas avec longue mèche supérieure après une hausse.',psychology:'Les acheteurs ont poussé haut mais les vendeurs ont repris le contrôle.',outcome:'Retournement baissier ~62% après hausse.',risk:'Confirmation obligatoire.',tf:'4h, 1D après une tendance haussière.',
+   svg:`<svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:70px"><line x1="30" y1="5" x2="30" y2="42" stroke="#ef4444" stroke-width="1.5"/><rect x="20" y="42" width="20" height="12" fill="rgba(239,68,68,0.3)" stroke="#ef4444" stroke-width="1.5"/><line x1="30" y1="54" x2="30" y2="62" stroke="#ef4444" stroke-width="1.5"/><text x="30" y="68" text-anchor="middle" fill="#ef4444" font-size="7">Étoile Filante</text></svg>`},
+  {name:'Englobante Haussière',type:'chandelier',bias:'haussier',prob:63,color:'#22c55e',desc:'Grande bougie verte qui englobe totalement le corps de la précédente rouge.',psychology:'Les acheteurs ont submergé les vendeurs en une seule session.',outcome:'Retournement haussier à un support clé ~63%.',risk:'Moins fiable sans volume. Vérifier le contexte.',tf:'Tous TF. 4h et 1D les plus fiables.',
+   svg:`<svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:70px"><rect x="22" y="15" width="14" height="22" fill="rgba(239,68,68,0.4)" stroke="#ef4444" stroke-width="1.5"/><rect x="42" y="8" width="18" height="42" fill="rgba(34,197,94,0.3)" stroke="#22c55e" stroke-width="1.5"/><text x="40" y="68" text-anchor="middle" fill="#22c55e" font-size="7">Englobante H.</text></svg>`},
+  {name:'Double Sommet',type:'graphique',bias:'baissier',prob:64,color:'#ef4444',desc:'Le prix atteint un sommet deux fois sans le dépasser. Forme un M.',psychology:'Les vendeurs défendent la résistance deux fois. Épuisement des acheteurs.',outcome:'Cassure baissière sous le neckline. Cible = hauteur du pattern.',risk:'Fausse cassure possible. Attendre clôture sous neckline.',tf:'Pattern de retournement. 4h et 1D.',
+   svg:`<svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:70px"><polyline points="0,60 20,28 40,52 60,26 80,52 100,60" fill="none" stroke="#ef4444" stroke-width="2"/><line x1="0" y1="52" x2="120" y2="52" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,3"/><text x="88" y="50" fill="rgba(255,255,255,0.35)" font-size="7">Neckline</text><text x="60" y="68" text-anchor="middle" fill="#ef4444" font-size="7">Double Sommet</text></svg>`},
+  {name:'Double Creux',type:'graphique',bias:'haussier',prob:63,color:'#22c55e',desc:'Le prix atteint un creux deux fois puis se retourne. Forme un W.',psychology:'Les acheteurs absorbent les ventes deux fois au même niveau.',outcome:'Cassure haussière au-dessus du neckline ~63%.',risk:'Retest du neckline fréquent avant continuation.',tf:'Pattern de retournement. 4h et 1D.',
+   svg:`<svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:70px"><polyline points="0,16 20,52 40,28 60,54 80,26 100,16" fill="none" stroke="#22c55e" stroke-width="2"/><line x1="0" y1="28" x2="120" y2="28" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,3"/><text x="60" y="68" text-anchor="middle" fill="#22c55e" font-size="7">Double Creux</text></svg>`},
+  {name:'Triangle Ascendant',type:'graphique',bias:'haussier',prob:68,color:'#22c55e',desc:'Creux de plus en plus hauts convergent vers une résistance plate.',psychology:'Les acheteurs deviennent plus agressifs. Vendeurs défendent un niveau fixe.',outcome:'Cassure haussière ~68% à l\'approche de l\'apex.',risk:'Fausse cassure si volume faible.',tf:'1h, 4h, 1D. Apex = moment critique.',
+   svg:`<svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:70px"><line x1="5" y1="22" x2="110" y2="22" stroke="#22c55e" stroke-width="1.5"/><line x1="5" y1="62" x2="105" y2="23" stroke="#22c55e" stroke-width="1.5"/><text x="60" y="68" text-anchor="middle" fill="#22c55e" font-size="7">Triangle Ascendant</text></svg>`},
+  {name:'Drapeau Haussier',type:'graphique',bias:'haussier',prob:65,color:'#22c55e',desc:'Fort mouvement haussier (mât) suivi d\'une consolidation légèrement baissière (drapeau).',psychology:'Pause après fort momentum. Les acheteurs rechargent.',outcome:'Continuation haussière ~65%. Cible = longueur du mât.',risk:'Le drapeau ne doit pas retracer plus de 50% du mât.',tf:'15m, 1h, 4h en tendance haussière.',
+   svg:`<svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:70px"><line x1="15" y1="65" x2="15" y2="12" stroke="#22c55e" stroke-width="2"/><polyline points="15,12 40,22 40,32 70,38 70,48 95,42" fill="none" stroke="#22c55e" stroke-width="1.5"/><polyline points="15,12 40,15 40,25 70,31 70,41" fill="none" stroke="rgba(34,197,94,0.4)" stroke-width="1"/><text x="60" y="68" text-anchor="middle" fill="#22c55e" font-size="7">Drapeau Haussier</text></svg>`},
+];
+
+const DICT_DATA = [
+  {t:'RSI',c:'Indicateur',s:'Oscillateur 0–100 mesurant la force des mouvements de prix.',d:'Calculé sur 14 périodes. RSI > 70 = surachat (prudence). RSI < 30 = survente (opportunité). Zone 50 = neutre. Erreur commune : RSI en surachat ne signifie pas vendre immédiatement — en tendance forte, peut rester > 70 longtemps.',svg:`<svg viewBox="0 0 200 70" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:70px"><rect x="0" y="0" width="200" height="14" fill="rgba(239,68,68,0.12)"/><text x="4" y="10" fill="#ef4444" font-size="8">Surachat > 70</text><rect x="0" y="42" width="200" height="14" fill="rgba(34,197,94,0.12)"/><text x="4" y="52" fill="#22c55e" font-size="8">Survente < 30</text><polyline points="0,56 25,46 50,32 75,16 100,10 125,18 150,32 175,48 200,36" fill="none" stroke="#8b5cf6" stroke-width="2"/><line x1="0" y1="14" x2="200" y2="14" stroke="rgba(239,68,68,0.4)" stroke-width="1" stroke-dasharray="3,2"/><line x1="0" y1="56" x2="200" y2="56" stroke="rgba(34,197,94,0.4)" stroke-width="1" stroke-dasharray="3,2"/></svg>`},
+  {t:'SMA',c:'Indicateur',s:'Moyenne Mobile Simple — lisse les prix pour identifier la tendance.',d:'SMA20 = court terme. SMA50 = moyen terme. SMA200 = long terme. Golden Cross : SMA20 croise au-dessus SMA50 = signal haussier fort. Death Cross : SMA20 croise sous SMA50 = signal baissier fort.'},
+  {t:'Support',c:'Concept',s:'Niveau de prix où les acheteurs stoppent la baisse.',d:'Se forme par les creux passés, niveaux ronds et zones institutionnelles. Plus testé = plus fort. Après cassure, l\'ancien support devient résistance.'},
+  {t:'Résistance',c:'Concept',s:'Niveau de prix où les vendeurs bloquent la hausse.',d:'L\'ancienne résistance devient support après cassure confirmée avec volume — concept fondamental. Les niveaux ronds (50K, 100K) sont des résistances psychologiques fortes.'},
+  {t:'Volume',c:'Indicateur',s:'Unités échangées — mesure la conviction du marché.',d:'Hausse prix + hausse volume = tendance saine. Hausse prix + baisse volume = méfiance. Les cassures DOIVENT avoir un pic de volume pour être valides. Sans volume = probablement un faux signal.'},
+  {t:'Fibonacci',c:'Outil',s:'Niveaux de retracement basés sur la suite mathématique de Fibonacci.',d:'Niveaux clés : 23.6%, 38.2%, 50%, 61.8% (le "nombre d\'or" — le plus fiable), 78.6%. Extensions : 127.2%, 161.8% pour les objectifs de prix. Le 61.8% est le retracement idéal le plus fréquent.',svg:`<svg viewBox="0 0 200 70" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:70px"><line x1="0" y1="5" x2="200" y2="5" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><text x="4" y="14" fill="rgba(255,255,255,0.4)" font-size="8">0%</text><line x1="0" y1="22" x2="200" y2="22" stroke="#22c55e" stroke-width="1"/><text x="4" y="31" fill="#22c55e" font-size="8">23.6%</text><line x1="0" y1="38" x2="200" y2="38" stroke="#3b82f6" stroke-width="1"/><text x="4" y="47" fill="#3b82f6" font-size="8">38.2%</text><line x1="0" y1="50" x2="200" y2="50" stroke="#f59e0b" stroke-width="2"/><text x="4" y="59" fill="#f59e0b" font-size="8">61.8% ★</text><line x1="0" y1="62" x2="200" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><text x="4" y="69" fill="rgba(255,255,255,0.3)" font-size="7">100%</text></svg>`},
+  {t:'Stop Loss',c:'Risk Mgmt',s:'Ordre automatique de sortie en perte pour protéger le capital.',d:'TOUJOURS défini avant d\'entrer en position. Placer juste sous un support (pour un long). Ne jamais risquer plus de 1–2% du capital par trade. Ne jamais déplacer son stop loss dans la mauvaise direction.'},
+  {t:'Take Profit',c:'Risk Mgmt',s:'Niveau de sortie en profit prédéfini.',d:'Calculé via résistances, extensions Fibonacci ou ratio R/R fixe. Sortie partielle recommandée : 50% à 1:1, laisser courir le reste avec stop suiveur (trailing stop).'},
+  {t:'R/R Ratio',c:'Risk Mgmt',s:'Risque/Récompense — rapport gain potentiel / perte maximale.',d:'Calcul : R/R = (TP - Entrée) / (Entrée - SL). Minimum recommandé : 1:2. Avec un R/R de 1:2, on peut être perdant 50% du temps et rester profitable. Le R/R prime sur le taux de réussite.'},
+  {t:'Divergence',c:'Concept',s:'Contradiction entre le prix et un indicateur (RSI, MACD).',d:'Baissière : prix fait nouveau sommet mais RSI fait sommet moins élevé = momentum s\'affaiblit. Haussière : prix fait nouveau creux mais RSI fait creux moins profond = signal de retournement haussier potentiel. Plus fiable sur 4h et 1D.'},
+  {t:'Market Cap',c:'Concept',s:'Capitalisation = Prix × Offre en circulation.',d:'Large cap > $10Mrd (BTC, ETH) : plus stables. Mid cap $1–10Mrd : bon potentiel. Small cap < $1Mrd : très spéculatif. Ne pas comparer les prix — comparer les market caps. Un token à $0.01 peut être plus cher qu\'un token à $50 000 si sa cap est plus haute.'},
+];
+
+const COURS_DATA = [
+  {t:'Support & Résistance',diff:'Débutant',body:'Le support est un niveau où les acheteurs stoppent la baisse. La résistance bloque la hausse. Ces zones se forment car les traders mémorisent les cours passés et réagissent aux mêmes niveaux. C\'est la fondation de toute l\'analyse technique.',pts:['Zones, pas des lignes exactes','Ancienne résistance = support après cassure','Plus de touches = zone plus forte','Chiffres ronds = S/R psychologiques']},
+  {t:'Lire un chandelier',diff:'Débutant',body:'Chaque chandelier montre 4 prix : ouverture, plus haut, plus bas, clôture. Corps vert = clôture > ouverture. Corps rouge = clôture < ouverture. Les mèches = amplitude totale. Le contexte prime toujours sur la forme du chandelier.',pts:['Corps long = forte conviction','Longue mèche = rejet d\'un niveau','Petit corps + mèches = indécision','Analyser toujours le contexte en premier']},
+  {t:'Analyse de tendance',diff:'Débutant',body:'Uptrend : série de plus hauts ET plus bas croissants. Downtrend : série de plus hauts ET plus bas décroissants. Identifier la tendance est la première étape obligatoire. "The trend is your friend."',pts:['Partir du timeframe le plus élevé','Lignes de tendance reliant les pivots','Cassure = retournement potentiel','Tendance latérale = attendre']},
+  {t:'Volume & Confirmation',diff:'Intermédiaire',body:'Le volume confirme ou invalide tous les mouvements. Hausse sans volume = suspect. Cassure sans volume = probablement un faux signal (fakeout). Les pics de volume marquent les points de retournement.',pts:['Volume confirme les mouvements','Cassures DOIVENT avoir un pic volume','Divergence prix/volume = alerte forte','OBV trace le flux cumulatif']},
+  {t:'Analyse Multi-Timeframe',diff:'Intermédiaire',body:'Les pros analysent plusieurs timeframes systématiquement. TF supérieur = direction dominante. TF inférieur = entrée précise. Ne jamais trader contre le TF supérieur. L\'alignement des TFs est le signal le plus puissant.',pts:['Partir du 1W ou 1D pour la direction','1h ou 4h pour les entrées précises','Conflits entre TFs = rester hors du marché','Confluences = meilleures opportunités']},
+  {t:'Gestion du Risque',diff:'Avancé',body:'La gestion du risque prime sur tout le reste. Ne jamais risquer plus de 1–2% du capital par trade. Définir le stop loss avant d\'entrer. Un R/R de 1:2 permet d\'être profitable même avec 40% de réussite.',pts:['Stop loss défini avant l\'entrée','1–2% max du capital par trade','R/R minimum 1:2','La survie prime sur le profit']},
+  {t:'Psychologie du Trading',diff:'Avancé',body:'La psychologie est le facteur limitant n°1. FOMO, cupidité, peur de perdre. Un plan strict + journal de trades = outils indispensables pour progresser. Ne jamais venger une perte.',pts:['Plan défini avant le marché','Journal de trades obligatoire','Ne jamais venger une perte','La patience est une edge en soi']},
+];
+
+let pf = 'tous', dictQ = '', openC2 = {};
+
+function renderLearnPatterns() {
+  const div = document.getElementById('lt-patterns');
+  div.innerHTML = `<div class="frow">${['tous','chandelier','graphique','haussier','baissier'].map(f=>`<button class="btn${f===pf?' on':''}" onclick="setPF('${f}',this)">${f==='tous'?'Tous':f==='chandelier'?'Chandeliers':f==='graphique'?'Graphiques':f==='haussier'?'Haussiers':'Baissiers'}</button>`).join('')}</div><div id="pgrid">${buildPatGrid()}</div>`;
+}
+function setPF(f) {
+  pf=f;
+  document.querySelectorAll('#lt-patterns .btn').forEach(b=>b.classList.remove('on'));
+  event.target.classList.add('on');
+  document.getElementById('pgrid').innerHTML=buildPatGrid();
+}
+function buildPatGrid() {
+  return PATS_LIB.filter(p=>pf==='tous'||(pf==='chandelier'&&p.type==='chandelier')||(pf==='graphique'&&p.type==='graphique')||(pf==='haussier'&&p.bias==='haussier')||(pf==='baissier'&&p.bias==='baissier')).map((p,i)=>{
+    const id='p'+i;
+    return `<div class="pcard${openC2[id]?' open':''}" id="${id}" onclick="togP('${id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <div style="display:flex;align-items:center;gap:7px"><span style="color:${p.color};font-size:14px">${arw(p.bias)}</span><span style="font-weight:700;font-size:13px">${p.name}</span></div>
+        <div style="display:flex;gap:3px"><span class="b ${p.type==='chandelier'?'bb':'ba'}" style="font-size:9px">${p.type}</span><span class="b ${p.bias==='haussier'?'bg':p.bias==='baissier'?'br':'bw'}" style="font-size:9px">${p.bias}</span><span class="b bw" style="font-size:9px">${p.prob}%</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.5">${p.desc}</div>
+      <div class="pdetail" style="display:${openC2[id]?'block':'none'}">
+        <div class="illus">${p.svg}<div style="font-size:11px;color:var(--t2);max-width:180px;line-height:1.6">${p.desc}</div></div>
+        <div style="margin-bottom:7px"><strong style="font-size:12px">Psychologie</strong><br><span style="font-size:12px;color:var(--t2);line-height:1.6">${p.psychology}</span></div>
+        <div style="margin-bottom:7px"><strong style="font-size:12px;color:var(--green)">Issue typique</strong><br><span style="font-size:12px;color:var(--t2)">${p.outcome}</span></div>
+        <div style="margin-bottom:7px"><strong style="font-size:12px;color:var(--red)">Risques</strong><br><span style="font-size:12px;color:var(--t2)">${p.risk}</span></div>
+        <div><strong style="font-size:12px;color:var(--amber)">Meilleur TF</strong><br><span style="font-size:12px;color:var(--t2)">${p.tf}</span></div>
       </div>
     </div>`;
   }).join('');
 }
-function selMacroCat(c){macroCat=c;renderMacro();}
-
-// ═══════════════════════════════════════════════════════════════════════
-// ACTIFS
-// ═══════════════════════════════════════════════════════════════════════
-const ACTIFS={
-  BTC:{name:'Bitcoin',ticker:'BTC',categorie:'Crypto — Layer 1',fondateurs:'Satoshi Nakamoto (anonyme)',date:'2009',
-   what:'Bitcoin est la première cryptomonnaie décentralisée. C\'est un réseau de paiement pair-à-pair sans intermédiaire, sécurisé par la preuve de travail (Proof of Work). Son offre est limitée à 21 millions de BTC.',
-   why:'Bitcoin est souvent appelé "l\'or numérique". Sa rareté programmée, sa décentralisation totale et sa sécurité inégalée en font un actif de réserve de valeur. Les institutions le reconnaissent désormais comme une classe d\'actif à part entière.',
-   enjeux:'Scalabilité (peu de transactions/seconde), consommation énergétique controversée, réglementation mondiale, adoption comme monnaie légale (El Salvador).',
-   concurrents:'Ethereum (smart contracts), Litecoin (paiements rapides), BCH (Bitcoin Cash)',
-   risques:'Réglementation hostile, bug de sécurité (théorique), ordinateurs quantiques (futur lointain), fork majeur, perte des clés privées.',
-   points:['Offre maximale : 21 millions BTC','Halving tous les ~4 ans (réduction récompense mineurs)','Réseau Lightning pour micropaiements rapides','12+ ans sans piratage de la blockchain principale','Accepté par PayPal, Tesla (paiements), ETFs BlackRock/Fidelity']},
-  ETH:{name:'Ethereum',ticker:'ETH',categorie:'Crypto — Layer 1 / Smart Contracts',fondateurs:'Vitalik Buterin + équipe',date:'2015',
-   what:'Ethereum est une blockchain programmable permettant de créer des contrats intelligents (smart contracts) et des applications décentralisées (dApps). C\'est l\'infrastructure de la finance décentralisée (DeFi) mondiale.',
-   why:'Ethereum permet de coder des règles financières complexes sans intermédiaire. Prêts, échanges décentralisés, tokens, NFTs — tout tourne sur Ethereum. Sa transition vers le Proof of Stake en 2022 (The Merge) a réduit sa consommation énergétique de 99.95%.',
-   enjeux:'Scalabilité (fees élevés en période de congestion), concurrence des Layer 1 (Solana, Avalanche), adoption des Layer 2, passage possible à preuve d\'enjeu totale.',
-   concurrents:'Solana (vitesse), Avalanche (subnets), BNB Chain (fees bas), Cardano, Polkadot',
-   risques:'Complexité technique, bugs dans les smart contracts, concurrence Layer 1, régulation DeFi.',
-   points:['2e cryptomonnaie mondiale par capitalisation','Base de DeFi : $50Mrd+ de liquidités verrouillées','Layer 2 : Arbitrum, Optimism, Base, zkSync','Staking ETH : rendement ~4% annuel','ETF spot potentiellement approuvé 2025']},
-  TAO:{name:'Bittensor (TAO)',ticker:'TAO',categorie:'Crypto — IA Décentralisée',fondateurs:'Jacob Steeves & Ala Shaabana',date:'2021',
-   what:'Bittensor est un protocole de marché décentralisé pour l\'intelligence artificielle. Des modèles d\'IA s\'affrontent sur des "subnets" spécialisés et sont récompensés en TAO proportionnellement à leur performance et utilité.',
-   why:'Le marché de l\'IA est dominé par quelques géants (OpenAI, Google, Meta). Bittensor crée une alternative décentralisée où n\'importe qui peut contribuer des modèles d\'IA et être rémunéré. C\'est l\'intersection des deux narratifs les plus puissants du cycle crypto : IA et blockchain.',
-   enjeux:'Complexité technique, adoption réelle par des développeurs, concurrence des IA centralisées performantes, liquidité du token.',
-   concurrents:'Render Network (GPU décentralisé), Fetch.ai, Ocean Protocol, Akash Network',
-   risques:'Marché très spéculatif, peu liquide, dépendant de la narrative IA, concurrence d\'OpenAI/Google, équipe encore petite.',
-   points:['Architecture de subnets spécialisés unique','Récompenses automatiques aux meilleurs modèles','Communauté technique très active','Intégration possible avec des apps web2 via API','Token de gouvernance du réseau d\'IA global']},
-  PAXG:{name:'PAX Gold (PAXG)',ticker:'PAXG',categorie:'Commodity Token — Or tokenisé',fondateurs:'Paxos Trust Company',date:'2019',
-   what:'PAXG est un token ERC-20 sur Ethereum représentant 1 once troy d\'or physique stocké dans des coffres sécurisés de la London Bullion Market Association (LBMA). Chaque token est 100% garanti par de l\'or réel.',
-   why:'PAXG offre l\'exposition à l\'or avec la flexibilité crypto : trading 24h/24, frais bas, divisibilité infinie, et possibilité d\'utiliser l\'or comme collatéral DeFi. C\'est la meilleure façon d\'investir dans l\'or depuis un smartphone.',
-   enjeux:'Dépend de la confiance en Paxos, risque de contrepartie centralisé, réglementation des stablecoins.',
-   concurrents:'XAUT (Tether Gold), stocks minières (Barrick, Newmont), ETFs or (GLD, IAU)',
-   risques:'Risque Paxos (contrepartie centralisée), coûts de stockage intégrés dans le spread, moins liquide que BTC/ETH.',
-   points:['1 PAXG = 1 once d\'or physique (31.1g)','Audité mensuellement par des tiers indépendants','Régulé par le NYDFS (régulateur financier NY)','Rachat possible en or physique pour > 430 PAXG','Utilisable comme collatéral sur certains protocoles DeFi']},
-};
-
-function renderActifBtns(){
-  const keys=Object.keys(ACTIFS);
-  document.getElementById('actifBtns').innerHTML=keys.map(a=>
-    `<button class="btn${a===actifAsset?' on':''}" onclick="selActif('${a}')">${a}</button>`
-  ).join('');
-  renderActifContent();
+function togP(id) {
+  openC2[id]=!openC2[id];
+  const el=document.getElementById(id); if(!el)return;
+  el.classList.toggle('open',openC2[id]);
+  const d=el.querySelector('.pdetail'); if(d)d.style.display=openC2[id]?'block':'none';
 }
-function selActif(a){actifAsset=a;document.getElementById('actifBtns').innerHTML=Object.keys(ACTIFS).map(k=>`<button class="btn${k===a?' on':''}" onclick="selActif('${k}')">${k}</button>`).join('');renderActifContent();}
 
-function renderActifContent(){
-  const a=ACTIFS[actifAsset];if(!a)return;
-  const p=prices[actifAsset];
-  document.getElementById('actifContent').innerHTML=`
-  <div class="card">
-    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap">
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:18px">${a.name} <span style="font-size:13px;color:var(--t3);font-weight:400">${a.ticker}</span></div>
-        <div style="font-size:11px;color:var(--t3);margin-top:2px">${a.categorie} • Lancé en ${a.date}</div>
+function renderLearnDict() {
+  const div=document.getElementById('lt-dict');
+  div.innerHTML=`<input placeholder="Rechercher…" oninput="filterDict(this.value)" style="margin-bottom:10px"/><div id="dgrid">${buildDictGrid()}</div>`;
+}
+function filterDict(q){dictQ=q.toLowerCase();document.getElementById('dgrid').innerHTML=buildDictGrid();}
+function buildDictGrid() {
+  return DICT_DATA.filter(d=>!dictQ||d.t.toLowerCase().includes(dictQ)||d.s.toLowerCase().includes(dictQ)).map((d,i)=>{
+    const id='d'+i;
+    return `<div class="pcard${openC2[id]?' open':''}" id="${id}" onclick="togP('${id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-weight:700;font-size:14px">${d.t}</span>
+        <span class="b bb" style="font-size:9px">${d.c}</span>
       </div>
-      ${p?`<div style="text-align:right"><div style="font-weight:700;font-family:monospace;font-size:16px">${fp(p.price)} USD</div><div style="font-size:11px;color:${p.change24h>=0?'#22c55e':'#ef4444'}">${p.change24h>=0?'+':''}${p.change24h.toFixed(2)}% 24h</div></div>`:''}
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">Qu'est-ce que c'est ?</div>
-    <p style="font-size:13px;color:var(--t2);line-height:1.7">${a.what}</p>
-  </div>
-  <div class="card">
-    <div class="card-title" style="color:#22c55e">Pourquoi c'est intéressant ?</div>
-    <p style="font-size:13px;color:var(--t2);line-height:1.7">${a.why}</p>
-  </div>
-  <div class="adgrid">
-    <div class="card">
-      <div class="card-title" style="color:var(--t3);font-size:11px">FONDATEURS</div>
-      <div style="font-size:12px;color:var(--t2);line-height:1.6">${a.fondateurs}</div>
-    </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--t3);font-size:11px">CONCURRENTS</div>
-      <div style="font-size:12px;color:var(--t2);line-height:1.6">${a.concurrents}</div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title" style="color:#f59e0b">Enjeux & défis</div>
-    <p style="font-size:13px;color:var(--t2);line-height:1.7">${a.enjeux}</p>
-  </div>
-  <div class="card">
-    <div class="card-title" style="color:#ef4444">Risques à connaître</div>
-    <p style="font-size:13px;color:var(--t2);line-height:1.7">${a.risques}</p>
-  </div>
-  <div class="card">
-    <div class="card-title">Points clés</div>
-    ${a.points.map(pt=>`<div style="display:flex;gap:8px;margin-bottom:6px;font-size:12px"><span style="color:#3b82f6;flex-shrink:0">›</span><span style="color:var(--t2);line-height:1.5">${pt}</span></div>`).join('')}
-  </div>`;
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// APPRENDRE — PATTERNS
-// ═══════════════════════════════════════════════════════════════════════
-const PAT_LIB=[
-  {name:'Doji',type:'chandelier',bias:'neutre',prob:50,color:'#a0a0a0',
-   desc:'Ouverture et clôture quasi identiques. Forme une croix ou un + sur le graphique.',
-   psychology:'Indécision totale — ni acheteurs ni vendeurs ne dominent. Le marché cherche une direction.',
-   outcome:'Possible retournement ou continuation selon le contexte de tendance.',
-   risk:'Signal faible seul. Toujours attendre la bougie suivante pour confirmation.',
-   tf:'Valable sur tous les timeframes. Plus fiable sur 4h et 1D.',
-   svg:`<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:80px">
-     <line x1="30" y1="5" x2="30" y2="35" stroke="#a0a0a0" stroke-width="1.5"/>
-     <rect x="22" y="35" width="16" height="4" fill="none" stroke="#a0a0a0" stroke-width="1.5"/>
-     <line x1="30" y1="39" x2="30" y2="70" stroke="#a0a0a0" stroke-width="1.5"/>
-     <text x="30" y="78" text-anchor="middle" fill="#a0a0a0" font-size="8">Doji</text>
-   </svg>`},
-  {name:'Marteau',type:'chandelier',bias:'haussier',prob:60,color:'#22c55e',
-   desc:'Petite bougie verte en haut de la range avec une longue mèche inférieure (min. 2× le corps).',
-   psychology:'Les vendeurs ont poussé les prix bas mais les acheteurs ont violemment repris le contrôle avant la clôture.',
-   outcome:'Retournement haussier ~60% après une tendance baissière.',
-   risk:'Signal faible sur faible volume. Confirmation requise.',
-   tf:'Plus fiable sur 1h, 4h, 1D après une baisse significative.',
-   svg:`<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:80px">
-     <line x1="30" y1="5" x2="30" y2="20" stroke="#22c55e" stroke-width="1.5"/>
-     <rect x="20" y="20" width="20" height="15" fill="rgba(34,197,94,0.3)" stroke="#22c55e" stroke-width="1.5"/>
-     <line x1="30" y1="35" x2="30" y2="70" stroke="#22c55e" stroke-width="1.5"/>
-     <text x="30" y="78" text-anchor="middle" fill="#22c55e" font-size="8">Marteau</text>
-   </svg>`},
-  {name:'Étoile Filante',type:'chandelier',bias:'baissier',prob:62,color:'#ef4444',
-   desc:'Petite bougie rouge en bas de la range avec une longue mèche supérieure après une hausse.',
-   psychology:'Les acheteurs ont poussé les prix haut mais les vendeurs ont violemment repris le contrôle.',
-   outcome:'Retournement baissier ~62% après une tendance haussière.',
-   risk:'Confirmation obligatoire. Attention aux faux signaux en tendance forte.',
-   tf:'Plus fiable sur 4h et 1D après une hausse significative.',
-   svg:`<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:80px">
-     <line x1="30" y1="5" x2="30" y2="45" stroke="#ef4444" stroke-width="1.5"/>
-     <rect x="20" y="45" width="20" height="15" fill="rgba(239,68,68,0.3)" stroke="#ef4444" stroke-width="1.5"/>
-     <line x1="30" y1="60" x2="30" y2="68" stroke="#ef4444" stroke-width="1.5"/>
-     <text x="30" y="78" text-anchor="middle" fill="#ef4444" font-size="8">Étoile Filante</text>
-   </svg>`},
-  {name:'Englobante Haussière',type:'chandelier',bias:'haussier',prob:63,color:'#22c55e',
-   desc:'Grande bougie verte qui englobe entièrement le corps de la précédente bougie rouge.',
-   psychology:'Les acheteurs ont complètement submergé les vendeurs en une seule session. Signal de force acheteur.',
-   outcome:'Retournement haussier à un support clé ~63%.',
-   risk:'Moins fiable sans volume élevé. Vérifier le contexte général.',
-   tf:'Tous timeframes. 4h et 1D les plus fiables.',
-   svg:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
-     <rect x="28" y="15" width="14" height="25" fill="rgba(239,68,68,0.4)" stroke="#ef4444" stroke-width="1.5"/>
-     <line x1="35" y1="8" x2="35" y2="15" stroke="#ef4444" stroke-width="1.5"/>
-     <line x1="35" y1="40" x2="35" y2="45" stroke="#ef4444" stroke-width="1.5"/>
-     <rect x="44" y="10" width="18" height="45" fill="rgba(34,197,94,0.3)" stroke="#22c55e" stroke-width="1.5"/>
-     <line x1="53" y1="5" x2="53" y2="10" stroke="#22c55e" stroke-width="1.5"/>
-     <line x1="53" y1="55" x2="53" y2="62" stroke="#22c55e" stroke-width="1.5"/>
-     <text x="40" y="75" text-anchor="middle" fill="#22c55e" font-size="7">Englobante H.</text>
-   </svg>`},
-  {name:'Double Sommet',type:'graphique',bias:'baissier',prob:64,color:'#ef4444',
-   desc:'Le prix atteint un sommet deux fois sans parvenir à le dépasser. Forme un M caractéristique.',
-   psychology:'Les vendeurs défendent avec succès une résistance deux fois. Épuisement progressif des acheteurs.',
-   outcome:'Cassure baissière sous la ligne de cou. Cible = hauteur du pattern vers le bas.',
-   risk:'Fausse cassure possible. Attendre clôture sous le neckline avec volume.',
-   tf:'Pattern de retournement. Plus fiable sur 4h et 1D.',
-   svg:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:80px">
-     <polyline points="0,65 20,30 40,55 60,28 80,55 100,65" fill="none" stroke="#ef4444" stroke-width="2"/>
-     <line x1="0" y1="55" x2="120" y2="55" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
-     <text x="104" y="53" fill="rgba(255,255,255,0.4)" font-size="8">Neckline</text>
-     <text x="18" y="26" fill="#ef4444" font-size="8">S1</text>
-     <text x="58" y="24" fill="#ef4444" font-size="8">S2</text>
-     <text x="60" y="76" text-anchor="middle" fill="#ef4444" font-size="8">Double Sommet</text>
-   </svg>`},
-  {name:'Double Creux',type:'graphique',bias:'haussier',prob:63,color:'#22c55e',
-   desc:'Le prix atteint un creux deux fois puis se retourne. Forme un W caractéristique.',
-   psychology:'Les acheteurs absorbent les ventes deux fois au même niveau de support.',
-   outcome:'Cassure haussière au-dessus de la ligne de cou ~63%. Cible = hauteur du W.',
-   risk:'Retest du neckline fréquent avant continuation. Ne pas anticiper.',
-   tf:'Pattern de retournement. 4h et 1D les plus fiables.',
-   svg:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:80px">
-     <polyline points="0,20 20,55 40,30 60,58 80,28 100,20" fill="none" stroke="#22c55e" stroke-width="2"/>
-     <line x1="0" y1="30" x2="120" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="4,3"/>
-     <text x="104" y="28" fill="rgba(255,255,255,0.4)" font-size="8">Neckline</text>
-     <text x="18" y="70" fill="#22c55e" font-size="8">C1</text>
-     <text x="58" y="74" fill="#22c55e" font-size="8">C2</text>
-     <text x="60" y="78" text-anchor="middle" fill="#22c55e" font-size="8">Double Creux</text>
-   </svg>`},
-  {name:'Triangle Ascendant',type:'graphique',bias:'haussier',prob:68,color:'#22c55e',
-   desc:'Creux de plus en plus hauts convergent vers une résistance horizontale plate.',
-   psychology:'Les acheteurs deviennent progressivement plus agressifs. Les vendeurs défendent un niveau fixe.',
-   outcome:'Cassure haussière probable ~68% à l\'approche de l\'apex.',
-   risk:'Fausse cassure si volume faible lors de la cassure.',
-   tf:'Pattern de continuation. 1h, 4h et 1D. Apex = moment critique.',
-   svg:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:80px">
-     <line x1="5" y1="25" x2="110" y2="25" stroke="#22c55e" stroke-width="1.5"/>
-     <line x1="5" y1="65" x2="100" y2="26" stroke="#22c55e" stroke-width="1.5"/>
-     <polyline points="5,65 20,55 35,50 50,43 65,38 80,33 90,28" fill="none" stroke="rgba(34,197,94,0.6)" stroke-width="1" stroke-dasharray="3,2"/>
-     <polyline points="10,64 25,64 40,58 55,52 70,47 85,40" fill="none" stroke="rgba(34,197,94,0.6)" stroke-width="1" stroke-dasharray="3,2"/>
-     <text x="60" y="76" text-anchor="middle" fill="#22c55e" font-size="8">Triangle Ascendant</text>
-   </svg>`},
-  {name:'Triangle Descendant',type:'graphique',bias:'baissier',prob:66,color:'#ef4444',
-   desc:'Sommets de plus en plus bas convergent vers un support horizontal plat.',
-   psychology:'Les vendeurs deviennent progressivement plus agressifs. Les acheteurs défendent un niveau fixe.',
-   outcome:'Cassure baissière probable ~66% à l\'approche de l\'apex.',
-   risk:'Le support peut tenir et créer un retournement haussier surprise.',
-   tf:'Pattern de continuation baissière. 1h, 4h, 1D.',
-   svg:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:80px">
-     <line x1="5" y1="60" x2="110" y2="60" stroke="#ef4444" stroke-width="1.5"/>
-     <line x1="5" y1="18" x2="100" y2="59" stroke="#ef4444" stroke-width="1.5"/>
-     <text x="60" y="76" text-anchor="middle" fill="#ef4444" font-size="8">Triangle Descendant</text>
-   </svg>`},
-  {name:'Drapeau Haussier',type:'graphique',bias:'haussier',prob:65,color:'#22c55e',
-   desc:'Fort mouvement haussier (mât) suivi d\'une consolidation en canal légèrement baissier (drapeau).',
-   psychology:'Pause après un fort momentum. Les acheteurs rechargent leurs positions avant la continuation.',
-   outcome:'Continuation haussière ~65%. Cible = longueur du mât reportée depuis la cassure.',
-   risk:'Le drapeau ne doit pas retracer plus de 50% du mât.',
-   tf:'Patterns courts. 15m, 1h, 4h en tendance haussière.',
-   svg:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="width:120px;height:80px">
-     <line x1="15" y1="70" x2="15" y2="15" stroke="#22c55e" stroke-width="2"/>
-     <polyline points="15,15 40,25 40,35 65,40 65,50 90,55 110,48" fill="none" stroke="#22c55e" stroke-width="1.5"/>
-     <polyline points="15,15 40,18 40,28 65,33 65,43 90,48" fill="none" stroke="rgba(34,197,94,0.5)" stroke-width="1"/>
-     <text x="60" y="76" text-anchor="middle" fill="#22c55e" font-size="8">Drapeau Haussier</text>
-   </svg>`},
-];
-
-let patFilter2='tous';
-function renderLearnPatterns(){
-  const div=document.getElementById('learn-patterns');
-  div.innerHTML=`
-  <div class="frow" style="margin-bottom:10px">
-    ${['tous','chandelier','graphique','haussier','baissier'].map(f=>`<button class="btn${f===patFilter2?' on':''}" style="flex-shrink:0;font-size:11px" onclick="setPF('${f}',this)">${f==='tous'?'Tous':f==='chandelier'?'Chandeliers':f==='graphique'?'Graphiques':f==='haussier'?'Haussiers':'Baissiers'}</button>`).join('')}
-  </div>
-  <div id="patGrid">${renderPatGrid()}</div>`;
-}
-function setPF(f){
-  patFilter2=f;
-  document.querySelectorAll('#learn-patterns .btn').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
-  document.getElementById('patGrid').innerHTML=renderPatGrid();
-}
-function renderPatGrid(){
-  return PAT_LIB.filter(p=>patFilter2==='tous'||(patFilter2==='chandelier'&&p.type==='chandelier')||(patFilter2==='graphique'&&p.type==='graphique')||(patFilter2==='haussier'&&p.bias==='haussier')||(patFilter2==='baissier'&&p.bias==='baissier')).map((p,i)=>`
-  <div class="pcard${openCards['p'+i]?' open':''}" onclick="togPC('p${i}',this)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="color:${p.color};font-size:16px">${arrow(p.bias)}</span>
-        <span style="font-weight:700;font-size:14px">${p.name}</span>
+      <div style="font-size:12px;color:var(--t2)">${d.s}</div>
+      <div class="pdetail" style="display:${openC2[id]?'block':'none'}">
+        ${d.svg?`<div class="illus" style="margin-top:8px">${d.svg}</div>`:''}
+        <p style="font-size:12px;color:var(--t2);line-height:1.7;margin-top:8px">${d.d}</p>
       </div>
-      <div style="display:flex;gap:4px">
-        <span class="b ${p.type==='chandelier'?'bb':'ba'}" style="font-size:9px">${p.type}</span>
-        <span class="b ${p.bias==='haussier'?'bg':p.bias==='baissier'?'br':'bw'}" style="font-size:9px">${p.bias}</span>
-        <span class="b bw" style="font-size:9px">${p.prob}%</span>
+    </div>`;
+  }).join('');
+}
+
+function renderLearnCours() {
+  document.getElementById('lt-cours').innerHTML = COURS_DATA.map((l,i)=>{
+    const id='c'+i;
+    return `<div class="pcard${openC2[id]?' open':''}" id="${id}" onclick="togP('${id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-weight:700;font-size:13px">${l.t}</span>
+        <span class="b ${l.diff==='Débutant'?'bg':l.diff==='Avancé'?'br':'bb'}" style="font-size:9px">${l.diff}</span>
       </div>
-    </div>
-    <div style="font-size:12px;color:var(--t2);line-height:1.5">${p.desc}</div>
-    <div class="pat-detail" style="display:${openCards['p'+i]?'block':'none'}">
-      <div class="illus" style="display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;padding:14px">
-        ${p.svg}
-        <div style="font-size:11px;color:var(--t2);max-width:180px;line-height:1.6">${p.desc}</div>
+      <div style="font-size:12px;color:var(--t2)">${l.body.substring(0,80)}…</div>
+      <div class="pdetail" style="display:${openC2[id]?'block':'none'}">
+        <p style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:10px">${l.body}</p>
+        ${l.pts.map(p=>`<div style="display:flex;gap:6px;margin-bottom:5px;font-size:12px"><span style="color:var(--blue);flex-shrink:0">›</span><span style="color:var(--t2);line-height:1.4">${p}</span></div>`).join('')}
       </div>
-      <div style="padding:10px 0">
-        <div style="margin-bottom:8px"><strong style="font-size:12px;color:var(--t1)">Psychologie de marché</strong><br><span style="font-size:12px;color:var(--t2);line-height:1.6">${p.psychology}</span></div>
-        <div style="margin-bottom:8px"><strong style="font-size:12px;color:#22c55e">Issue typique</strong><br><span style="font-size:12px;color:var(--t2)">${p.outcome}</span></div>
-        <div style="margin-bottom:8px"><strong style="font-size:12px;color:#ef4444">Risques</strong><br><span style="font-size:12px;color:var(--t2)">${p.risk}</span></div>
-        <div><strong style="font-size:12px;color:#f59e0b">Meilleur timeframe</strong><br><span style="font-size:12px;color:var(--t2)">${p.tf}</span></div>
-      </div>
-    </div>
-  </div>`).join('');
-}
-function togPC(id,el){
-  openCards[id]=!openCards[id];
-  el.classList.toggle('open',openCards[id]);
-  const d=el.querySelector('.pat-detail');if(d)d.style.display=openCards[id]?'block':'none';
+    </div>`;
+  }).join('');
 }
 
-function showPatDetail(name){
-  const p=PAT_LIB.find(x=>x.name===name);
-  if(!p)return;
-  goTab('apprendre');setLearnTab('patterns',document.querySelector('.ltab'));
-  setTimeout(()=>{const cards=document.querySelectorAll('.pcard');cards.forEach((c,i)=>{if(c.querySelector('span[style*="font-weight:700"]')?.textContent===name){c.scrollIntoView({behavior:'smooth'});}});},200);
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// APPRENDRE — DICT
-// ═══════════════════════════════════════════════════════════════════════
-const DICT=[
-  {t:'RSI',c:'Indicateur',s:'Relative Strength Index — oscillateur 0-100 mesurant la force des mouvements.',d:'<p>Calculé sur 14 périodes par défaut. RSI > 70 = surachat (prudence). RSI < 30 = survente (opportunité potentielle). La zone 50 = neutre.</p><p style="margin-top:6px"><strong>Erreur commune :</strong> Un RSI en surachat ne signifie pas vendre immédiatement. En tendance forte, le RSI peut rester > 70 pendant des semaines.</p>',
-   svg:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:80px">
-     <rect x="0" y="0" width="200" height="15" fill="rgba(239,68,68,0.15)"/><text x="4" y="11" fill="#ef4444" font-size="8">Surachat > 70</text>
-     <rect x="0" y="45" width="200" height="15" fill="rgba(34,197,94,0.15)"/><text x="4" y="56" fill="#22c55e" font-size="8">Survente < 30</text>
-     <polyline points="0,60 20,50 40,35 60,20 80,12 100,18 120,30 140,45 160,55 180,48 200,38" fill="none" stroke="#8b5cf6" stroke-width="2"/>
-     <line x1="0" y1="15" x2="200" y2="15" stroke="rgba(239,68,68,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
-     <line x1="0" y1="60" x2="200" y2="60" stroke="rgba(34,197,94,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
-   </svg>`},
-  {t:'SMA',c:'Indicateur',s:'Moyenne Mobile Simple — lisse les prix pour identifier la tendance.',d:'<p>SMA20 = court terme. SMA50 = moyen terme. SMA200 = long terme.</p><p style="margin-top:6px"><strong>Golden Cross :</strong> SMA20 croise au-dessus SMA50 → signal haussier fort.<br><strong>Death Cross :</strong> SMA20 croise sous SMA50 → signal baissier fort.</p>',
-   svg:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:80px">
-     <polyline points="0,50 30,45 60,35 90,25 120,30 150,20 200,15" fill="none" stroke="#3b82f6" stroke-width="2"/><text x="155" y="13" fill="#3b82f6" font-size="8">SMA20</text>
-     <polyline points="0,60 30,57 60,52 90,45 120,42 150,35 200,28" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,2"/><text x="155" y="40" fill="#f59e0b" font-size="8">SMA50</text>
-     <circle cx="95" cy="42" r="4" fill="none" stroke="#22c55e" stroke-width="1.5"/><text x="97" y="38" fill="#22c55e" font-size="7">GC</text>
-   </svg>`},
-  {t:'Support',c:'Concept',s:'Niveau de prix où les acheteurs stoppent la baisse.',d:'<p>Se forme par les creux passés, les niveaux ronds et les zones institutionnelles. Plus testé = plus fort. L\'ancien support devient résistance après cassure.</p>',
-   svg:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:80px">
-     <polyline points="0,20 30,35 60,50 90,65 110,55 130,65 150,55 170,65 200,50" fill="none" stroke="#22c55e" stroke-width="2"/>
-     <line x1="80" y1="65" x2="200" y2="65" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4,3"/><text x="4" y="63" fill="#22c55e" font-size="8">Support</text>
-     <text x="115" y="75" fill="rgba(34,197,94,0.5)" font-size="7">Rebonds</text>
-   </svg>`},
-  {t:'Résistance',c:'Concept',s:'Niveau de prix où les vendeurs bloquent la hausse.',d:'<p>Forme par les sommets passés. L\'ancienne résistance devient support après cassure — principe fondamental de l\'AT. Les niveaux ronds (50K, 100K) sont des résistances psychologiques.</p>',
-   svg:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:80px">
-     <polyline points="0,60 30,45 60,30 90,15 110,25 130,15 150,25 170,15 200,30" fill="none" stroke="#ef4444" stroke-width="2"/>
-     <line x1="80" y1="15" x2="200" y2="15" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3"/><text x="4" y="13" fill="#ef4444" font-size="8">Résistance</text>
-   </svg>`},
-  {t:'Volume',c:'Indicateur',s:'Nombre d\'unités échangées — mesure la conviction du marché.',d:'<p>Hausse prix + hausse volume = tendance saine. Hausse prix + baisse volume = divergence, méfiance. Les cassures DOIVENT être accompagnées d\'un pic de volume pour être valides.</p>'},
-  {t:'Fibonacci',c:'Outil',s:'Niveaux mathématiques de retracement basés sur la suite de Fibonacci.',d:'<p>Niveaux clés : 23.6%, 38.2%, 50%, <strong>61.8%</strong> (le plus important — "nombre d\'or"), 78.6%. Extensions : 127.2%, 161.8% pour les objectifs de prix.</p>',
-   svg:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:80px">
-     <line x1="0" y1="5" x2="200" y2="5" stroke="rgba(255,255,255,0.3)" stroke-width="1"/><text x="160" y="14" fill="rgba(255,255,255,0.4)" font-size="7">0%</text>
-     <line x1="0" y1="25" x2="200" y2="25" stroke="#22c55e" stroke-width="1"/><text x="160" y="23" fill="#22c55e" font-size="7">23.6%</text>
-     <line x1="0" y1="42" x2="200" y2="42" stroke="#3b82f6" stroke-width="1"/><text x="160" y="40" fill="#3b82f6" font-size="7">38.2%</text>
-     <line x1="0" y1="53" x2="200" y2="53" stroke="#f59e0b" stroke-width="2"/><text x="160" y="51" fill="#f59e0b" font-size="7">61.8% ★</text>
-     <line x1="0" y1="68" x2="200" y2="68" stroke="rgba(255,255,255,0.3)" stroke-width="1"/><text x="160" y="66" fill="rgba(255,255,255,0.4)" font-size="7">100%</text>
-   </svg>`},
-  {t:'Stop Loss',c:'Risk Mgmt',s:'Ordre automatique de sortie en perte — protège le capital.',d:'<p>TOUJOURS défini avant d\'entrer en position. Placer juste sous un support (long) ou au-dessus d\'une résistance (short). Ne jamais risquer plus de 1-2% du capital sur un trade.</p>'},
-  {t:'Take Profit',c:'Risk Mgmt',s:'Niveau de sortie en profit prédéfini.',d:'<p>Calculé via résistances, extensions Fibonacci ou ratio R/R fixe. Sortie partielle recommandée : 50% à 1:1, laisser courir le reste avec stop suiveur.</p>'},
-  {t:'R/R Ratio',c:'Risk Mgmt',s:'Risque/Récompense — rapport gain potentiel / perte maximale.',d:'<p>R/R = (TP - Entrée) / (Entrée - SL). Minimum recommandé : 1:2. Avec un R/R de 1:2, on peut être perdant 50% du temps et rester profitable. Un bon R/R prime sur un bon taux de réussite.</p>'},
-  {t:'Market Cap',c:'Concept',s:'Capitalisation = Prix × Offre en circulation.',d:'<p>Large cap > $10Mrd (BTC, ETH) : plus stables. Mid cap $1-10Mrd : fort potentiel. Small cap < $1Mrd : très spéculatif. Ne pas comparer les prix seuls — comparer les market caps.</p>'},
-  {t:'Divergence',c:'Concept',s:'Contradiction entre le prix et un indicateur (RSI, MACD...).',d:'<p><strong>Baissière :</strong> prix fait nouveau sommet mais RSI fait sommet moins élevé → momentum s\'affaiblit → retournement possible.<br><strong>Haussière :</strong> prix fait nouveau creux mais RSI fait creux moins profond → signal de retournement haussier.',
-   svg:`<svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:200px;height:80px">
-     <polyline points="0,50 40,30 80,20 120,10 160,15" fill="none" stroke="#ef4444" stroke-width="2"/>
-     <polyline points="0,65 40,58 80,52 120,50 160,55" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="4,2"/>
-     <text x="4" y="48" fill="#ef4444" font-size="8">Prix ↑↑</text>
-     <text x="4" y="75" fill="#8b5cf6" font-size="8">RSI ↑ (moins)</text>
-     <text x="60" y="8" fill="rgba(239,68,68,0.7)" font-size="7">Divergence Baissière</text>
-   </svg>`},
-];
-
-let dictSearch='';
-function renderLearnDict(){
-  const div=document.getElementById('learn-dict');
-  div.innerHTML=`
-  <input placeholder="Rechercher un terme..." oninput="filterD(this.value)" style="margin-bottom:12px"/>
-  <div id="dictGrid2">${renderDictGrid()}</div>`;
-}
-function filterD(v){dictSearch=v.toLowerCase();document.getElementById('dictGrid2').innerHTML=renderDictGrid();}
-function renderDictGrid(){
-  return DICT.filter(d=>!dictSearch||d.t.toLowerCase().includes(dictSearch)||d.s.toLowerCase().includes(dictSearch)).map((d,i)=>`
-  <div class="pcard${openCards['d'+i]?' open':''}" onclick="togPC('d${i}',this)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <span style="font-weight:700;font-size:14px">${d.t}</span>
-      <span class="b bb" style="font-size:9px">${d.c}</span>
-    </div>
-    <div style="font-size:12px;color:var(--t2)">${d.s}</div>
-    <div class="pat-detail" style="display:${openCards['d'+i]?'block':'none'}">
-      ${d.svg?`<div class="illus" style="display:flex;justify-content:center;margin:8px 0">${d.svg}</div>`:''}
-      <div style="font-size:12px;color:var(--t2);line-height:1.7;padding-top:8px">${d.d}</div>
-    </div>
-  </div>`).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════════════
-// APPRENDRE — COURS
-// ═══════════════════════════════════════════════════════════════════════
-const COURS=[
-  {t:'Support & Résistance',diff:'Débutant',body:'Le support est un niveau où les acheteurs stoppent la baisse. La résistance bloque la hausse. Ces zones se forment car les traders mémorisent les cours passés et réagissent aux mêmes niveaux. C\'est la fondation absolue de toute l\'analyse technique.',pts:['Zones, pas des lignes exactes','Ancienne résistance = support après cassure','Plus de touches = zone plus forte','Chiffres ronds = S/R psychologiques']},
-  {t:'Lire un graphique en chandeliers',diff:'Débutant',body:'Chaque chandelier montre 4 prix : ouverture, plus haut, plus bas, clôture. Corps vert = clôture > ouverture (acheteurs gagnants). Corps rouge = clôture < ouverture (vendeurs gagnants). Les mèches montrent l\'amplitude totale.',pts:['Corps long = forte conviction','Longue mèche = rejet d\'un niveau','Petit corps + longues mèches = indécision','Le contexte prime toujours']},
-  {t:'Analyse de tendance',diff:'Débutant',body:'Uptrend : série de plus hauts ET plus bas croissants. Downtrend : série de plus hauts ET plus bas décroissants. Identifier la tendance est la première étape obligatoire de toute analyse. "The trend is your friend."',pts:['Partir toujours du timeframe supérieur','Lignes de tendance reliant les pivots','Cassure = retournement potentiel','Tendance latérale = attendre']},
-  {t:'Volume et confirmation',diff:'Intermédiaire',body:'Le volume est la bougie cachée. Hausse sans volume = suspect. Cassure sans volume = probablement un faux signal. Les pics de volume marquent les retournements et les cassures importantes.',pts:['Volume confirme les mouvements','Cassures DOIVENT avoir un pic volume','Divergence prix/volume = alerte','OBV trace le flux cumulatif']},
-  {t:'Analyse Multi-Timeframe',diff:'Intermédiaire',body:'Les pros analysent systématiquement plusieurs timeframes. TF supérieur = direction. TF inférieur = entrée précise. Ne jamais trader contre la tendance du TF supérieur. L\'alignement de plusieurs TFs est le signal le plus fort.',pts:['Partir du 1W ou 1D pour la direction','1h ou 4h pour les entrées','Conflits entre TFs = rester hors du marché','Les confluences sont les meilleures opportunités']},
-  {t:'Gestion du risque',diff:'Avancé',body:'La gestion du risque est plus importante que le taux de réussite. Ne jamais risquer plus de 1-2% du capital par trade. Définir le stop loss AVANT d\'entrer. Un R/R de 1:2 minimum permet d\'être profitable même avec 40% de réussite.',pts:['Stop loss défini avant l\'entrée','1-2% max par trade','R/R minimum 1:2','La survie prime sur le profit']},
-  {t:'Psychologie du Trading',diff:'Avancé',body:'La psychologie est le facteur limitant n°1. FOMO, cupidité, peur. Un plan strict + journal de trades = outils indispensables. Ne jamais venger une perte. Chaque trade est indépendant.',pts:['Plan défini avant le marché','Journal de trades obligatoire','Ne jamais venger une perte','La patience est une edge']},
-];
-
-function renderLearnCours(){
-  const div=document.getElementById('learn-cours');
-  div.innerHTML=COURS.map((l,i)=>`
-  <div class="pcard${openCards['c'+i]?' open':''}" onclick="togPC('c${i}',this)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <span style="font-weight:700;font-size:13px">${l.t}</span>
-      <span class="b ${l.diff==='Débutant'?'bg':l.diff==='Avancé'?'br':'bb'}" style="font-size:9px">${l.diff}</span>
-    </div>
-    <div style="font-size:12px;color:var(--t2);line-height:1.5">${l.body.substring(0,80)}…</div>
-    <div class="pat-detail" style="display:${openCards['c'+i]?'block':'none'}">
-      <p style="font-size:12px;color:var(--t2);line-height:1.7;margin:8px 0">${l.body}</p>
-      <div style="border-top:1px solid var(--border);padding-top:8px">
-        ${l.pts.map(p=>`<div style="display:flex;gap:6px;margin-bottom:5px;font-size:11px"><span style="color:#3b82f6;flex-shrink:0">›</span><span style="color:var(--t2);line-height:1.4">${p}</span></div>`).join('')}
-      </div>
-    </div>
-  </div>`).join('');
-}
-
-function setLearnTab(tab,el){
+function setLT(tab, el) {
   learnSub=tab;
   document.querySelectorAll('.ltab').forEach(b=>b.classList.remove('on'));
   if(el)el.classList.add('on');
-  else document.querySelectorAll('.ltab').forEach((b,i)=>{if(['patterns','dict','cours'][i]===tab)b.classList.add('on');});
   ['patterns','dict','cours'].forEach(t=>{
-    document.getElementById('learn-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('lt-'+t).style.display=t===tab?'block':'none';
   });
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════════════════════════════════
-function goTab(id,btn){
-  ['scanner','graphique','strategie','macro','actifs','apprendre'].forEach(t=>{
-    document.getElementById('tab-'+t).style.display=t===id?'block':'none';
-  });
+// ═══ TABS ═══
+function goTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  else{const ids=['scanner','graphique','strategie','macro','actifs','apprendre'];document.querySelectorAll('.nb').forEach((b,i)=>{if(ids[i]===id)b.classList.add('on');});}
+  if(btn) btn.classList.add('on');
+  else {
+    const ids=['scanner','graphique','strategie','macro','actifs','apprendre'];
+    document.querySelectorAll('.nb').forEach((b,i)=>{if(ids[i]===id)b.classList.add('on');});
+  }
   if(id==='graphique'){renderAssetBtns();renderTFBtns();loadChart();}
   if(id==='strategie')renderStratContent();
   if(id==='actifs')renderActifContent();
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// RESIZE
-// ═══════════════════════════════════════════════════════════════════════
+// ═══ RESIZE ═══
 window.addEventListener('resize',()=>{
   if(chart){const w=document.getElementById('chartWrap');chart.applyOptions({width:w.clientWidth});}
 });
 
-// ═══════════════════════════════════════════════════════════════════════
-// DOWNLOAD
-// ═══════════════════════════════════════════════════════════════════════
+// ═══ DOWNLOAD ═══
 function dlHTML(){
   const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
   const url=URL.createObjectURL(blob);
@@ -1528,9 +1050,7 @@ function dlHTML(){
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// START
-// ═══════════════════════════════════════════════════════════════════════
+// ═══ START ═══
 init();
 </script>
 </body>
